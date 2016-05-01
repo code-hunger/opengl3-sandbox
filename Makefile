@@ -3,8 +3,8 @@ CXXFLAGS = -Wall -g -std=c++11 -Wconversion -Wextra -Wpedantic -Werror -Weffc++ 
 
 BINARY = 'bin'
 
-main: main.o
-	$(CXX) $(CXXFLAGS) -o $(BINARY) main.o
+bin: main.o
+	$(CXX) $(CXXFLAGS) -o $@ main.o
 
 clean:
 	rm *.o $(BINARY)
