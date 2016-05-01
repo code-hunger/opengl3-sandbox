@@ -146,6 +146,8 @@ int main()
 	                      (GLvoid *)0);
 	glEnableVertexAttribArray(0);
 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0); // unbind
 
