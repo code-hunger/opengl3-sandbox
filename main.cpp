@@ -24,15 +24,6 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action,
 	       key, scancode, action, mods);
 }
 
-const char *getFileContents(const char *fileName)
-{
-	printf("Loading %s\n", fileName);
-	std::ifstream t(fileName);
-	std::string str((std::istreambuf_iterator<char>(t)),
-	                std::istreambuf_iterator<char>());
-	return str.c_str();
-}
-
 GLuint loadAShader(const char *shaderSource, GLenum shaderType)
 {
 	GLuint shader = glCreateShader(shaderType);
