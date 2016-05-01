@@ -3,11 +3,12 @@ CXXFLAGS = -Wall -g -std=c++11 -Wconversion -Wextra -Wpedantic -Werror -Weffc++ 
 
 BINARY = 'bin'
 
-bin: main.cpp
+bin: main.o #main.cpp
 	$(CXX) $(CXXFLAGS) -o $@ main.o
+	# g++ main.cpp -o bin -lglfw -lGL -lGLEW
 
 clean:
 	rm *.o $(BINARY)
 
-main.o:
+main.o: main.cpp
 	$(CXX) $(CXXFLAGS) -c main.cpp
