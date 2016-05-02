@@ -7,6 +7,9 @@
 #include <string>
 #include <fstream>
 #include <streambuf>
+#include <cmath>
+
+bool change_color = true;
 
 void error_callback(int error, const char *desc)
 {
@@ -18,6 +21,8 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action,
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+		change_color = !change_color;
 
 	printf("Recieved key event! Key: %d, scancode: %d, action: %d, "
 	       "mods: %d\n",
@@ -48,17 +53,14 @@ void loadShaders(GLuint *frag_shader, GLuint *vert_shader)
 {
 	const char *frag_shader_source = "#version 330 core\n\
                                       out vec4 color;\
-                                      in vec4 vertexColor;\
+                                      uniform vec4 vertexColor;\
                                       void main() {\
-                                          color = vec4(1.0f, 0.5f, 0.2f, 1.0f);\
                                           color = vertexColor;\
                                       } \0",
 	           *vert_shader_source = "#version 330 core\n\
                                       layout (location = 0) in vec2 position;\
-                                      out vec4 vertexColor;\
                                       void main() { \
                                           gl_Position = vec4(position.x, position.y, 0.0, 1.0);\
-                                          vertexColor = vec4(1.0, 1.0, 1.0, 1.0);\
                                       } \0";
 	*frag_shader = loadAShader(frag_shader_source, GL_FRAGMENT_SHADER);
 	*vert_shader = loadAShader(vert_shader_source, GL_VERTEX_SHADER);
@@ -159,17 +161,24 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0); // unbind
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // or GL_LINES or GL_POINT
 
 	glfwSetKeyCallback(window, key_callback);
 
+	GLint loc = glGetUniformLocation(shaderProgram, "vertexColor");
+
 	while (!glfwWindowShouldClose(window)) {
 		int width, height;
-		/* double time = glfwGetTime(); */
+		double time = glfwGetTime();
 		glfwGetFramebufferSize(window, &width, &height);
 		glViewport(0, 0, width, height);
 		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor(0, 0.6f, 0, 0);
+		glClearColor(0, 0.f, 0, 0);
+
+		if (change_color) {
+			float green = (float)(sin(time) / 2) + 0.5f;
+			glUniform4f(loc, (green / 2 + 0.5f), green, 1 - green, 1.f);
+		}
 
 		glUseProgram(shaderProgram);
 
