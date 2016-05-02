@@ -48,13 +48,17 @@ void loadShaders(GLuint *frag_shader, GLuint *vert_shader)
 {
 	const char *frag_shader_source = "#version 330 core\n\
                                       out vec4 color;\
+                                      in vec4 vertexColor;\
                                       void main() {\
                                           color = vec4(1.0f, 0.5f, 0.2f, 1.0f);\
+                                          color = vertexColor;\
                                       } \0",
 	           *vert_shader_source = "#version 330 core\n\
                                       layout (location = 0) in vec2 position;\
+                                      out vec4 vertexColor;\
                                       void main() { \
                                           gl_Position = vec4(position.x, position.y, 0.0, 1.0);\
+                                          vertexColor = vec4(1.0, 1.0, 1.0, 1.0);\
                                       } \0";
 	*frag_shader = loadAShader(frag_shader_source, GL_FRAGMENT_SHADER);
 	*vert_shader = loadAShader(vert_shader_source, GL_VERTEX_SHADER);
