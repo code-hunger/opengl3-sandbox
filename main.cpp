@@ -50,9 +50,9 @@ void loadShaders(GLuint *frag_shader, GLuint *vert_shader)
 	                                 "main() { color = vec4(1.0f, 0.5f, 0.2f, "
 	                                 "1.0f); } \0",
 	           *vert_shader_source = "#version 330 core\n layout (location = "
-	                                 "0) in vec3 position; void main() { "
+	                                 "0) in vec2 position; void main() { "
 	                                 "gl_Position = vec4(position.x, "
-	                                 "position.y, position.z, 1.0); }\0";
+	                                 "position.y, 0.0, 1.0); }\0";
 	*frag_shader = loadAShader(frag_shader_source, GL_FRAGMENT_SHADER);
 	*vert_shader = loadAShader(vert_shader_source, GL_VERTEX_SHADER);
 }
@@ -119,30 +119,32 @@ int main()
 	loadShaders(&frag_shader, &vert_shader);
 	GLuint shaderProgram = loadShaderProgram(frag_shader, vert_shader);
 
-	GLfloat vertices[] = {
-	    -0.5f, -0.5f, 0.0f, -0.5f, 0.5f,  0.0f,
-	    0.5f,  0.5f,  0.0f, 0.5f,  -0.5f, 0.0f,
-	};
-	GLuint indices[] = {
-	    0, 1, 2, 0, 2, 3,
-	};
+	GLfloat triangle[] = {-0.5f, -0.5f, -0.5f, 0.5f, 0.5f,  0.5f, 0.5f, -0.5f, -0.75f, 0.f };
 
-	GLuint VAO, VBO, EBO;
-	glGenVertexArrays(1, &VAO);
+	/* GLfloat triangle2[] = { */
+	/*     */
+	/* }; */
 
-	glGenBuffers(1, &VBO);
+	/* GLuint indices[] = { */
+	/*     0, 1, 2, 0, 2, 3, 0, 1, 4, */
+	/* }; */
+
+	GLuint VAO[2], VBO[2], EBO;
+	glGenVertexArrays(2, VAO);
+
+	glGenBuffers(2, VBO);
 	glGenBuffers(1, &EBO);
 
-	glBindVertexArray(VAO);
+	glBindVertexArray(VAO[0]);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
-	             GL_STATIC_DRAW);
+	/* glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); */
+	/* glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, */
+	/*              GL_STATIC_DRAW); */
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT),
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 2 * sizeof(GL_FLOAT),
 	                      (GLvoid *)0);
 	glEnableVertexAttribArray(0);
 
@@ -162,9 +164,12 @@ int main()
 		glClearColor((float)time, 1 / (float)time, (float)time / 2, 1);
 
 		glUseProgram(shaderProgram);
-		glBindVertexArray(VAO);
+		glBindVertexArray(VAO[0]);
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		/* glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), */
+		/*                GL_UNSIGNED_INT, 0); */
 
 		glBindVertexArray(0); // unbind
 
