@@ -10,6 +10,7 @@
 #include <cmath>
 #include "Shader.h"
 #include "utils.h"
+#include "ShaderProgram.h"
 
 bool change_color = true;
 
@@ -40,28 +41,6 @@ void initGlfw()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 }
 
-GLuint loadShaderProgram(GLuint frag_shader, GLuint vert_shader)
-{
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vert_shader);
-	glAttachShader(shaderProgram, frag_shader);
-	glLinkProgram(shaderProgram);
-
-	GLint success;
-	GLchar infoLog[512];
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		fprintf(stderr, "Shader program building failed!\n%s\n", infoLog);
-		throw "Shader program building failed!";
-	}
-
-	glDeleteShader(frag_shader);
-	glDeleteShader(vert_shader);
-
-	return shaderProgram;
-}
-
 int main()
 {
 	initGlfw();
@@ -83,14 +62,15 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-    Shader frag_sh(readFile("fragment_shader.glsl"), GL_FRAGMENT_SHADER),
-           vert_sh(readFile("vertex_shader.glsl"), GL_VERTEX_SHADER);
+	Shader frag_sh(readFile("fragment_shader.glsl"), GL_FRAGMENT_SHADER),
+	    vert_sh(readFile("vertex_shader.glsl"), GL_VERTEX_SHADER);
 
-    if(!frag_sh.compile() || !vert_sh.compile()) {
-        return EXIT_FAILURE;
-    }
+	if (!frag_sh.compile() || !vert_sh.compile()) {
+		return EXIT_FAILURE;
+	}
 
-	GLuint shaderProgram = loadShaderProgram(frag_sh.id, vert_sh.id);
+	ShaderProgram shaderProgram(vert_sh, frag_sh);
+	shaderProgram.link();
 
 	// clang-format off
 	GLfloat vertices[] = {
@@ -121,8 +101,9 @@ int main()
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (GLvoid *)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (GLvoid *)(2 * sizeof(GL_FLOAT)));
-    glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT),
+	                      (GLvoid *)(2 * sizeof(GL_FLOAT)));
+	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0); // unbind
@@ -146,7 +127,7 @@ int main()
 		/* 	glUniform4f(loc, (green / 2 + 0.5f), green, 1 - green, 1.f); */
 		/* } */
 
-		glUseProgram(shaderProgram);
+		shaderProgram.use();
 
 		glBindVertexArray(VAO[0]);
 		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
