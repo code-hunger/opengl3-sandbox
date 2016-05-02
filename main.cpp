@@ -119,15 +119,16 @@ int main()
 	loadShaders(&frag_shader, &vert_shader);
 	GLuint shaderProgram = loadShaderProgram(frag_shader, vert_shader);
 
-	GLfloat triangle[] = {-0.5f, -0.5f, -0.5f, 0.5f, 0.5f,  0.5f, 0.5f, -0.5f, -0.75f, 0.f };
+	GLfloat vertices[] = {
+	    -0.5f, -0.5f, // 0
+	    -0.3f, 0.5f,  // 1
+	    0.5f, 0.5f,   // 2
+	    0.5f, -0.5f,  // 3
+	    -0.75f, 0.f   // 4
+	};
 
-	/* GLfloat triangle2[] = { */
-	/*     */
-	/* }; */
-
-	/* GLuint indices[] = { */
-	/*     0, 1, 2, 0, 2, 3, 0, 1, 4, */
-	/* }; */
+	GLuint indices[] = {/* 0, 1, 2, 0, 2, 3, 0, 1, 4, */
+	                    0, 1, 3};
 
 	GLuint VAO[2], VBO[2], EBO;
 	glGenVertexArrays(2, VAO);
@@ -138,38 +139,36 @@ int main()
 	glBindVertexArray(VAO[0]);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	/* glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); */
-	/* glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, */
-	/*              GL_STATIC_DRAW); */
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+	             GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 2 * sizeof(GL_FLOAT),
 	                      (GLvoid *)0);
 	glEnableVertexAttribArray(0);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0); // unbind
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	glfwSetKeyCallback(window, key_callback);
 
 	while (!glfwWindowShouldClose(window)) {
 		int width, height;
-		double time = glfwGetTime();
+		/* double time = glfwGetTime(); */
 		glfwGetFramebufferSize(window, &width, &height);
 		glViewport(0, 0, width, height);
 		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor((float)time, 1 / (float)time, (float)time / 2, 1);
+		glClearColor(0, 0.6f, 0, 0);
 
 		glUseProgram(shaderProgram);
+
 		glBindVertexArray(VAO[0]);
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-		/* glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), */
-		/*                GL_UNSIGNED_INT, 0); */
+		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint),
+		               GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(0); // unbind
 
