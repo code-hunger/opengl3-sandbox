@@ -1,13 +1,5 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <cstdlib>
-#include <iostream>
-#include <string>
-#include <cstdio>
-#include <string>
-#include <fstream>
-#include <streambuf>
-#include <cmath>
 #include "Shader.h"
 #include "utils.h"
 #include "ShaderProgram.h"
