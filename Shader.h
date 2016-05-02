@@ -13,11 +13,12 @@ class Shader
 
   public:
 	Shader(std::string source, GLenum type)
-	    : source(source.c_str()), type(type),
-	      id(glCreateShader(type)){glShaderSource(id, 1, &this->source, NULL);}
-	Shader(const Shader &);
-	void operator=(const Shader &);
-	virtual ~Shader(){} // @TODO: should it be virual or not?
+	    : source(source.c_str()), type(type), id(glCreateShader(type))
+	{
+		glShaderSource(id, 1, &this->source, NULL);
+	}
+
+	virtual ~Shader() {} // @TODO: should it be virual or not?
 
 	bool compile()
 	{
