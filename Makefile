@@ -1,14 +1,20 @@
 CXX = g++
-CXXFLAGS = -Wall -g -std=c++11 -Wconversion -Wextra -Wpedantic -Werror -Weffc++ -Wdouble-promotion -Wsign-conversion -lglfw -lGL -lGLEW -lGLU 
+
+LIBS = -lglfw -lGL -lGLEW -lGLU
+ERR_FLAGS = -Werror -Wall -Wconversion -Wextra -Wpedantic -Weffc++ -Wdouble-promotion -Wsign-conversion 
+
+CXXFLAGS = -std=c++14 -g $(ERR_FLAGS) $(LIBS)
 
 BINARY = 'bin'
 
-bin: main.o #main.cpp
-	$(CXX) $(CXXFLAGS) -o $@ main.o
-	# g++ main.cpp -o bin -lglfw -lGL -lGLEW
+bin: main.o 
+	$(CXX) $(CXXFLAGS) -o $@ main.o 
 
 clean:
-	rm *.o $(BINARY)
+	rm *.o *.h.gch $(BINARY)
 
-main.o: main.cpp
-	$(CXX) $(CXXFLAGS) -c main.cpp
+main.o: main.cpp Shader.h 
+	$(CXX) $(CXXFLAGS) -c main.cpp utils.h  Shader.h
+
+# Shader.h.gch: Shader.h
+# 	$(CXX) $(CXXFLAGS) -c Shader.h utils.h

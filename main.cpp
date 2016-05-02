@@ -8,6 +8,8 @@
 #include <fstream>
 #include <streambuf>
 #include <cmath>
+#include "Shader.h"
+#include "utils.h"
 
 bool change_color = true;
 
@@ -21,46 +23,6 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 	printf("Recieved key event! Key: %d, scancode: %d, action: %d, "
 	       "mods: %d\n",
 	       key, scancode, action, mods);
-}
-
-GLuint loadAShader(const char *shaderSource, GLenum shaderType)
-{
-	GLuint shader = glCreateShader(shaderType);
-
-	GLint success;
-	GLchar infoLog[512];
-
-	glShaderSource(shader, 1, &shaderSource, NULL);
-
-	glCompileShader(shader);
-
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-		fprintf(stderr, "shader compilation failed!\n%s\n", infoLog);
-		throw "Shader compilation failed!";
-	}
-	return shader;
-}
-
-void loadShaders(GLuint *frag_shader, GLuint *vert_shader)
-{
-	const char *frag_shader_source = "#version 330 core\n\
-                                      out vec4 color;\
-                                      in vec3 vertexColor;\
-                                      void main() {\
-                                          color = vec4(vertexColor, 1.0f);\
-                                      } \0",
-	           *vert_shader_source = "#version 330 core\n\
-                                      layout (location = 0) in vec2 position;\
-                                      layout (location = 1) in vec3 color;\
-                                      out vec3 vertexColor;\
-                                      void main() { \
-                                          gl_Position = vec4(position.x, position.y, 0.0f, 1.0f);\
-                                          vertexColor = color;\
-                                      } \0";
-	*frag_shader = loadAShader(frag_shader_source, GL_FRAGMENT_SHADER);
-	*vert_shader = loadAShader(vert_shader_source, GL_VERTEX_SHADER);
 }
 
 void initGlfw()
@@ -90,8 +52,8 @@ GLuint loadShaderProgram(GLuint frag_shader, GLuint vert_shader)
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
 	if (!success) {
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		fprintf(stderr, "program building failed!\n%s\n", infoLog);
-		throw "Program building failed!";
+		fprintf(stderr, "Shader program building failed!\n%s\n", infoLog);
+		throw "Shader program building failed!";
 	}
 
 	glDeleteShader(frag_shader);
@@ -121,9 +83,14 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-	GLuint frag_shader, vert_shader;
-	loadShaders(&frag_shader, &vert_shader);
-	GLuint shaderProgram = loadShaderProgram(frag_shader, vert_shader);
+    Shader frag_sh(readFile("fragment_shader.glsl"), GL_FRAGMENT_SHADER),
+           vert_sh(readFile("vertex_shader.glsl"), GL_VERTEX_SHADER);
+
+    if(!frag_sh.compile() || !vert_sh.compile()) {
+        return EXIT_FAILURE;
+    }
+
+	GLuint shaderProgram = loadShaderProgram(frag_sh.id, vert_sh.id);
 
 	// clang-format off
 	GLfloat vertices[] = {
