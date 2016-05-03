@@ -7,15 +7,14 @@
 class Shader
 {
   public:
-	const char *const source;
-	const GLenum type;
 	const GLuint id;
+	const GLenum type;
 
   public:
-	Shader(std::string source, GLenum type)
-	    : source(source.c_str()), type(type), id(glCreateShader(type))
+	Shader(std::string source, GLenum type) : id(glCreateShader(type)), type(type)
 	{
-		glShaderSource(id, 1, &this->source, NULL);
+		const char *str = source.c_str();
+		glShaderSource(id, 1, &str, NULL);
 	}
 
 	virtual ~Shader() {} // @TODO: should it be virual or not?
@@ -35,8 +34,6 @@ class Shader
 		glGetShaderInfoLog(id, 512, NULL, infoLog);
 		fprintf(stream, "%s", infoLog);
 	}
-
-	void dumpSource() { printf("%s", source); }
 };
 
 #endif /* SHADER_H */
