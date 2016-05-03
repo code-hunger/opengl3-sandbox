@@ -21,12 +21,19 @@ class ShaderProgram
 		glGetProgramiv(id, GL_LINK_STATUS, &success);
 		return GL_TRUE == success;
 	}
-	void dumpInfoLog(FILE *stream = stderr)
+
+	std::string getInfoLog()
 	{
 		GLchar infoLog[512];
 		glGetProgramInfoLog(id, 512, NULL, infoLog);
-		fprintf(stream, "Shader program building failed!\n%s\n", infoLog);
+		return {infoLog};
 	}
+
+	void dumpInfoLog(FILE *stream = stderr)
+	{
+		fprintf(stream, "Shader program building failed!\n%s\n", getInfoLog().c_str());
+	}
+
 	void use() { glUseProgram(id); }
 	~ShaderProgram() {}
 };

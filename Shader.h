@@ -28,12 +28,14 @@ class Shader
 		return GL_TRUE == success;
 	}
 
-	void dumpInfoLog(FILE *stream = stdout)
+	std::string getInfoLog()
 	{
 		GLchar infoLog[512];
 		glGetShaderInfoLog(id, 512, NULL, infoLog);
-		fprintf(stream, "%s", infoLog);
+		return {infoLog};
 	}
+
+	void dumpInfoLog(FILE *stream = stderr) { fprintf(stream, "%s", getInfoLog().c_str()); }
 };
 
 #endif /* SHADER_H */
