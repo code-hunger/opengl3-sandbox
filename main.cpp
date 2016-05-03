@@ -45,6 +45,8 @@ int main()
 
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK) {
+        glfwTerminate();
+        glfwDestroyWindow(window);
 		printf("Glew initialization failed!\n");
 		return EXIT_FAILURE;
 	}
@@ -53,11 +55,24 @@ int main()
 	    vert_sh(readFile("vertex_shader.glsl"), GL_VERTEX_SHADER);
 
 	if (!frag_sh.compile() || !vert_sh.compile()) {
+        printf("\nShader compilation error!\n");
+        frag_sh.dumpInfoLog();
+        vert_sh.dumpInfoLog();
+
+        glfwDestroyWindow(window);
+        glfwTerminate();
 		return EXIT_FAILURE;
 	}
 
 	ShaderProgram shaderProgram(vert_sh, frag_sh);
-	shaderProgram.link();
+    if(!shaderProgram.link()) {
+        printf("\nShader program linking error!\n");
+        shaderProgram.dumpInfoLog();
+
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        return EXIT_FAILURE;
+    }
 
 	// clang-format off
 	GLfloat vertices[] = {
@@ -126,6 +141,7 @@ int main()
 	}
 
 	glfwDestroyWindow(window);
+    glfwTerminate();
 
 	printf("Exit!\n");
 
