@@ -3,6 +3,9 @@
 #include "Shader.h"
 #include "utils.h"
 #include "ShaderProgram.h"
+#include "glm/glm/glm.hpp"
+#include "glm/glm/gtc/matrix_transform.hpp"
+#include "glm/glm/gtc/type_ptr.hpp"
 
 bool change_color = true;
 
@@ -73,6 +76,12 @@ int main()
         glfwTerminate();
         return EXIT_FAILURE;
     }
+
+    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+    glm::mat4 trans;
+    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
+    vec = trans * vec;
+    printf("%f, %f %f", (double)vec.x, (double)vec.y, (double)vec.z);
 
 	// clang-format off
 	GLfloat vertices[] = {
