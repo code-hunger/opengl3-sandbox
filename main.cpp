@@ -48,8 +48,8 @@ int main()
 
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK) {
-        glfwTerminate();
-        glfwDestroyWindow(window);
+		glfwTerminate();
+		glfwDestroyWindow(window);
 		printf("Glew initialization failed!\n");
 		return EXIT_FAILURE;
 	}
@@ -58,30 +58,30 @@ int main()
 	    vert_sh(readFile("vertex_shader.glsl"), GL_VERTEX_SHADER);
 
 	if (!frag_sh.compile() || !vert_sh.compile()) {
-        printf("\nShader compilation error!\n");
-        frag_sh.dumpInfoLog();
-        vert_sh.dumpInfoLog();
+		printf("\nShader compilation error!\n");
+		frag_sh.dumpInfoLog();
+		vert_sh.dumpInfoLog();
 
-        glfwDestroyWindow(window);
-        glfwTerminate();
+		glfwDestroyWindow(window);
+		glfwTerminate();
 		return EXIT_FAILURE;
 	}
 
 	ShaderProgram shaderProgram(vert_sh, frag_sh);
-    if(!shaderProgram.link()) {
-        printf("\nShader program linking error!\n");
-        shaderProgram.dumpInfoLog();
+	if (!shaderProgram.link()) {
+		printf("\nShader program linking error!\n");
+		shaderProgram.dumpInfoLog();
 
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        return EXIT_FAILURE;
-    }
+		glfwDestroyWindow(window);
+		glfwTerminate();
+		return EXIT_FAILURE;
+	}
 
-    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
-    glm::mat4 trans;
-    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
-    vec = trans * vec;
-    printf("%f, %f %f", (double)vec.x, (double)vec.y, (double)vec.z);
+	glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+	glm::mat4 trans;
+	trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
+	vec = trans * vec;
+	printf("%f, %f %f", (double)vec.x, (double)vec.y, (double)vec.z);
 
 	// clang-format off
 	GLfloat vertices[] = {
@@ -150,7 +150,7 @@ int main()
 	}
 
 	glfwDestroyWindow(window);
-    glfwTerminate();
+	glfwTerminate();
 
 	printf("Exit!\n");
 
