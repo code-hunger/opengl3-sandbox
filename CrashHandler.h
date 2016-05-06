@@ -5,10 +5,10 @@
 
 class CrashHandler
 {
-  private:
+private:
 	void (*cleanup)() = nullptr;
 
-  public:
+public:
 	CrashHandler(void (*cleanup)()) : cleanup(cleanup){};
 	CrashHandler(){};
 	void handle(Crashable &object, bool success) const
@@ -17,12 +17,13 @@ class CrashHandler
 
 		object.dumpInfoLog();
 
-        handle((void*)0, "");
+		handle((void *)0, "");
 	}
-    void handle(void* success, const char* mess) const {
-        if(success) return;
+	void handle(void *success, const char *mess) const
+	{
+		if (success) return;
 
-        if(mess) fprintf(stderr, "Message: %s", mess);
+		if (mess) fprintf(stderr, "Message: %s", mess);
 
 		if (cleanup) {
 			cleanup();
@@ -30,8 +31,8 @@ class CrashHandler
 			fprintf(stderr, "No cleanup function provided!\n");
 		}
 
-        throw -1;
-    }
+		throw - 1;
+	}
 	void setCleanup(void (*cleanup)()) { this->cleanup = cleanup; }
 	virtual ~CrashHandler() {}
 };

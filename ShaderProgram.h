@@ -5,9 +5,9 @@
 #include "Shader.h"
 #include "Crashable.h"
 
-class ShaderProgram: public Crashable
+class ShaderProgram : public Crashable
 {
-  public:
+public:
 	const GLuint id;
 	ShaderProgram(Shader vert, Shader frag) : id(glCreateProgram())
 	{
@@ -32,7 +32,8 @@ class ShaderProgram: public Crashable
 
 	void dumpInfoLog(FILE *stream = stderr)
 	{
-		fprintf(stream, "Shader program building failed!\n%s\n", getInfoLog().c_str());
+		fprintf(stream, "Shader program building failed!\n%s\n",
+		        getInfoLog().c_str());
 	}
 
 	void use() { glUseProgram(id); }

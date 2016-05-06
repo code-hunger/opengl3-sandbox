@@ -8,11 +8,10 @@
 
 class Shader : public Crashable
 {
-  public:
+public:
 	const GLuint id;
 	const GLenum type;
 
-  public:
 	Shader(std::string source, GLenum type)
 	    : id(glCreateShader(type)), type(type)
 	{

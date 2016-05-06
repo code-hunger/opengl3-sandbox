@@ -6,11 +6,12 @@ using std::vector;
 
 class VertexArray
 {
-  private:
+private:
 	vector<float> points;
 	vector<unsigned int> indices;
 	GLuint VAO = 0, VBO = 0, EBO = 0;
-	void initBuffer(GLenum type, long unsigned int size, void *data, GLuint *buffer);
+	void initBuffer(GLenum type, long unsigned int size, void *data,
+	                GLuint *buffer);
 
 	void enableVertexArray(GLuint location, GLint size, GLenum type,
 	                       unsigned int stride, unsigned int start);
@@ -20,9 +21,11 @@ class VertexArray
 		enableVertexArray(location, size, GL_FLOAT, stride, start);
 	}
 
-  public:
-	VertexArray(float* points, int point_count, unsigned int *indices, int index_count)
-	    : points(points, points+ point_count), indices(indices, indices+ index_count){};
+public:
+	VertexArray(float *points, int point_count, unsigned int *indices,
+	            int index_count)
+	    : points(points, points + point_count),
+	      indices(indices, indices + index_count){};
 	void build();
 	void draw(GLenum mode, long unsigned int start, GLsizei count);
 	GLuint getVAO() { return VAO; }
