@@ -3,8 +3,9 @@
 
 #include <GL/glew.h>
 #include "Shader.h"
+#include "Crashable.h"
 
-class ShaderProgram
+class ShaderProgram: public Crashable
 {
   public:
 	const GLuint id;

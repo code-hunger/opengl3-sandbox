@@ -5,6 +5,8 @@
 #include "utils.h"
 #include "ShaderProgram.h"
 #include "VertexArray.h"
+#include "Crashable.h"
+#include "CrashHandler.h"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Weffc++"
@@ -51,45 +53,25 @@ int main()
 
 	GLFWwindow *window = glfwCreateWindow(640, 480, "Title", NULL, NULL);
 
-	if (!window) {
-		glfwTerminate();
-		printf("Window not created!\n");
-		return (EXIT_FAILURE);
-	}
+	CrashHandler crash(glfwTerminate);
+
+	crash.handle(window, "Window not created");
 
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
 
 	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK) {
-		glfwTerminate();
-		glfwDestroyWindow(window);
-		printf("Glew initialization failed!\n");
-		return EXIT_FAILURE;
-	}
+	crash.handle((void *)(glewInit() == GLEW_OK),
+	             "Glew initialization failed!\n");
 
 	Shader frag_sh(readFile("fragment_shader.glsl"), GL_FRAGMENT_SHADER),
 	    vert_sh(readFile("vertex_shader.glsl"), GL_VERTEX_SHADER);
 
-	if (!frag_sh.compile() || !vert_sh.compile()) {
-		printf("\nShader compilation error!\n");
-		frag_sh.dumpInfoLog();
-		vert_sh.dumpInfoLog();
-
-		glfwDestroyWindow(window);
-		glfwTerminate();
-		return EXIT_FAILURE;
-	}
+	crash.handle(frag_sh, frag_sh.compile());
+	crash.handle(vert_sh, vert_sh.compile());
 
 	ShaderProgram shaderProgram(vert_sh, frag_sh);
-	if (!shaderProgram.link()) {
-		printf("\nShader program linking error!\n");
-		shaderProgram.dumpInfoLog();
-
-		glfwDestroyWindow(window);
-		glfwTerminate();
-		return EXIT_FAILURE;
-	}
+	crash.handle(shaderProgram, shaderProgram.link());
 
 	glm::mat4 trans;
 	trans = glm::rotate(trans, 90.0f, glm::vec3(0.0, 1.0, 1.0));

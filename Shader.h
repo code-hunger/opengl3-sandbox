@@ -4,14 +4,17 @@
 #include <string>
 #include <GL/glew.h>
 
-class Shader
+#include "Crashable.h"
+
+class Shader : public Crashable
 {
   public:
 	const GLuint id;
 	const GLenum type;
 
   public:
-	Shader(std::string source, GLenum type) : id(glCreateShader(type)), type(type)
+	Shader(std::string source, GLenum type)
+	    : id(glCreateShader(type)), type(type)
 	{
 		const char *str = source.c_str();
 		glShaderSource(id, 1, &str, NULL);
@@ -35,7 +38,10 @@ class Shader
 		return {infoLog};
 	}
 
-	void dumpInfoLog(FILE *stream = stderr) { fprintf(stream, "%s", getInfoLog().c_str()); }
+	void dumpInfoLog(FILE *stream = stderr)
+	{
+		fprintf(stream, "%s", getInfoLog().c_str());
+	}
 };
 
 #endif /* SHADER_H */
