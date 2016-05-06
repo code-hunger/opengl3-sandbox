@@ -1,8 +1,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include "Shader.h"
 #include "utils.h"
 #include "ShaderProgram.h"
+#include "VertexArray.h"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Weffc++"
@@ -15,12 +17,18 @@
 
 bool change_color = true;
 
-void error_callback(int error, const char *desc) { printf("Error #%d: %s\n", error, desc); }
-
-static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+void error_callback(int error, const char *desc)
 {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) glfwSetWindowShouldClose(window, GL_TRUE);
-	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) change_color = !change_color;
+	printf("Error #%d: %s\n", error, desc);
+}
+
+static void key_callback(GLFWwindow *window, int key, int scancode, int action,
+                         int mods)
+{
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE);
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+		change_color = !change_color;
 
 	printf("Recieved key event! Key: %d, scancode: %d, action: %d, "
 	       "mods: %d\n",
@@ -83,9 +91,9 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-    glm::mat4 trans;
-    trans = glm::rotate(trans, 90.0f, glm::vec3(0.0, 0.0, 1.0));
-    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));  
+	glm::mat4 trans;
+	trans = glm::rotate(trans, 90.0f, glm::vec3(0.0, 1.0, 1.0));
+	trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 
 	// clang-format off
 	GLfloat vertices[] = {
@@ -97,38 +105,18 @@ int main()
 	};
 	// clang-format on
 
-	GLuint indices[] = {0, 1, 3, 4, 1, 2, 4, 1, 0};
+	GLuint trapezoid[] = {0, 1, 3, 4, 1, 2};
 
-	GLuint VAO[2], VBO[2], EBO;
-	glGenVertexArrays(2, VAO);
-
-	glGenBuffers(2, VBO);
-	glGenBuffers(1, &EBO);
-
-	glBindVertexArray(VAO[0]);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (GLvoid *)0);
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT),
-	                      (GLvoid *)(2 * sizeof(GL_FLOAT)));
-	glEnableVertexAttribArray(1);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0); // unbind
+	VertexArray myVertexArray(vertices, sizeof vertices, trapezoid,
+	                          sizeof trapezoid);
+	myVertexArray.build();
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // or GL_LINES or GL_POINT
 
 	glfwSetKeyCallback(window, key_callback);
 
 	GLint transformLoc = glGetUniformLocation(shaderProgram.id, "transform");
-    glm::mat4x4 transfMatrix;
+
 	while (!glfwWindowShouldClose(window)) {
 		int width, height;
 		/*  @TODO double time = glfwGetTime(); */
@@ -137,16 +125,13 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0, 0.f, 0, 0);
 
-        trans = glm::rotate(trans, 0.1f, glm::vec3(0.0, 0.0, 1.0));
+		trans = glm::rotate(trans, 0.05f, glm::vec3(1.0, 1.0, 0.0));
 
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
 		shaderProgram.use();
 
-		glBindVertexArray(VAO[0]);
-		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(GLuint), GL_UNSIGNED_INT, 0);
-
-		glBindVertexArray(0); // unbind
+		myVertexArray.draw(GL_TRIANGLE_FAN, 0, sizeof trapezoid);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
