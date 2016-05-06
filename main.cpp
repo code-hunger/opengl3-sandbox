@@ -83,11 +83,9 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-	glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
-	glm::mat4 trans;
-	trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
-	vec = trans * vec;
-	printf("%f, %f %f\n", (double)vec.x, (double)vec.y, (double)vec.z);
+    glm::mat4 trans;
+    trans = glm::rotate(trans, 90.0f, glm::vec3(0.0, 0.0, 1.0));
+    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));  
 
 	// clang-format off
 	GLfloat vertices[] = {
@@ -129,20 +127,19 @@ int main()
 
 	glfwSetKeyCallback(window, key_callback);
 
-	/* GLint loc = glGetUniformLocation(shaderProgram, "vertexColor"); */
-
+	GLint transformLoc = glGetUniformLocation(shaderProgram.id, "transform");
+    glm::mat4x4 transfMatrix;
 	while (!glfwWindowShouldClose(window)) {
 		int width, height;
-		/* double time = glfwGetTime(); */
+		/*  @TODO double time = glfwGetTime(); */
 		glfwGetFramebufferSize(window, &width, &height);
 		glViewport(0, 0, width, height);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0, 0.f, 0, 0);
 
-		/* if (change_color) { */
-		/* 	float green = (float)(sin(time) / 2) + 0.5f; */
-		/* 	glUniform4f(loc, (green / 2 + 0.5f), green, 1 - green, 1.f); */
-		/* } */
+        trans = glm::rotate(trans, 0.1f, glm::vec3(0.0, 0.0, 1.0));
+
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
 		shaderProgram.use();
 
