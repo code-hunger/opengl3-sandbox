@@ -11,4 +11,4 @@ bin: main.cpp Shader.h ShaderProgram.h utils.h
 	$(CXX) $(CXXFLAGS) -o $@ main.cpp
 
 clean:
-	rm *.o $(BINARY)
+	rm $(BINARY)
