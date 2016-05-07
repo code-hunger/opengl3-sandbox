@@ -14,17 +14,6 @@ void error_callback(int error, const char *desc)
 	printf("Error callback! #%d: %s\n", error, desc);
 }
 
-void key_callback(GLFWwindow *window, int key, int scancode, int action,
-                  int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-
-	printf("Recieved key event! Key: %d, scancode : %d, action : %d, "
-	       "mods: %d\n",
-	       key, scancode, action, mods);
-}
-
 App::App()
 {
 	printf("App initialization...\n");
@@ -76,14 +65,16 @@ void App::boot()
 	printf("App booted successfully!\n");
 }
 
-void App::run(Window window)
+void App::run(Window &window)
 {
+    printf("Start running!\n");
 	double prevTime = glfwGetTime();
-	while (window.shouldClose()) {
+	while (!window.shouldClose()) {
 		double time = glfwGetTime(), deltaTime = time - prevTime;
 		prevTime = time;
 		window.render(deltaTime, shaderPrograms, vertexArrays);
 	}
+    printf("Stop running!\n");
 }
 
 void App::createShaderPrograms()

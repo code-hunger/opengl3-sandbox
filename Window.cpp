@@ -32,7 +32,7 @@ void Window::render(double deltaTime, ShaderPrograms &programs,
 	glUniformMatrix4fv(transfLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
 	programs[0].use();
-	vertArrays[0].draw(GL_TRIANGLE_FAN, 0, 9);
+	vertArrays[0].draw(GL_TRIANGLE_FAN, 0, 7);
 
 	trans = glm::rotate(trans, (float)deltaTime, glm::vec3(1.0, 0.0, 0.0));
 

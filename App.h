@@ -11,7 +11,7 @@ class App
 public:
 	App();
 	virtual ~App();
-	void run(Window);
+	void run(Window&);
     void boot();
 
 private:

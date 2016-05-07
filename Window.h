@@ -45,13 +45,14 @@ public:
 
 	void render(double deltaTime, ShaderPrograms &, VertexArrays &);
 
+	void static setHints();
+
 private:
 	Window(const Window &);
 	void operator=(const Window &);
 
 	GLFWwindow *window{glfwCreateWindow(640, 480, "Title", NULL, NULL)};
 	static const bool hintsSet{false};
-	static void setHints();
 
 	glm::mat4x4 trans{};
 	GLint transfLoc = 0;
