@@ -6,6 +6,19 @@ using std::vector;
 
 class VertexArray
 {
+public:
+	VertexArray(float *points, int point_count, unsigned int *indices,
+	            int index_count)
+	    : points(points, points + point_count),
+	      indices(indices, indices + index_count)
+	{
+		printf("Vertex array ctor initialized successfully!\n");
+	};
+	void build();
+	void draw(GLenum mode, long unsigned int start, GLsizei count);
+	GLuint getVAO() { return VAO; }
+	virtual ~VertexArray();
+
 private:
 	vector<float> points;
 	vector<unsigned int> indices;
@@ -20,16 +33,6 @@ private:
 	{
 		enableVertexArray(location, size, GL_FLOAT, stride, start);
 	}
-
-public:
-	VertexArray(float *points, int point_count, unsigned int *indices,
-	            int index_count)
-	    : points(points, points + point_count),
-	      indices(indices, indices + index_count){};
-	void build();
-	void draw(GLenum mode, long unsigned int start, GLsizei count);
-	GLuint getVAO() { return VAO; }
-	virtual ~VertexArray();
 };
 
 #endif /* end of include guard: VERTEX_ARRAY */

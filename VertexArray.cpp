@@ -22,6 +22,7 @@ void VertexArray::enableVertexArray(GLuint location, GLint size, GLenum type,
 
 void VertexArray::build()
 {
+    printf("Building vertex array\n");
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
@@ -32,6 +33,7 @@ void VertexArray::build()
 	enableVertexArray(1, 3, 5, 2);
 
 	glBindVertexArray(0); // unbind
+    printf("Vertex array built!\n");
 }
 
 void VertexArray::draw(GLenum mode, long unsigned int start, GLsizei count)

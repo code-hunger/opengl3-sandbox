@@ -2,6 +2,7 @@
 
 Window::Window()
 {
+	printf("Window initialization...\n");
 	if (!hintsSet) {
 		setHints();
 	}
@@ -15,9 +16,11 @@ Window::Window()
 
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
+	printf("Window ctor exits successfully\n");
 }
 
-void Window::render(double deltaTime, ShaderPrograms &programs, VertexArrays &vertArrays)
+void Window::render(double deltaTime, ShaderPrograms &programs,
+                    VertexArrays &vertArrays)
 {
 	int width, height;
 	getSize(width, height);
@@ -44,6 +47,7 @@ void Window::setKeyCallback(GLFWkeyfun callback)
 
 void Window::setHints()
 {
+    printf("Set hints!\n");
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);

@@ -10,15 +10,14 @@ class App
 {
 public:
 	App();
-	virtual ~App() {}
-	void run();
+	virtual ~App();
+	void run(Window);
+    void boot();
 
 private:
 	std::vector<ShaderProgram> shaderPrograms{};
 	std::vector<VertexArray> vertexArrays{};
-	Window window{};
 
-	void init();
 	void createShaderPrograms();
 };
 

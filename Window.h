@@ -25,7 +25,11 @@ class Window
 {
 public:
 	Window();
-	virtual ~Window() { glfwDestroyWindow(window); }
+	virtual ~Window()
+	{
+		printf("Window destructor. Destroy window!\n");
+		glfwDestroyWindow(window);
+	}
 
 	bool shouldClose() { return glfwWindowShouldClose(window); }
 

@@ -8,8 +8,8 @@
 class ShaderProgram : public Crashable
 {
 public:
-	const GLuint id;
-	ShaderProgram(Shader vert, Shader frag) : id(glCreateProgram())
+	const GLuint id{glCreateProgram()};
+	ShaderProgram(Shader vert, Shader frag)
 	{
 		glAttachShader(id, vert.id);
 		glAttachShader(id, frag.id);
@@ -22,7 +22,7 @@ public:
 		GLint success;
 		glGetProgramiv(id, GL_LINK_STATUS, &success);
 		if (GL_TRUE != success) {
-			throw ("Program linking failed");
+			throw("Program linking failed");
 		}
 	}
 
