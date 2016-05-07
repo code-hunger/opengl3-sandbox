@@ -3,10 +3,15 @@
 
 int main()
 {
-    App app;
-    Window window;
-    app.boot();
-    /* app.run(); */
+	try {
+		App app;
+		Window window;
+		app.boot();
+	} catch (int e) {
+        printf("Something bad happened. Code %d\n", e);
+		return e;
+	}
+	/* app.run(); */
 
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // or GL_LINES or GL_POINT
 
