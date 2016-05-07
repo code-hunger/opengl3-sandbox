@@ -4,7 +4,6 @@
 #include <string>
 #include <GL/glew.h>
 
-#include "Crashable.h"
 #include <exception>
 
 class Shader

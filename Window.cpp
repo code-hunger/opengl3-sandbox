@@ -28,13 +28,14 @@ void Window::render(double deltaTime, ShaderPrograms &programs,
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(0, 0.f, 0, 0);
 
-	static int transfLoc = glGetUniformLocation(programs[0].id, "transform");
-	glUniformMatrix4fv(transfLoc, 1, GL_FALSE, glm::value_ptr(trans));
+    if(deltaTime) {}
+	/* static int transfLoc = glGetUniformLocation(programs[0].id, "transform"); */
+	/* glUniformMatrix4fv(transfLoc, 1, GL_FALSE, glm::value_ptr(trans)); */
 
 	programs[0].use();
 	vertArrays[0].draw(GL_TRIANGLE_FAN, 0, 7);
 
-	trans = glm::rotate(trans, (float)deltaTime, glm::vec3(1.0, 0.0, 0.0));
+	/* trans = glm::rotate(trans, (float)deltaTime, glm::vec3(1.0, 0.0, 0.0)); */
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();

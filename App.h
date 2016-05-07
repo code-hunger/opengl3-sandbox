@@ -15,6 +15,8 @@ public:
     void boot();
 
 private:
+    App(const App&);
+    void operator=(const Window &);
 	std::vector<ShaderProgram> shaderPrograms{};
 	std::vector<VertexArray> vertexArrays{};
 

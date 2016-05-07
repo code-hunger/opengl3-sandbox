@@ -16,19 +16,19 @@ int main()
 {
 	try {
 		App app;
-        Window::setHints();
+		Window::setHints();
 		Window window;
-        window.setKeyCallback(key_callback);
+		window.setKeyCallback(key_callback);
 		app.boot();
-        app.run(window);
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // or GL_LINES or GL_POINT
+		app.run(window);
 	} catch (int e) {
-        printf("Something bad happened. Code %d\n", e);
+		printf("Something bad happened. Code %d\n", e);
 		return e;
 	}
 
-	// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // or GL_LINES or GL_POINT
-    
-    printf("Successfully exiting!!!\n");
+	printf("Successfully exiting!!!\n");
 
 	return EXIT_SUCCESS;
 }
