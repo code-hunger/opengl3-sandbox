@@ -9,8 +9,8 @@ class VertexArray
 public:
 	VertexArray(float *points, int point_count, unsigned int *indices,
 	            int index_count)
-	    : points(points, points + point_count +1),
-	      indices(indices, indices + index_count + 1)
+	    : points(points, points + point_count),
+	      indices(indices, indices + index_count)
 	{
 		printf("Vertex array ctor initialized successfully!\n");
 	};
@@ -19,8 +19,8 @@ public:
 	GLuint getVAO() { return VAO; }
 	virtual ~VertexArray();
 
-    VertexArray(const VertexArray&) = delete;
-    void operator=(const VertexArray&) = delete;
+	VertexArray(const VertexArray &) = delete;
+	void operator=(const VertexArray &) = delete;
 
 private:
 	vector<float> points;

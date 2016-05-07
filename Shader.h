@@ -12,34 +12,36 @@ public:
 	const GLuint id;
 	const GLenum type;
 
-	Shader(std::string source, GLenum type): id(glCreateShader(type)), type(type)
+	Shader(const std::string source, const GLenum type)
+	    : id(glCreateShader(type)), type(type)
 	{
-        printf("Creating shader!\n");
+		printf("Creating shader!\n");
 		const char *str = source.c_str();
 		glShaderSource(id, 1, &str, NULL);
-        printf("Created shader!\n");
+		printf("Created shader!\n");
 	}
 
-    virtual ~Shader() {
-        printf("Shader destruction. Delete shader!\n");
-        glDeleteShader(id);
-    } // @TODO: should it be virual or not?
+	virtual ~Shader()
+	{
+		printf("Shader destruction. Delete shader!\n");
+		glDeleteShader(id);
+	} // @TODO: should it be virual or not?
 
 	void compile()
 	{
-        printf("Compiling shader...\n");
+		printf("Compiling shader...\n");
 		glCompileShader(id);
 
 		GLint success;
 		glGetShaderiv(id, GL_COMPILE_STATUS, &success);
-        if(GL_TRUE != success) {
-            dumpInfoLog();
-            throw ("Shader compilation failed");
-        }
-        printf("Shader compiled!\n");
+		if (GL_TRUE != success) {
+			dumpInfoLog();
+			throw("Shader compilation failed");
+		}
+		printf("Shader compiled!\n");
 	}
 
-	std::string getInfoLog()
+	std::string getInfoLog() const
 	{
 		GLchar infoLog[512];
 		glGetShaderInfoLog(id, 512, NULL, infoLog);
@@ -51,9 +53,8 @@ public:
 		fprintf(stream, "%s", getInfoLog().c_str());
 	}
 
-    Shader(const Shader&) = delete;
-    void operator=(const Shader &) = delete;
-
+	Shader(const Shader &) = delete;
+	void operator=(const Shader &) = delete;
 };
 
 #endif /* SHADER_H */

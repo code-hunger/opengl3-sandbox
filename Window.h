@@ -26,18 +26,11 @@ class Window
 {
 public:
 	Window();
-	virtual ~Window()
-	{
-		printf("Window destructor. Destroy window!\n");
-		glfwDestroyWindow(window);
-	}
+	virtual ~Window();
 
 	bool shouldClose() { return glfwWindowShouldClose(window); }
 
-	void getSize(int &width, int &height)
-	{
-		glfwGetFramebufferSize(window, &width, &height);
-	}
+	void getSize(int &width, int &height);
 
 	void use(); // use this method when using multiple windows. Call it before
 	            // using a window

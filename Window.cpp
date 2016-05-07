@@ -19,6 +19,11 @@ Window::Window()
 	printf("Window ctor exits successfully\n");
 }
 
+void Window::getSize(int &width, int &height)
+{
+	glfwGetFramebufferSize(window, &width, &height);
+}
+
 void Window::render(const double deltaTime, const ShaderPrograms &programs,
                     const VertexArrays &vertArrays)
 {
@@ -53,4 +58,10 @@ void Window::setHints()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+}
+
+Window::~Window()
+{
+	printf("Window destructor. Destroy window!\n");
+	glfwDestroyWindow(window);
 }

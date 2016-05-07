@@ -15,7 +15,7 @@ public:
 		glAttachShader(id, frag.id);
 	}
 
-	void link()
+	void link() const
 	{
 		glLinkProgram(id);
 
