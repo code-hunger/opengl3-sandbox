@@ -65,10 +65,10 @@ void App::boot()
 
 		GLuint trapezoid[] = {0, 1, 3, 4, 1, 2};
 
-		VertexArray myVertexArray(vertices, sizeof vertices, trapezoid,
+		this->var = new VertexArray(vertices, sizeof vertices, trapezoid,
 		                          sizeof trapezoid);
-		this->vertexArrays.push_back(myVertexArray);
-		myVertexArray.build();
+        this->var->build();
+		/* this->vertexArrays.push_back(myVertexArray); */
 	} catch (const char *e) {
 		printf("%s\n", e);
 		throw - 1;
@@ -84,7 +84,7 @@ void App::run(Window &window)
 	while (!window.shouldClose()) {
 		double time = glfwGetTime(), deltaTime = time - prevTime;
 		prevTime = time;
-		window.render(deltaTime, shaderPrograms, vertexArrays);
+		window.render(deltaTime, shpr, var);
 	}
 	printf("Stop running!\n");
 }
@@ -101,10 +101,11 @@ void App::createShaderPrograms()
 	frag_sh.compile();
 	vert_sh.compile();
 
-	ShaderProgram shaderProgram(vert_sh, frag_sh);
-	shaderProgram.link();
+	shpr = new ShaderProgram (vert_sh, frag_sh);
+	shpr->link();
 
-	shaderPrograms.push_back(shaderProgram);
+	/* shaderPrograms.push_back(shaderProgram); */
+    
 	printf("Shader programs created!\n");
 }
 

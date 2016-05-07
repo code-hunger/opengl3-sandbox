@@ -19,8 +19,8 @@ Window::Window()
 	printf("Window ctor exits successfully\n");
 }
 
-void Window::render(double deltaTime, ShaderPrograms &programs,
-                    VertexArrays &vertArrays)
+void Window::render(double deltaTime, ShaderProgram *programs,
+                    VertexArray *vertArrays)
 {
 	int width, height;
 	getSize(width, height);

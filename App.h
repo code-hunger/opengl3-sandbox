@@ -11,12 +11,15 @@ class App
 public:
 	App();
 	virtual ~App();
-	void run(Window&);
-    void boot();
+	void run(Window &);
+	void boot();
 
 private:
-    App(const App&);
-    void operator=(const Window &);
+	App(const App &);
+	void operator=(const App &);
+
+	ShaderProgram *shpr;
+	VertexArray *var;
 	std::vector<ShaderProgram> shaderPrograms{};
 	std::vector<VertexArray> vertexArrays{};
 

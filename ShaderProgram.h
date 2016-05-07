@@ -40,6 +40,10 @@ public:
 
 	void use() { glUseProgram(id); }
 	~ShaderProgram() {}
+
+private:
+    ShaderProgram(const ShaderProgram&);
+    void operator=(const ShaderProgram &);
 };
 
 #endif /* SHADER_PROGRAM_H */

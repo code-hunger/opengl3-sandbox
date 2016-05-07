@@ -43,7 +43,7 @@ public:
 
 	void setKeyCallback(GLFWkeyfun callback);
 
-	void render(double deltaTime, ShaderPrograms &, VertexArrays &);
+	void render(double deltaTime, ShaderProgram *, VertexArray *);
 
 	void static setHints();
 
