@@ -21,7 +21,10 @@ public:
         printf("Created shader!\n");
 	}
 
-	virtual ~Shader() {} // @TODO: should it be virual or not?
+    virtual ~Shader() {
+        printf("Shader destruction. Delete shader!\n");
+        glDeleteShader(id);
+    } // @TODO: should it be virual or not?
 
 	void compile()
 	{
