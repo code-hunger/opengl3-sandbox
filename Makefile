@@ -7,10 +7,14 @@ CXXFLAGS = -std=c++14 -g -O0 $(ERR_FLAGS) $(LIBS) -Werror
 
 BINARY = 'bin'
 
-bin: VertexArray.o main.cpp Shader.h ShaderProgram.h utils.h CrashHandler.h
-	$(CXX) $(CXXFLAGS) -o $@ main.cpp VertexArray.o
+bin: VertexArray.o App.o Window.o main.cpp Shader.h ShaderProgram.h utils.h CrashHandler.h
+	$(CXX) $(CXXFLAGS) -o $@ main.cpp VertexArray.o App.o Window.o
 
 VertexArray.o: VertexArray.h
+
+App.o: App.h
+
+Window.o: Window.h
 
 clean:
 	rm $(BINARY) *.o

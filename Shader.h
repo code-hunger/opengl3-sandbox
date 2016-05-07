@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 
 #include "Crashable.h"
+#include <exception>
 
 class Shader : public Crashable
 {
@@ -21,13 +22,15 @@ public:
 
 	virtual ~Shader() {} // @TODO: should it be virual or not?
 
-	bool compile()
+	void compile()
 	{
 		glCompileShader(id);
 
 		GLint success;
 		glGetShaderiv(id, GL_COMPILE_STATUS, &success);
-		return GL_TRUE == success;
+        if(GL_TRUE != success) {
+            throw ("Shader compilation failed");
+        }
 	}
 
 	std::string getInfoLog()

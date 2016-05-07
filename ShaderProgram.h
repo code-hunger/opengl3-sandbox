@@ -14,13 +14,16 @@ public:
 		glAttachShader(id, vert.id);
 		glAttachShader(id, frag.id);
 	}
-	bool link()
+
+	void link()
 	{
 		glLinkProgram(id);
 
 		GLint success;
 		glGetProgramiv(id, GL_LINK_STATUS, &success);
-		return GL_TRUE == success;
+		if (GL_TRUE != success) {
+			throw ("Program linking failed");
+		}
 	}
 
 	std::string getInfoLog()

@@ -8,5 +8,5 @@ uniform mat4 transform;
 
 void main() {
     gl_Position = transform * vec4(position.x, position.y, 0.0f, 1.0f);
-    vertexColor = color;
+    ertexColor = color;
 } 

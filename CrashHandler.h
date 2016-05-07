@@ -33,6 +33,10 @@ public:
 
 		throw - 1;
 	}
+	void handle(const char *mess, bool success)
+	{
+		handle((void *)success, mess);
+	}
 	void setCleanup(void (*cleanup)()) { this->cleanup = cleanup; }
 	virtual ~CrashHandler() {}
 };
