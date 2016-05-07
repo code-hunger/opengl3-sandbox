@@ -19,8 +19,8 @@ Window::Window()
 	printf("Window ctor exits successfully\n");
 }
 
-void Window::render(double deltaTime, ShaderProgram *programs,
-                    VertexArray *vertArrays)
+void Window::render(const double deltaTime, const ShaderPrograms &programs,
+                    const VertexArrays &vertArrays)
 {
 	int width, height;
 	getSize(width, height);
@@ -28,11 +28,11 @@ void Window::render(double deltaTime, ShaderProgram *programs,
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClearColor(0, 0.f, 0, 0);
 
-	static int transfLoc = glGetUniformLocation(programs[0].id, "transform");
+	static int transfLoc = glGetUniformLocation(programs[0]->id, "transform");
 	glUniformMatrix4fv(transfLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
-	programs[0].use();
-	vertArrays[0].draw(GL_TRIANGLE_FAN, 0, 7);
+	programs[0]->use();
+	vertArrays[0]->draw(GL_TRIANGLE_FAN, 0, 7);
 
 	trans = glm::rotate(trans, (float)deltaTime, glm::vec3(1.0, 0.0, 0.0));
 
@@ -47,7 +47,7 @@ void Window::setKeyCallback(GLFWkeyfun callback)
 
 void Window::setHints()
 {
-    printf("Set hints!\n");
+	printf("Set hints!\n");
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);

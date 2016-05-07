@@ -19,6 +19,9 @@ public:
 	GLuint getVAO() { return VAO; }
 	virtual ~VertexArray();
 
+    VertexArray(const VertexArray&) = delete;
+    void operator=(const VertexArray&) = delete;
+
 private:
 	vector<float> points;
 	vector<unsigned int> indices;

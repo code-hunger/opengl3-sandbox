@@ -8,7 +8,8 @@ class ShaderProgram
 {
 public:
 	const GLuint id{glCreateProgram()};
-	ShaderProgram(Shader vert, Shader frag)
+
+	ShaderProgram(const Shader& vert, const Shader& frag)
 	{
 		glAttachShader(id, vert.id);
 		glAttachShader(id, frag.id);
@@ -41,9 +42,8 @@ public:
 	void use() { glUseProgram(id); }
 	~ShaderProgram() {}
 
-private:
-    ShaderProgram(const ShaderProgram&);
-    void operator=(const ShaderProgram &);
+    ShaderProgram(const ShaderProgram&) = delete;
+    void operator=(const ShaderProgram &) = delete;
 };
 
 #endif /* SHADER_PROGRAM_H */

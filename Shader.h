@@ -50,6 +50,10 @@ public:
 	{
 		fprintf(stream, "%s", getInfoLog().c_str());
 	}
+
+    Shader(const Shader&) = delete;
+    void operator=(const Shader &) = delete;
+
 };
 
 #endif /* SHADER_H */

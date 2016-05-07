@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include <vector>
+#include <memory>
 
 #include "Shader.h"
 #include "ShaderProgram.h"
@@ -65,10 +66,10 @@ void App::boot()
 
 		GLuint trapezoid[] = {0, 1, 3, 4, 1, 2};
 
-		this->var = new VertexArray(vertices, sizeof vertices, trapezoid,
+		auto vertexArray = std::make_unique<VertexArray>(vertices, sizeof vertices, trapezoid,
 		                          sizeof trapezoid);
-        this->var->build();
-		/* this->vertexArrays.push_back(myVertexArray); */
+        vertexArray->build();
+		vertexArrays.push_back(std::move(vertexArray));
 	} catch (const char *e) {
 		printf("%s\n", e);
 		throw - 1;
@@ -84,7 +85,7 @@ void App::run(Window &window)
 	while (!window.shouldClose()) {
 		double time = glfwGetTime(), deltaTime = time - prevTime;
 		prevTime = time;
-		window.render(deltaTime, shpr, var);
+		window.render(deltaTime, shaderPrograms, vertexArrays);
 	}
 	printf("Stop running!\n");
 }
@@ -92,19 +93,17 @@ void App::run(Window &window)
 void App::createShaderPrograms()
 {
 	printf("Creating shader programms...\n");
-	std::string frag_src = readFile("fragment_shader.glsl"),
-	            vert_source = readFile("vertex_shader.glsl");
 
-	Shader frag_sh(frag_src, GL_FRAGMENT_SHADER),
-	    vert_sh(vert_source, GL_VERTEX_SHADER);
+	Shader frag_sh(readFile("fragment_shader.glsl"), GL_FRAGMENT_SHADER),
+	    vert_sh(readFile("vertex_shader.glsl"), GL_VERTEX_SHADER);
 
 	frag_sh.compile();
 	vert_sh.compile();
 
-	shpr = new ShaderProgram (vert_sh, frag_sh);
-	shpr->link();
+	auto program = std::make_unique<ShaderProgram>(vert_sh, frag_sh);
+	program->link();
 
-	/* shaderPrograms.push_back(shaderProgram); */
+	shaderPrograms.push_back(std::move(program));
     
 	printf("Shader programs created!\n");
 }

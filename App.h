@@ -14,14 +14,12 @@ public:
 	void run(Window &);
 	void boot();
 
-private:
-	App(const App &);
-	void operator=(const App &);
+	App(const App &) = delete;
+	void operator=(const App &) = delete;
 
-	ShaderProgram *shpr;
-	VertexArray *var;
-	std::vector<ShaderProgram> shaderPrograms{};
-	std::vector<VertexArray> vertexArrays{};
+private:
+	ShaderPrograms shaderPrograms{};
+    VertexArrays vertexArrays{};
 
 	void createShaderPrograms();
 };

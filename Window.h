@@ -14,12 +14,13 @@
 #pragma GCC diagnostic pop
 
 #include <vector>
+#include <memory>
 
 #include "ShaderProgram.h"
 #include "VertexArray.h"
 
-typedef std::vector<ShaderProgram> ShaderPrograms;
-typedef std::vector<VertexArray> VertexArrays;
+typedef std::vector<std::unique_ptr<ShaderProgram>> ShaderPrograms;
+typedef std::vector<std::unique_ptr<VertexArray>> VertexArrays;
 
 class Window
 {
@@ -43,14 +44,14 @@ public:
 
 	void setKeyCallback(GLFWkeyfun callback);
 
-	void render(double deltaTime, ShaderProgram *, VertexArray *);
+	void render(double deltaTime, const ShaderPrograms&, const VertexArrays&);
 
 	void static setHints();
 
-private:
-	Window(const Window &);
-	void operator=(const Window &);
+	Window(const Window &) = delete;
+	void operator=(const Window &) = delete;
 
+private:
 	GLFWwindow *window{glfwCreateWindow(640, 480, "Title", NULL, NULL)};
 	static const bool hintsSet{false};
 
