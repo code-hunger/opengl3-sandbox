@@ -9,41 +9,19 @@ class ShaderProgram
 public:
 	const GLuint id{glCreateProgram()};
 
-	ShaderProgram(const Shader& vert, const Shader& frag)
-	{
-		glAttachShader(id, vert.id);
-		glAttachShader(id, frag.id);
-	}
+	ShaderProgram(const Shader &vert, const Shader &frag);
 
-	void link() const
-	{
-		glLinkProgram(id);
+	void link() const;
 
-		GLint success;
-		glGetProgramiv(id, GL_LINK_STATUS, &success);
-		if (GL_TRUE != success) {
-			throw("Program linking failed");
-		}
-	}
+	std::string getInfoLog();
 
-	std::string getInfoLog()
-	{
-		GLchar infoLog[512];
-		glGetProgramInfoLog(id, 512, NULL, infoLog);
-		return {infoLog};
-	}
+	void dumpInfoLog(FILE *stream);
 
-	void dumpInfoLog(FILE *stream = stderr)
-	{
-		fprintf(stream, "Shader program building failed!\n%s\n",
-		        getInfoLog().c_str());
-	}
-
-	void use() { glUseProgram(id); }
+	void use();
 	~ShaderProgram() {}
 
-    ShaderProgram(const ShaderProgram&) = delete;
-    void operator=(const ShaderProgram &) = delete;
+	ShaderProgram(const ShaderProgram &) = delete;
+	void operator=(const ShaderProgram &) = delete;
 };
 
 #endif /* SHADER_PROGRAM_H */

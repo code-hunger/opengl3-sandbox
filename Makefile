@@ -14,14 +14,16 @@ CXXFLAGS += \
 
 BINARY = 'bin'
 
-bin: VertexArray.o App.o Window.o main.cpp Shader.h ShaderProgram.h utils.h
-	$(CXX) $(CXXFLAGS) -o $@ main.cpp VertexArray.o App.o Window.o
+bin: VertexArray.o App.o Window.o main.cpp Shader.h ShaderProgram.o utils.h
+	$(CXX) $(CXXFLAGS) -o $@ main.cpp VertexArray.o App.o Window.o ShaderProgram.o
 
 VertexArray.o: VertexArray.h
 
 App.o: App.h utils.h Shader.h ShaderProgram.h
 
 Window.o: Window.h
+
+ShaderProgram.o: ShaderProgram.h 
 
 clean:
 	rm $(BINARY) *.o
