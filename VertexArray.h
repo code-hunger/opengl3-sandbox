@@ -14,7 +14,7 @@ public:
 	{
 		printf("Vertex array ctor initialized successfully!\n");
 	};
-	void build();
+	void build(unsigned dimention);
 	void draw(GLenum mode, long unsigned int start, GLsizei count);
 	GLuint getVAO() { return VAO; }
 	virtual ~VertexArray();
@@ -30,9 +30,9 @@ private:
 	                GLuint *buffer);
 
 	void enableVertexArray(GLuint location, GLint size, GLenum type,
-	                       unsigned int stride, unsigned int start);
-	void enableVertexArray(GLuint location, GLint size, unsigned int stride,
-	                       unsigned int start)
+	                       unsigned stride, unsigned start);
+	void enableVertexArray(GLuint location, GLint size, unsigned stride,
+	                       unsigned start)
 	{
 		enableVertexArray(location, size, GL_FLOAT, stride, start);
 	}

@@ -30,11 +30,11 @@ App::App()
 
 		// clang-format off
         GLfloat vertices[] = {
-            -0.5f,  -0.5f, .0f, .3f, .8f,
-            -0.3f,   0.5f, .8f, 0.f, .5f,
-            0.5f,   0.5f, 1.f, 1.f, 1.f,
-            0.5f,  -0.5f, 1.f, 1.f, 0.f,
-            -0.75f,  0.f,  .0f, .5f, .5f
+            -.5f,  -.5f, -.5f, .0f, .3f, .8f,
+            -.3f,   .5f, -.2f, .8f, .0f, .5f,
+             .5f,   .5f,  .3f, 1.f, 1.f, 1.f,
+             .5f,  -.5f,  .2f, 1.f, 1.f, 0.f,
+            -.75f,  .0f,  .1f, .0f, .5f, .5f
         };
 		// clang-format on
 
@@ -43,7 +43,7 @@ App::App()
 		auto vertexArray = std::make_unique<VertexArray>(vertices, sizeof vertices, trapezoid,
 		                          sizeof trapezoid);
 
-        vertexArray->build();
+        vertexArray->build(3);
 		vertexArrays.push_back(std::move(vertexArray));
 	} catch (const char *e) {
 		printf("%s\n", e);

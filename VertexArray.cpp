@@ -3,7 +3,7 @@
 
 #include "VertexArray.h"
 
-void VertexArray::initBuffer(GLenum type, long unsigned int size, void *data,
+void VertexArray::initBuffer(GLenum type, long unsigned size, void *data,
                              GLuint *buffer)
 {
 	glGenBuffers(1, buffer);
@@ -20,7 +20,7 @@ void VertexArray::enableVertexArray(GLuint location, GLint size, GLenum type,
 	glEnableVertexAttribArray(location);
 }
 
-void VertexArray::build()
+void VertexArray::build(unsigned dimention)
 {
     printf("Building vertex array\n");
 	glGenVertexArrays(1, &VAO);
@@ -29,8 +29,9 @@ void VertexArray::build()
 	initBuffer(GL_ARRAY_BUFFER, points.size(), points.data(), &VBO);
 	initBuffer(GL_ELEMENT_ARRAY_BUFFER, indices.size(), indices.data(), &EBO);
 
-	enableVertexArray(0, 2, 5, 0);
-	enableVertexArray(1, 3, 5, 2);
+    unsigned stride = static_cast<unsigned>(dimention) + 3;
+	enableVertexArray(0, static_cast<int>(dimention), stride, 0);
+    enableVertexArray(1, static_cast<int>(dimention), stride, dimention);
 
 	glBindVertexArray(0); // unbind
     printf("Vertex array built!\n");
