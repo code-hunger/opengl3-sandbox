@@ -10,11 +10,6 @@
 #include "utils.h"
 #include "App.h"
 
-void error_callback(int error, const char *desc)
-{
-	printf("Error callback! #%d: %s\n", error, desc);
-}
-
 void key_callback(GLFWwindow *window, int key, int scancode, int action,
                   int mods)
 {
@@ -28,30 +23,9 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
 
 App::App()
 {
-	printf("App initialization...\n");
-	try {
-		glfwSetErrorCallback(error_callback);
-
-		if (!glfwInit()) {
-			throw "Glfw init fail!";
-		}
-	} catch (const char *e) {
-		printf("Exception handled from App constructor!!\n\n%s\n\n", e);
-		throw - 1;
-	}
-	printf("App ctor exits successfully\n");
-}
-
-void App::boot()
-{
-	printf("Booting app...\n");
+	printf("App ctor.\n");
 
 	try {
-		glewExperimental = true;
-		if (glewInit() != GLEW_OK) {
-			throw "Glew init fail";
-		}
-
 		createShaderPrograms();
 
 		// clang-format off
@@ -68,6 +42,7 @@ void App::boot()
 
 		auto vertexArray = std::make_unique<VertexArray>(vertices, sizeof vertices, trapezoid,
 		                          sizeof trapezoid);
+
         vertexArray->build();
 		vertexArrays.push_back(std::move(vertexArray));
 	} catch (const char *e) {
@@ -79,7 +54,7 @@ void App::boot()
 
 void App::run(Window &window)
 {
-    window.setKeyCallback(key_callback);
+	window.setKeyCallback(key_callback);
 	printf("Start running!\n");
 	double prevTime = glfwGetTime();
 	while (!window.shouldClose()) {
@@ -104,7 +79,7 @@ void App::createShaderPrograms()
 	program->link();
 
 	shaderPrograms.push_back(std::move(program));
-    
+
 	printf("Shader programs created!\n");
 }
 

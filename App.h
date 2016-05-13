@@ -12,7 +12,6 @@ public:
 	App();
 	virtual ~App();
 	void run(Window &);
-	void boot();
 
 	App(const App &) = delete;
 	void operator=(const App &) = delete;

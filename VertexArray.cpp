@@ -8,15 +8,15 @@ void VertexArray::initBuffer(GLenum type, long unsigned int size, void *data,
 {
 	glGenBuffers(1, buffer);
 	glBindBuffer(type, *buffer);
-	glBufferData(type, (signed)size, data, GL_STATIC_DRAW);
+	glBufferData(type, static_cast<signed>(size), data, GL_STATIC_DRAW);
 }
 
 void VertexArray::enableVertexArray(GLuint location, GLint size, GLenum type,
                                     unsigned int stride, unsigned int start)
 {
 	glVertexAttribPointer(location, size, type, GL_FALSE,
-	                      (GLsizei)(stride * sizeof type),
-	                      (GLvoid *)(sizeof(type) * start));
+	                      static_cast<GLsizei>(stride * sizeof type),
+	                      reinterpret_cast<GLvoid *>(sizeof(type) * start));
 	glEnableVertexAttribArray(location);
 }
 
@@ -39,7 +39,7 @@ void VertexArray::build()
 void VertexArray::draw(GLenum mode, long unsigned int start, GLsizei count)
 {
 	glBindVertexArray(VAO);
-	glDrawElements(mode, count, GL_UNSIGNED_INT, (GLvoid *)start);
+	glDrawElements(mode, count, GL_UNSIGNED_INT, reinterpret_cast<GLvoid *>(start));
 	glBindVertexArray(0);
 }
 

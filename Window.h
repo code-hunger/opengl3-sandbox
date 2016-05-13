@@ -7,6 +7,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Weffc++"
 #pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 #include "glm/glm/fwd.hpp"
 #include "glm/glm/glm.hpp"
 #include "glm/glm/gtc/matrix_transform.hpp"
@@ -25,7 +26,7 @@ typedef std::vector<std::unique_ptr<VertexArray>> VertexArrays;
 class Window
 {
 public:
-	Window();
+	Window(GLFWwindow *window);
 	virtual ~Window();
 
 	bool shouldClose() { return glfwWindowShouldClose(window); }
@@ -45,7 +46,7 @@ public:
 	void operator=(const Window &) = delete;
 
 private:
-	GLFWwindow *window{glfwCreateWindow(640, 480, "Title", NULL, NULL)};
+    GLFWwindow* window;
 	static const bool hintsSet{false};
 
 	glm::mat4x4 trans{};
