@@ -29,7 +29,9 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	programs[0]->use();
 	vertArrays[0]->draw(GL_TRIANGLE_FAN, 0, 7);
 
-	trans = glm::rotate(trans, static_cast<float>(deltaTime), glm::vec3(1.0, 0.0, 0.0));
+    if(!this->pause) {
+        trans = glm::rotate(trans, static_cast<float>(deltaTime), glm::vec3(0.8, 1.0, 0.0));
+    }
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();

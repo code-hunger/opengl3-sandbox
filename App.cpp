@@ -10,11 +10,17 @@
 #include "utils.h"
 #include "App.h"
 
+bool paused = false;
+
 void key_callback(GLFWwindow *window, int key, int scancode, int action,
                   int mods)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+		paused = !paused;
+		printf("Pause!\n");
+	}
 
 	printf("Recieved key event! Key: %d, scancode : %d, action : %d, "
 	       "mods: %d\n",
@@ -60,6 +66,7 @@ void App::run(Window &window)
 	while (!window.shouldClose()) {
 		double time = glfwGetTime(), deltaTime = time - prevTime;
 		prevTime = time;
+		window.pause = paused;
 		window.render(deltaTime, shaderPrograms, vertexArrays);
 	}
 	printf("Stop running!\n");
