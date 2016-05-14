@@ -36,20 +36,42 @@ App::App()
 
 		// clang-format off
         GLfloat vertices[] = {
-            -.5f,  -.5f, -.5f, .0f, .3f, .8f,
-            -.3f,   .5f, -.2f, .8f, .0f, .5f,
-             .5f,   .5f,  .3f, 1.f, 1.f, 1.f,
-             .5f,  -.5f,  .2f, 1.f, 1.f, 0.f,
-            -.75f,  .0f,  .1f, .0f, .5f, .5f
+            +.5f, +.5f, -.5f, 0.f, 1.f, 0.f, // back    top right // 0
+            -.5f, +.5f, -.5f, 1.f, 0.f, 0.f, // back    top left  // 1
+            -.5f, -.5f, -.5f, 1.f, 1.f, 1.f, // back bottom left  // 2
+            +.5f, -.5f, -.5f, 0.f, .5f, 0.f, // back bottom right // 3
+
+            -.5f, +.5f,  .5f, .5f, 0.f, 0.f, // face    top left  // 4
+            +.5f, +.5f,  .5f, 0.f, .5f, .5f, // face    top right // 5
+            -.5f, -.5f, +.5f, 1.f, 1.f, 0.f, // face bottom left  // 6
+            +.5f, -.5f, +.5f, 1.f, 1.f, 1.f, // face bottom right // 7
+            /* -.5f,  -.5f, -.5f, .0f, .3f, .8f, */
+            /* -.3f,   .5f, -.2f, .8f, .0f, .5f, */
+            /*  .5f,   .5f,  .3f, 1.f, 1.f, 1.f, */
+            /*  .5f,  -.5f,  .2f, 1.f, 1.f, 0.f, */
+            /* -.75f,  .0f,  .1f, .0f, .5f, .5f */
+        };
+
+        GLuint trapezoid[] = {
+            0, 1, 2, // back
+            0, 2, 3, 
+            2, 3, 6, // bottom
+            3, 6, 7, 
+            6, 4, 1, // left
+            1, 6, 2,
+            /* 4, 5, 0, 5, // top */
+            /* 5, 4,6, 7 // face */
+            /* 2, 1, 3, */
+
+            /* 1, 2, 4, // left */
+            /* 4, 6, 2, */
         };
 		// clang-format on
 
-		GLuint trapezoid[] = {0, 1, 3, 4, 1, 2};
+		auto vertexArray = std::make_unique<VertexArray>(
+		    vertices, sizeof vertices, trapezoid, sizeof trapezoid);
 
-		auto vertexArray = std::make_unique<VertexArray>(vertices, sizeof vertices, trapezoid,
-		                          sizeof trapezoid);
-
-        vertexArray->build(3);
+		vertexArray->build(3);
 		vertexArrays.push_back(std::move(vertexArray));
 	} catch (const char *e) {
 		printf("%s\n", e);

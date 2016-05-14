@@ -3,8 +3,8 @@
 Window::Window(GLFWwindow *window): window(window)
 {
 	printf("Window initialization...\n");
-	trans = glm::rotate(trans, 90.0f, glm::vec3(0.0, 1.0, 1.0));
-	trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+	trans = glm::rotate(trans, 0.0f, glm::vec3(0.0, 1.0, 1.0));
+	/* trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5)); */
 
 	printf("Window ctor exits successfully\n");
 }
@@ -27,7 +27,7 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	glUniformMatrix4fv(transfLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
 	programs[0]->use();
-	vertArrays[0]->draw(GL_TRIANGLE_FAN, 0, 7);
+	vertArrays[0]->draw(GL_TRIANGLES, 0);
 
     if(!this->pause) {
         trans = glm::rotate(trans, static_cast<float>(deltaTime), glm::vec3(0.8, 1.0, 0.0));

@@ -15,7 +15,8 @@ public:
 		printf("Vertex array ctor initialized successfully!\n");
 	};
 	void build(unsigned dimention);
-	void draw(GLenum mode, long unsigned int start, GLsizei count);
+	void draw(GLenum mode, long unsigned start, GLsizei count);
+	void draw(GLenum mode, long unsigned start) { draw(mode, start, static_cast<int>(indices.size())); }
 
 	GLuint getVAO() { return VAO; }
 	virtual ~VertexArray();
