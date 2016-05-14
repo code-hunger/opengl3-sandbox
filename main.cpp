@@ -18,7 +18,7 @@ void start()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	GLFWwindow *window = glfwCreateWindow(640, 480, "Title", NULL, NULL);
+	GLFWwindow *window = glfwCreateWindow(640, 640, "Title", NULL, NULL);
 	if (!window) {
 		throw "A window could not be created!";
 	}
