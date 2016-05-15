@@ -26,8 +26,6 @@ typedef std::vector<std::unique_ptr<VertexArray>> VertexArrays;
 class Window
 {
 public:
-    bool pause{false};
-
 	Window(GLFWwindow *window);
 	virtual ~Window();
 

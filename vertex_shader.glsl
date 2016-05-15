@@ -4,9 +4,9 @@ layout (location = 1) in vec3 color;
 
 out vec3 vertexColor;
 
-uniform mat4 transform;
+uniform mat4 model_view_projection;
 
 void main() {
-    gl_Position = transform * vec4(position.xyz, 1.0f);
+    gl_Position = model_view_projection * vec4(position, 1.0f);
     vertexColor = color;
 } 

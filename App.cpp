@@ -38,11 +38,11 @@ App::App()
         GLfloat vertices[] = {
             +.5f, +.5f, -.5f, 0.f, 1.f, 0.f, // back    top right // 0
             -.5f, +.5f, -.5f, 1.f, 0.f, 0.f, // back    top left  // 1
-            -.5f, -.5f, -.5f, 1.f, 1.f, 1.f, // back bottom left  // 2
+            -.5f, -.5f, -.5f, .0f, .0f, 1.f, // back bottom left  // 2
             +.5f, -.5f, -.5f, 0.f, .5f, 0.f, // back bottom right // 3
 
             -.5f, +.5f,  .5f, .5f, 0.f, 0.f, // face    top left  // 4
-            +.5f, +.5f,  .5f, 0.f, .5f, .5f, // face    top right // 5
+            +.5f, +.5f,  .5f, 0.f, .0f, .9f, // face    top right // 5
             -.5f, -.5f, +.5f, 1.f, 1.f, 0.f, // face bottom left  // 6
             +.5f, -.5f, +.5f, 1.f, 1.f, 1.f, // face bottom right // 7
             /* -.5f,  -.5f, -.5f, .0f, .3f, .8f, */
@@ -59,8 +59,8 @@ App::App()
             3, 6, 7, 
             6, 4, 1, // left
             1, 6, 2,
-            /* 4, 5, 0, 5, // top */
-            /* 5, 4,6, 7 // face */
+            4, 5, 0, 5, // top
+            5, 4,6, 7 // face
             /* 2, 1, 3, */
 
             /* 1, 2, 4, // left */
@@ -85,10 +85,28 @@ void App::run(Window &window)
 	window.setKeyCallback(key_callback);
 	printf("Start running!\n");
 	double prevTime = glfwGetTime();
+
+	glEnable(GL_DEPTH_TEST);
+
+	int width, height;
+	window.getSize(width, height);
+	glViewport(0, 0, width, height);
+	glClearColor(1, 1.f, 1, 0);
+
+	int frames = 0;
+	double last_time_check = glfwGetTime();
 	while (!window.shouldClose()) {
 		double time = glfwGetTime(), deltaTime = time - prevTime;
 		prevTime = time;
-		window.pause = paused;
+		++frames;
+		if (time - last_time_check >= 1) {
+			printf("\t %f since last check", frames / (time - last_time_check));
+			last_time_check = glfwGetTime();
+			frames = 0;
+			int x, y;
+			window.getCursorPos(&x, &y);
+			printf("Cursor: %dx%d\n", x, y);
+		}
 		window.render(deltaTime, shaderPrograms, vertexArrays);
 	}
 	printf("Stop running!\n");

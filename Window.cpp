@@ -1,12 +1,8 @@
 #include "Window.h"
 
-Window::Window(GLFWwindow *window): window(window)
+Window::Window(GLFWwindow *window) : window(window)
 {
-	printf("Window initialization...\n");
-	trans = glm::rotate(trans, 0.0f, glm::vec3(0.0, 1.0, 1.0));
-	/* trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5)); */
-
-	printf("Window ctor exits successfully\n");
+	printf("Window constructed!\n");
 }
 
 void Window::getSize(int &width, int &height)
@@ -14,24 +10,51 @@ void Window::getSize(int &width, int &height)
 	glfwGetFramebufferSize(window, &width, &height);
 }
 
+void Window::getCursorPos(int *x, int *y)
+{
+	double dx, dy;
+	glfwGetCursorPos(window, &dx, &dy);
+	*x = static_cast<int>(dx);
+	*y = static_cast<int>(dy);
+}
+
 void Window::render(const double deltaTime, const ShaderPrograms &programs,
                     const VertexArrays &vertArrays)
 {
-	int width, height;
-	getSize(width, height);
-	glViewport(0, 0, width, height);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glClearColor(0, 0.f, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	static int transfLoc = glGetUniformLocation(programs[0]->id, "transform");
-	glUniformMatrix4fv(transfLoc, 1, GL_FALSE, glm::value_ptr(trans));
+	(void)deltaTime;
+	int mvpLoc = glGetUniformLocation(programs[0]->id, "model_view_projection");
+
+	int mouseX, mouseY;
+	this->getCursorPos(&mouseX, &mouseY);
+	int width, height;
+	this->getSize(width, height);
+
+	float deltaX = static_cast<float>(width / 2 - mouseX) /
+	               static_cast<float>(width),
+	      deltaY = static_cast<float>(height / 2 - mouseY) /
+	               static_cast<float>(height);
+
+	glm::mat4 model;
+	model = glm::rotate(model, static_cast<float>(glfwGetTime()),
+	                    glm::vec3(0.8f, 1.0f, .0f));
+
+	float scale_factor =
+	    static_cast<float>(2 + cos(glfwGetTime()) * 2) * 10 + 2;
+
+	glm::mat4 view;
+	view =
+	    glm::translate(view, glm::vec3(deltaX * 2, -deltaY * 3, -scale_factor));
+
+	glm::mat4 proj;
+	proj = glm::perspective(45.f, 1.0f, 0.1f, 100.f);
+
+	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE,
+	                   glm::value_ptr(proj * view * model));
 
 	programs[0]->use();
 	vertArrays[0]->draw(GL_TRIANGLES, 0);
-
-    if(!this->pause) {
-        trans = glm::rotate(trans, static_cast<float>(deltaTime), glm::vec3(0.8, 1.0, 0.0));
-    }
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
