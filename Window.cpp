@@ -36,12 +36,12 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	      deltaY = static_cast<float>(height / 2 - mouseY) /
 	               static_cast<float>(height);
 
-	glm::mat4 model;
-	model = glm::rotate(model, static_cast<float>(glfwGetTime()),
-	                    glm::vec3(0.8f, 1.0f, .0f));
-
 	float scale_factor =
 	    static_cast<float>(2 + cos(glfwGetTime()) * 2) * 10 + 2;
+
+	glm::mat4 model;
+	model = glm::rotate(model, scale_factor,
+	                    glm::vec3(0.8f, 1.0f, .0f));
 
 	glm::mat4 view;
 	view =
