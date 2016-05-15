@@ -1,16 +1,18 @@
 CXX = g++
 
-LIBS = -lglfw -lGL -lGLEW -lGLU
-ERR_FLAGS = -Wall -Wextra -Wpedantic -Weffc++ -Wdouble-promotion -Wconversion -Wsign-conversion -Wlogical-op
 DEBUG_FLAGS = -g -O0
-CXXFLAGS = -std=c++14 $(DEBUG_FLAGS) $(ERR_FLAGS) $(LIBS) -Werror 
-CXXFLAGS += \
-	-Wabi  -Wctor-dtor-privacy  \
-	-Wnon-virtual-dtor  -Wreorder  \
-	-Weffc++  -Wstrict-null-sentinel  \
-	-Wno-non-template-friend  -Wold-style-cast  \
-	-Woverloaded-virtual  -Wno-pmf-conversions  \
-	-Wsign-promo
+LIBS = -lGL -lGLU -lglfw -lGLEW 
+
+ERR_FLAGS = -Wall -Wextra -Wpedantic -Wdouble-promotion \
+			-Wconversion -Wsign-conversion -Wlogical-op \
+			-Wabi  -Wctor-dtor-privacy \
+			-Wnon-virtual-dtor  -Wreorder \
+			-Weffc++  -Wstrict-null-sentinel \
+			-Wno-non-template-friend  -Wold-style-cast \
+			-Woverloaded-virtual  -Wno-pmf-conversions \
+			-Wsign-promo
+
+CXXFLAGS = -std=c++14 -Werror $(DEBUG_FLAGS) $(ERR_FLAGS) $(LIBS) 
 
 BINARY = 'bin'
 
