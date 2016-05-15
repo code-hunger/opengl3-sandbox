@@ -14,8 +14,8 @@
 #include "glm/glm/gtc/type_ptr.hpp"
 #pragma GCC diagnostic pop
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "ShaderProgram.h"
 #include "VertexArray.h"
@@ -35,12 +35,14 @@ public:
 
 	void getSize(int &width, int &height);
 
+	void getCursorPos(int *x, int *y);
+
 	void use(); // use this method when using multiple windows. Call it before
 	            // using a window
 
 	void setKeyCallback(GLFWkeyfun callback);
 
-	void render(double deltaTime, const ShaderPrograms&, const VertexArrays&);
+	void render(double deltaTime, const ShaderPrograms &, const VertexArrays &);
 
 	void static setHints();
 
@@ -48,7 +50,7 @@ public:
 	void operator=(const Window &) = delete;
 
 private:
-    GLFWwindow* window;
+	GLFWwindow *window;
 	static const bool hintsSet{false};
 
 	glm::mat4x4 trans{};

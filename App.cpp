@@ -2,13 +2,13 @@
 #include <GLFW/glfw3.h>
 
 #include <cstdio>
-#include <vector>
 #include <memory>
+#include <vector>
 
+#include "App.h"
 #include "Shader.h"
 #include "ShaderProgram.h"
 #include "utils.h"
-#include "App.h"
 
 bool paused = false;
 
