@@ -1,6 +1,8 @@
 #include "App.h"
 #include "Window.h"
 
+#define WIN_SIZE 760
+
 void error_callback(int error, const char *desc)
 {
 	printf("Error callback! #%d: %s\n", error, desc);
@@ -18,7 +20,7 @@ void start()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	GLFWwindow *window = glfwCreateWindow(640, 640, "Title", NULL, NULL);
+	GLFWwindow *window = glfwCreateWindow(WIN_SIZE, WIN_SIZE, "Title", NULL, NULL);
 	if (!window) {
 		throw "A window could not be created!";
 	}
