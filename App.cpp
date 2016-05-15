@@ -74,11 +74,21 @@ App::App()
 		vertexArray->build(3);
 		vertexArrays.push_back(std::move(vertexArray));
 
-        /* GLfloat axisVertices[] = { */
-        /*     .0f, .0f, .0f, */ 
-        /*     .0f, .0f, 10.f, */
-        /* }; */
-        /* auto axisVertexArray = std::make_unique<VertexArray>(axisVertices, sizeof axisVertices); */
+		// clang-format off
+        GLfloat axisVertices[] = {
+            .0f, .0f, -10.f,
+            .0f, .0f, 10.f,
+            .0f, -10.f, .0f,
+            .0f, 10.f, 0.f,
+            -10.f, .0f, .0f,
+            10.f, 0.f, 0.f,
+        };
+		// clang-format on
+
+		auto axisVertexArray =
+		    std::make_unique<VertexArray>(axisVertices, sizeof axisVertices);
+		axisVertexArray->build(3, false);
+		vertexArrays.push_back(std::move(axisVertexArray));
 
 	} catch (const char *e) {
 		printf("%s\n", e);

@@ -14,9 +14,22 @@ public:
 	{
 		printf("Vertex array ctor initialized successfully!\n");
 	};
+
+	VertexArray(float *points, int point_count)
+	    : points(points, points + point_count), indices()
+	{
+		printf("Vertex array ctor initialized successfully!\n");
+	};
 	void build(unsigned dimention);
+	void build(unsigned dimention, bool hasColor);
 	void draw(GLenum mode, long unsigned start, GLsizei count);
-	void draw(GLenum mode, long unsigned start) { draw(mode, start, static_cast<int>(indices.size())); }
+	void draw(GLenum mode, long unsigned start)
+	{
+		if (indices.size())
+			draw(mode, start, static_cast<int>(indices.size()));
+		else
+			draw(mode, start, static_cast<int>(points.size()));
+	}
 
 	GLuint getVAO() { return VAO; }
 	virtual ~VertexArray();

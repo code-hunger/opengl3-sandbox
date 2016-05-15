@@ -1,5 +1,5 @@
-#include <cstdio>
 #include <GL/glew.h>
+#include <cstdio>
 
 #include "VertexArray.h"
 
@@ -20,27 +20,40 @@ void VertexArray::enableVertexArray(GLuint location, GLint size, GLenum type,
 	glEnableVertexAttribArray(location);
 }
 
-void VertexArray::build(unsigned dimention)
+void VertexArray::build(unsigned dimention) { build(dimention, true); }
+
+void VertexArray::build(unsigned dimention, bool hasColor)
 {
-    printf("Building vertex array\n");
+	printf("Building vertex array\n");
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
 	initBuffer(GL_ARRAY_BUFFER, points.size(), points.data(), &VBO);
-	initBuffer(GL_ELEMENT_ARRAY_BUFFER, indices.size(), indices.data(), &EBO);
+	if (indices.size() > 0) {
+		initBuffer(GL_ELEMENT_ARRAY_BUFFER, indices.size(), indices.data(),
+		           &EBO);
+	}
 
-    unsigned stride = static_cast<unsigned>(dimention) + 3;
+	unsigned stride = static_cast<unsigned>(dimention) + (hasColor ? 3 : 0);
 	enableVertexArray(0, static_cast<int>(dimention), stride, 0);
-    enableVertexArray(1, static_cast<int>(dimention), stride, dimention);
+
+	if (hasColor) {
+		enableVertexArray(1, static_cast<int>(dimention), stride, dimention);
+	}
 
 	glBindVertexArray(0); // unbind
-    printf("Vertex array built!\n");
+	printf("Vertex array built!\n");
 }
 
 void VertexArray::draw(GLenum mode, long unsigned int start, GLsizei count)
 {
 	glBindVertexArray(VAO);
-	glDrawElements(mode, count, GL_UNSIGNED_INT, reinterpret_cast<GLvoid *>(start));
+	if (indices.size()) {
+		glDrawElements(mode, count, GL_UNSIGNED_INT,
+		               reinterpret_cast<GLvoid *>(start));
+	} else {
+		glDrawArrays(mode, static_cast<int>(start), count);
+	}
 	glBindVertexArray(0);
 }
 

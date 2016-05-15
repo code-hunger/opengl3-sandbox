@@ -38,13 +38,21 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 
 	float scale_factor =
 	    static_cast<float>(2 + cos(glfwGetTime()) * 2) * 10 + 2;
+	scale_factor = static_cast<float>(glfwGetTime() * 30);
 
 	glm::mat4 model;
 	model = glm::rotate(model, scale_factor, glm::vec3(0.8f, 1.0f, .0f));
 
 	glm::mat4 view;
-	view = glm::translate(
-	    view, glm::vec3(-5 + deltaX * 2, -deltaY * 3, -scale_factor));
+	/* view = glm::translate( */
+	/*     view, glm::vec3(-5 + deltaX * 2, -deltaY * 3, -scale_factor)); */
+	int BOX_COUNT = 20, SPACE_BETWEEN = 10;
+
+	float otmestvane = static_cast<float>(-50 + 70 * glfwGetTime());
+	while (otmestvane > static_cast<float>(BOX_COUNT * SPACE_BETWEEN ))
+		otmestvane -= static_cast<float>(BOX_COUNT * SPACE_BETWEEN);
+	view = glm::translate(view,
+	                      glm::vec3(-5 + deltaX * 2, -deltaY * 3, otmestvane));
 
 	glm::mat4 proj;
 	proj = glm::perspective(45.f, 1.0f, 0.1f, 100.f);
@@ -53,18 +61,17 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	                   glm::value_ptr(proj * view * model));
 
 	programs[0]->use();
-	vertArrays[0]->draw(GL_TRIANGLES, 0);
 
-	for (int i = 0; i < 3; ++i) {
-		view = glm::translate(view, glm::vec3(0, 0, -10 * i));
+	for (int i = 0; i < BOX_COUNT; ++i) {
+		view = glm::translate(view, glm::vec3(0, 0, -SPACE_BETWEEN));
 		glUniformMatrix4fv(mvpLoc, 1, GL_FALSE,
 		                   glm::value_ptr(proj * view * model));
 		vertArrays[0]->draw(GL_TRIANGLES, 0);
 	}
+	view = glm::translate(view, glm::vec3(10, 0, SPACE_BETWEEN * BOX_COUNT));
 
-	view = glm::translate(view, glm::vec3(10, 0, 30));
-	for (int i = 0; i < 3; ++i) {
-		view = glm::translate(view, glm::vec3(0, 0, -10 * i));
+	for (int i = 0; i < BOX_COUNT; ++i) {
+		view = glm::translate(view, glm::vec3(0, 0, -SPACE_BETWEEN));
 		glUniformMatrix4fv(mvpLoc, 1, GL_FALSE,
 		                   glm::value_ptr(proj * view * model));
 		vertArrays[0]->draw(GL_TRIANGLES, 0);
