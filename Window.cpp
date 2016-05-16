@@ -44,18 +44,19 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	model = glm::rotate(model, scale_factor, glm::vec3(0.8f, 1.0f, .0f));
 
 	glm::mat4 view;
-	/* view = glm::translate( */
-	/*     view, glm::vec3(-5 + deltaX * 2, -deltaY * 3, -scale_factor)); */
+
 	int BOX_COUNT = 20, SPACE_BETWEEN = 10;
 
-	float otmestvane = static_cast<float>(-50 + 70 * glfwGetTime());
-	while (otmestvane > static_cast<float>(BOX_COUNT * SPACE_BETWEEN ))
-		otmestvane -= static_cast<float>(BOX_COUNT * SPACE_BETWEEN);
+	float otmestvane = static_cast<float>(-50 + 50 * glfwGetTime());
+	while (otmestvane > static_cast<float>(BOX_COUNT * SPACE_BETWEEN / 2))
+		otmestvane -= static_cast<float>(BOX_COUNT * SPACE_BETWEEN / 2);
 	view = glm::translate(view,
-	                      glm::vec3(-5 + deltaX * 2, -deltaY * 3, otmestvane));
+	                      glm::vec3(-5 + deltaX * 2, -deltaY * 5, otmestvane));
 
 	glm::mat4 proj;
 	proj = glm::perspective(45.f, 1.0f, 0.1f, 100.f);
+
+	vertArrays[2]->draw(GL_TRIANGLE_FAN, 0);
 
 	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE,
 	                   glm::value_ptr(proj * view * model));

@@ -90,6 +90,14 @@ App::App()
 		axisVertexArray->build(3, false);
 		vertexArrays.push_back(std::move(axisVertexArray));
 
+		GLfloat groundVertices[] = {
+		    -5, 0, 0, 5, 0, 0, -5, 0, 10, 5, 0, 10,
+		};
+
+		auto groundVertexArray = std::make_unique<VertexArray>(
+		    groundVertices, sizeof groundVertices);
+		groundVertexArray->build(3, false);
+		vertexArrays.push_back(std::move(groundVertexArray));
 	} catch (const char *e) {
 		printf("%s\n", e);
 		throw - 1;
