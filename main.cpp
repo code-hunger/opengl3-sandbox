@@ -1,7 +1,8 @@
 #include "App.h"
 #include "Window.h"
 
-#define WIN_SIZE 760
+#define WIN_WIDTH 766
+#define WIN_HEIGHT 766
 
 void error_callback(int error, const char *desc)
 {
@@ -20,7 +21,8 @@ void start()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	GLFWwindow *window = glfwCreateWindow(WIN_SIZE, WIN_SIZE, "Title", NULL, NULL);
+	GLFWwindow *window =
+	    glfwCreateWindow(WIN_HEIGHT, WIN_WIDTH, "Title", NULL, NULL);
 	if (!window) {
 		throw "A window could not be created!";
 	}
@@ -45,6 +47,9 @@ int main()
 	} catch (int e) {
 		printf("Something bad happened. Code %d\n", e);
 		return e;
+	} catch (const char *e) {
+		printf("Something bad happened. Text:\n%s\n", e);
+		return EXIT_FAILURE;
 	}
 
 	printf("Successfully exiting!!!\n");
