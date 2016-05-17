@@ -50,7 +50,6 @@ private:
 	GLFWwindow *window;
 	static const bool hintsSet{false};
 
-	glm::mat4x4 trans{};
 	GLint transfLoc = 0;
 };
 
