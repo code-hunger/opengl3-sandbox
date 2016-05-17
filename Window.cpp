@@ -40,16 +40,17 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	               static_cast<float>(width),
 	      deltaY = static_cast<float>(height / 2 - mouseY) /
 	               static_cast<float>(height);
-    (void) deltaX; (void) deltaY;
+	(void)deltaX;
+	(void)deltaY;
 
-    int BOX_COUNT = 10, SPACE_BETWEEN = 10;
+	int BOX_COUNT = 10, SPACE_BETWEEN = 10;
 
 	float scale_factor =
 	    static_cast<float>(2 + cos(glfwGetTime()) * 2) * 10 + 2;
 	scale_factor = static_cast<float>(glfwGetTime() * 30);
 
 	mat4 proj, model,
-	    view = glm::lookAt(vec3(deltaX * 10, 0, deltaY * 10), vec3(0, 0, 0), vec3(0, 1, 0));
+	    view = glm::lookAt(vec3(0, 2, 5), vec3(0, 0, 0), vec3(0, 1, 0));
 
 	model = glm::rotate(model, scale_factor, vec3(0.8f, 1.0f, .0f));
 	proj = glm::perspective(45.f, 1.0f, 0.1f, 100.f);
