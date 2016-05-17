@@ -39,6 +39,8 @@ public:
 
 	void render(double deltaTime, const ShaderPrograms &, const VertexArrays &);
 
+    void keyCallback(int key, int scancode, int action, int mods);
+
 	void static setHints();
 
 	Window(const Window &) = delete;

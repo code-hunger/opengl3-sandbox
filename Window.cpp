@@ -7,6 +7,12 @@ Window::Window(GLFWwindow *window) : window(window)
 {
 	printf("Window constructed!\n");
 
+	glfwSetWindowUserPointer(window, static_cast<void *>(this));
+	glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode,
+	                              int action, int mods) {
+		static_cast<Window *>(glfwGetWindowUserPointer(window))
+		    ->keyCallback(key, scancode, action, mods);
+	});
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
@@ -21,6 +27,19 @@ void Window::getCursorPos(int *x, int *y)
 	glfwGetCursorPos(window, &dx, &dy);
 	*x = static_cast<int>(dx);
 	*y = static_cast<int>(dy);
+}
+
+void Window::keyCallback(int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE);
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+		printf("Pause!\n");
+	}
+
+	printf("Recieved key event! Key: %d, scancode : %d, action : %d, "
+	       "mods: %d\n",
+	       key, scancode, action, mods);
 }
 
 void Window::render(const double deltaTime, const ShaderPrograms &programs,
