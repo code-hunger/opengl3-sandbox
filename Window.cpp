@@ -47,16 +47,14 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 
 	int BOX_COUNT = 20, SPACE_BETWEEN = 10;
 
-	float otmestvane = static_cast<float>(-50 + 50 * glfwGetTime());
+	float otmestvane = static_cast<float>(-50 + 25 * glfwGetTime());
 	while (otmestvane > static_cast<float>(BOX_COUNT * SPACE_BETWEEN / 2))
 		otmestvane -= static_cast<float>(BOX_COUNT * SPACE_BETWEEN / 2);
-	view = glm::translate(view,
-	                      glm::vec3(-5 + deltaX * 2, -deltaY * 5, otmestvane));
+	view = glm::translate(
+	    view, glm::vec3(-2.5f + deltaX * 8, -deltaY * 8, otmestvane));
 
 	glm::mat4 proj;
 	proj = glm::perspective(45.f, 1.0f, 0.1f, 100.f);
-
-	vertArrays[2]->draw(GL_TRIANGLE_FAN, 0);
 
 	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE,
 	                   glm::value_ptr(proj * view * model));
@@ -69,7 +67,8 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 		                   glm::value_ptr(proj * view * model));
 		vertArrays[0]->draw(GL_TRIANGLES, 0);
 	}
-	view = glm::translate(view, glm::vec3(10, 0, SPACE_BETWEEN * BOX_COUNT));
+	view = glm::translate(view, glm::vec3(5, 0, SPACE_BETWEEN * BOX_COUNT));
+	model = glm::rotate(model, -2 * scale_factor, glm::vec3(0.8f, 1.f, 0));
 
 	for (int i = 0; i < BOX_COUNT; ++i) {
 		view = glm::translate(view, glm::vec3(0, 0, -SPACE_BETWEEN));
