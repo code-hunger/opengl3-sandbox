@@ -11,7 +11,7 @@ class App
 public:
 	App();
 	virtual ~App();
-	void run(Window &);
+	void run(const Window &) const;
 
 	App(const App &) = delete;
 	void operator=(const App &) = delete;

@@ -91,17 +91,12 @@ App::App()
 	printf("App booted successfully!\n");
 }
 
-void App::run(Window &window)
+void App::run(Window const &window) const
 {
 	printf("Start running!\n");
 	double prevTime = glfwGetTime();
 
 	glEnable(GL_DEPTH_TEST);
-
-	int width, height;
-	window.getSize(width, height);
-	glViewport(0, 0, width, height);
-	glClearColor(1, 1.f, 1, 0);
 
 	int frames = 0;
 	double last_time_check = glfwGetTime();

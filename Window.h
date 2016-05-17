@@ -28,18 +28,19 @@ public:
 	Window(GLFWwindow *window);
 	virtual ~Window();
 
-	bool shouldClose() { return glfwWindowShouldClose(window); }
+	bool shouldClose() const { return glfwWindowShouldClose(window); }
 
-	void getSize(int &width, int &height);
+	void getSize(int &width, int &height) const;
 
-	void getCursorPos(int *x, int *y);
+	void getCursorPos(int *x, int *y) const;
 
 	void use(); // use this method when using multiple windows. Call it before
 	            // using a window
 
-	void render(double deltaTime, const ShaderPrograms &, const VertexArrays &);
+	void render(double deltaTime, const ShaderPrograms &,
+	            const VertexArrays &) const;
 
-    void keyCallback(int key, int scancode, int action, int mods);
+	void keyCallback(int key, int scancode, int action, int mods);
 
 	void static setHints();
 
@@ -47,7 +48,7 @@ public:
 	void operator=(const Window &) = delete;
 
 private:
-	GLFWwindow *window;
+	GLFWwindow *const window;
 	static const bool hintsSet{false};
 
 	GLint transfLoc = 0;

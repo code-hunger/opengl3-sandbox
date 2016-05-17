@@ -14,14 +14,19 @@ Window::Window(GLFWwindow *window) : window(window)
 		    ->keyCallback(key, scancode, action, mods);
 	});
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	int width, height;
+	getSize(width, height);
+	glViewport(0, 0, width, height);
+	glClearColor(1, 1.f, 1, 0);
 }
 
-void Window::getSize(int &width, int &height)
+void Window::getSize(int &width, int &height) const
 {
 	glfwGetFramebufferSize(window, &width, &height);
 }
 
-void Window::getCursorPos(int *x, int *y)
+void Window::getCursorPos(int *x, int *y) const
 {
 	double dx, dy;
 	glfwGetCursorPos(window, &dx, &dy);
@@ -43,7 +48,7 @@ void Window::keyCallback(int key, int scancode, int action, int mods)
 }
 
 void Window::render(const double deltaTime, const ShaderPrograms &programs,
-                    VertexArrays const &vertArrays)
+                    VertexArrays const &vertArrays) const
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

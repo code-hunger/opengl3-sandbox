@@ -36,8 +36,7 @@ void start()
 	}
 
 	App app;
-	Window mywindow(window);
-	app.run(mywindow);
+	app.run(Window(window));
 }
 
 int main()
