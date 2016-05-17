@@ -61,6 +61,13 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 
 	programs[0]->use();
 
+    glm::mat4 me_view, me_model;
+    me_view = glm::translate(me_view, glm::vec3(0, -.6, -4));
+    me_model = glm::scale(me_model, glm::vec3(.5, .5, .5));
+    me_model = glm::rotate(me_model, deltaX / 2, glm::vec3(0, 0, -10));
+    glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(proj * me_view * me_model));
+    vertArrays[0]->draw(GL_TRIANGLES, 0);
+
 	for (int i = 0; i < BOX_COUNT; ++i) {
 		view = glm::translate(view, glm::vec3(0, 0, -SPACE_BETWEEN));
 		glUniformMatrix4fv(mvpLoc, 1, GL_FALSE,
