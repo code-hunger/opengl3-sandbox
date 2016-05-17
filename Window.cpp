@@ -6,6 +6,8 @@ using glm::mat4;
 Window::Window(GLFWwindow *window) : window(window)
 {
 	printf("Window constructed!\n");
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
 }
 
 void Window::getSize(int &width, int &height)
@@ -50,14 +52,14 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 
 	int BOX_COUNT = 20, SPACE_BETWEEN = 10;
 
-	float otmestvane = static_cast<float>(-50 + 25 * glfwGetTime());
+	float otmestvane = static_cast<float>(-80 + 25 * glfwGetTime());
 	while (otmestvane > static_cast<float>(BOX_COUNT * SPACE_BETWEEN / 2))
 		otmestvane -= static_cast<float>(BOX_COUNT * SPACE_BETWEEN / 2);
 
-	/* view = glm::translate( */
-	/*     view, vec3(-2.5f + deltaX * 8, -deltaY * 8, otmestvane)); */
+	view = glm::translate(
+	    view, vec3(-2.5f + deltaX * 8, -deltaY * 8, otmestvane));
 
-    view = glm::lookAt(vec3(-2.5f + deltaX * 8, -deltaY * 8, otmestvane), vec3(0,0,0), vec3(0, 1, 0));
+    /* view = glm::lookAt(vec3(-2.5f + deltaX * 8, -deltaY * 8, -otmestvane), vec3(0,0,0), vec3(0, 1, 0)); */
 
 	mat4 proj;
 	proj = glm::perspective(45.f, 1.0f, 0.1f, 100.f);
