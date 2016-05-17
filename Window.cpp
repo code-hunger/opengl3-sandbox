@@ -73,11 +73,6 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	glfwPollEvents();
 }
 
-void Window::setKeyCallback(GLFWkeyfun callback)
-{
-	glfwSetKeyCallback(window, callback);
-}
-
 Window::~Window()
 {
 	printf("Window destructor. Destroy window!\n");

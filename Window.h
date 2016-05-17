@@ -37,8 +37,6 @@ public:
 	void use(); // use this method when using multiple windows. Call it before
 	            // using a window
 
-	void setKeyCallback(GLFWkeyfun callback);
-
 	void render(double deltaTime, const ShaderPrograms &, const VertexArrays &);
 
 	void static setHints();

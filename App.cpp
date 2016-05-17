@@ -12,21 +12,6 @@
 
 bool paused = false;
 
-void key_callback(GLFWwindow *window, int key, int scancode, int action,
-                  int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
-		paused = !paused;
-		printf("Pause!\n");
-	}
-
-	printf("Recieved key event! Key: %d, scancode : %d, action : %d, "
-	       "mods: %d\n",
-	       key, scancode, action, mods);
-}
-
 App::App()
 {
 	printf("App ctor.\n");
@@ -108,7 +93,6 @@ App::App()
 
 void App::run(Window &window)
 {
-	window.setKeyCallback(key_callback);
 	printf("Start running!\n");
 	double prevTime = glfwGetTime();
 

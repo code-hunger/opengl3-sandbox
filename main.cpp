@@ -4,6 +4,21 @@
 #define WIN_WIDTH 766
 #define WIN_HEIGHT 766
 
+void key_callback(GLFWwindow *window, int key, int scancode, int action,
+                  int mods)
+{
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE);
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+		printf("Pause!\n");
+	}
+
+	printf("Recieved key event! Key: %d, scancode : %d, action : %d, "
+	       "mods: %d\n",
+	       key, scancode, action, mods);
+}
+
+
 void error_callback(int error, const char *desc)
 {
 	printf("Error callback! #%d: %s\n", error, desc);
@@ -37,6 +52,7 @@ void start()
 
 	App app;
 	Window mywindow(window);
+    glfwSetKeyCallback(window, key_callback);
 	app.run(mywindow);
 }
 
