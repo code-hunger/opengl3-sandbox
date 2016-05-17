@@ -7,7 +7,7 @@ Window::Window(GLFWwindow *window) : window(window)
 {
 	printf("Window constructed!\n");
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Window::getSize(int &width, int &height)
@@ -24,7 +24,7 @@ void Window::getCursorPos(int *x, int *y)
 }
 
 void Window::render(const double deltaTime, const ShaderPrograms &programs,
-                    const VertexArrays &vertArrays)
+                    VertexArrays const &vertArrays)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -40,28 +40,18 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	               static_cast<float>(width),
 	      deltaY = static_cast<float>(height / 2 - mouseY) /
 	               static_cast<float>(height);
+    (void) deltaX; (void) deltaY;
+
+    int BOX_COUNT = 10, SPACE_BETWEEN = 10;
 
 	float scale_factor =
 	    static_cast<float>(2 + cos(glfwGetTime()) * 2) * 10 + 2;
 	scale_factor = static_cast<float>(glfwGetTime() * 30);
 
-	mat4 model;
+	mat4 proj, model,
+	    view = glm::lookAt(vec3(deltaX * 10, 0, deltaY * 10), vec3(0, 0, 0), vec3(0, 1, 0));
+
 	model = glm::rotate(model, scale_factor, vec3(0.8f, 1.0f, .0f));
-
-	mat4 view;
-
-	int BOX_COUNT = 20, SPACE_BETWEEN = 10;
-
-	float otmestvane = static_cast<float>(-80 + 25 * glfwGetTime());
-	while (otmestvane > static_cast<float>(BOX_COUNT * SPACE_BETWEEN / 2))
-		otmestvane -= static_cast<float>(BOX_COUNT * SPACE_BETWEEN / 2);
-
-	view = glm::translate(
-	    view, vec3(-2.5f + deltaX * 8, -deltaY * 8, otmestvane));
-
-    /* view = glm::lookAt(vec3(-2.5f + deltaX * 8, -deltaY * 8, -otmestvane), vec3(0,0,0), vec3(0, 1, 0)); */
-
-	mat4 proj;
 	proj = glm::perspective(45.f, 1.0f, 0.1f, 100.f);
 
 	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE,
@@ -69,21 +59,7 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 
 	programs[0]->use();
 
-    mat4 me_view, me_model;
-    me_view = glm::translate(me_view, vec3(0, -.6, -4));
-    me_model = glm::scale(me_model, vec3(.5, .5, .5));
-    me_model = glm::rotate(me_model, deltaX / 2, vec3(0, 0, -10));
-    glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(proj * me_view * me_model));
-    vertArrays[0]->draw(GL_TRIANGLES, 0);
-
-	for (int i = 0; i < BOX_COUNT; ++i) {
-		view = glm::translate(view, vec3(0, 0, -SPACE_BETWEEN));
-		glUniformMatrix4fv(mvpLoc, 1, GL_FALSE,
-		                   glm::value_ptr(proj * view * model));
-		vertArrays[0]->draw(GL_TRIANGLES, 0);
-	}
-	view = glm::translate(view, vec3(5, 0, SPACE_BETWEEN * BOX_COUNT));
-	model = glm::rotate(model, -2 * scale_factor, vec3(0.8f, 1.f, 0));
+	vertArrays[0]->draw(GL_TRIANGLES, 0);
 
 	for (int i = 0; i < BOX_COUNT; ++i) {
 		view = glm::translate(view, vec3(0, 0, -SPACE_BETWEEN));
