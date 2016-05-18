@@ -47,18 +47,23 @@ void Window::update(double deltaTime)
 
 	float cameraSpeed = float(deltaTime) * 20;
 	mat4 transl;
-	if (keys[GLFW_KEY_W]) {
-		transl = translate(transl, cameraSpeed * normalize(cameraFront));
-	} else if (keys[GLFW_KEY_S]) {
-		transl = translate(transl, -cameraSpeed * normalize(cameraFront));
-	} else if (keys[GLFW_KEY_D]) {
-		transl =
-		    translate(transl, normalize(glm::cross(cameraFront, cameraUp)));
-	} else if (keys[GLFW_KEY_A]) {
-		transl =
-		    translate(transl, normalize(-glm::cross(cameraFront, cameraUp)));
-    }
-	
+	if (keys[GLFW_KEY_W] xor keys[GLFW_KEY_S]) {
+		if (keys[GLFW_KEY_W]) {
+			transl = translate(transl, cameraSpeed * normalize(cameraFront));
+		} else if (keys[GLFW_KEY_S]) {
+			transl = translate(transl, -cameraSpeed * normalize(cameraFront));
+		}
+	}
+	if (keys[GLFW_KEY_D] xor keys[GLFW_KEY_A]) {
+		if (keys[GLFW_KEY_D]) {
+			transl =
+			    translate(transl, normalize(glm::cross(cameraFront, cameraUp)));
+		} else if (keys[GLFW_KEY_A]) {
+			transl = translate(transl,
+			                   normalize(-glm::cross(cameraFront, cameraUp)));
+		}
+	}
+
 	cameraPos = transl * vec4(cameraPos.x, cameraPos.y, cameraPos.z, 1);
 
 	double _x, _y;
