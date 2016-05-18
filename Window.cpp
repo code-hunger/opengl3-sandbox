@@ -58,7 +58,7 @@ void Window::update(double deltaTime)
 	double _x, _y;
 	glfwGetCursorPos(window, &_x, &_y);
 	int x = static_cast<int>(_x), y = static_cast<int>(_y);
-	int deltaX = x - lastMouseX, deltaY = y - lastMouseY;
+	int deltaX = x - lastMouseX, deltaY = - y + lastMouseY;
 
 	lastMouseX = x;
 	lastMouseY = y;
