@@ -107,11 +107,18 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 
 	programs[0]->use();
 
-	for (int i = 0; i < BOX_COUNT; ++i) {
-		view = glm::translate(view, vec3(0, 0, -SPACE_BETWEEN));
-		glUniformMatrix4fv(mvpLoc, 1, GL_FALSE,
-		                   glm::value_ptr(proj * view * model));
-		vertArrays[0]->draw(GL_TRIANGLES, 0);
+	view = glm::translate(
+	    view, vec3(0, -2 * SPACE_BETWEEN, +BOX_COUNT * SPACE_BETWEEN / 2));
+
+	for (int j = 0; j < 5; ++j) {
+		for (int i = 0; i < BOX_COUNT; ++i) {
+			view = glm::translate(view, vec3(0, 0, -SPACE_BETWEEN));
+			glUniformMatrix4fv(mvpLoc, 1, GL_FALSE,
+			                   glm::value_ptr(proj * view * model));
+			vertArrays[0]->draw(GL_TRIANGLES, 0);
+		}
+		view = glm::translate(
+		    view, vec3(0, j * SPACE_BETWEEN / 2, SPACE_BETWEEN * BOX_COUNT));
 	}
 }
 
