@@ -5,7 +5,7 @@ using glm::mat4;
 using glm::vec4;
 using glm::translate;
 
-#define float(a) static_cast<float>(a)
+#define float(a) static_cast < float > (a)
 
 Window::Window(GLFWwindow *window) : window(window)
 {
@@ -48,20 +48,26 @@ void Window::update(double deltaTime)
 	float cameraSpeed = float(deltaTime) * 20;
 	mat4 transl;
 	if (keys[GLFW_KEY_W] xor keys[GLFW_KEY_S]) {
+		float isForward = 0;
 		if (keys[GLFW_KEY_W]) {
-			transl = translate(transl, cameraSpeed * normalize(cameraFront));
+			isForward = 1;
 		} else if (keys[GLFW_KEY_S]) {
-			transl = translate(transl, -cameraSpeed * normalize(cameraFront));
+			isForward = -1;
 		}
+		transl =
+		    translate(transl, isForward * cameraSpeed * normalize(cameraFront));
 	}
+
 	if (keys[GLFW_KEY_D] xor keys[GLFW_KEY_A]) {
+		float isRight = 0;
 		if (keys[GLFW_KEY_D]) {
-			transl =
-			    translate(transl, normalize(glm::cross(cameraFront, cameraUp)));
+			isRight = 1;
 		} else if (keys[GLFW_KEY_A]) {
-			transl = translate(transl,
-			                   normalize(-glm::cross(cameraFront, cameraUp)));
+			isRight = -1;
 		}
+		transl =
+		    translate(transl, isRight * cameraSpeed *
+		                          normalize(glm::cross(cameraFront, cameraUp)));
 	}
 
 	cameraPos = transl * vec4(cameraPos.x, cameraPos.y, cameraPos.z, 1);
