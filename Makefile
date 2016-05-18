@@ -10,7 +10,7 @@ ERR_FLAGS = -Wall -Wextra -Wpedantic -Wdouble-promotion \
 			-Weffc++  -Wstrict-null-sentinel \
 			-Wno-non-template-friend  -Wold-style-cast \
 			-Woverloaded-virtual  -Wno-pmf-conversions \
-			-Wsign-promo
+			-Wsign-promo -Wno-error=unused-variable
 
 CXXFLAGS = -std=c++14 -Werror $(DEBUG_FLAGS) $(ERR_FLAGS) $(LIBS) 
 
