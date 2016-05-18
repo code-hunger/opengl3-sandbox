@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include <cstdlib>
+
 using glm::vec3;
 using glm::mat4;
 using glm::vec4;
@@ -123,35 +125,25 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	int width, height;
 	this->getSize(width, height);
 
-	float deltaX = float(width / 2 - mouseX) / float(width),
-	      deltaY = float(height / 2 - mouseY) / float(height);
-	(void)deltaX;
-	(void)deltaY;
-
-	int BOX_COUNT = 10, SPACE_BETWEEN = 10;
-
-	float scale_factor = float(glfwGetTime() * 8);
-
 	mat4 proj, model,
 	    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-	model = glm::rotate(model, scale_factor, vec3(0.8f, 1.0f, .0f));
+	model = glm::rotate(model, float(glfwGetTime() * 8), vec3(0.8f, 1.0f, .0f));
 	proj = glm::perspective(45.f, 1.0f, 0.1f, 150.f);
 
 	programs[0]->use();
 
-	view = glm::translate(
-	    view, vec3(0, -2 * SPACE_BETWEEN, +BOX_COUNT * SPACE_BETWEEN / 2));
+	srand(42);
 
-	for (int j = 0; j < 5; ++j) {
-		for (int i = 0; i < BOX_COUNT; ++i) {
-			view = glm::translate(view, vec3(0, 0, -SPACE_BETWEEN));
-			glUniformMatrix4fv(mvpLoc, 1, GL_FALSE,
-			                   glm::value_ptr(proj * view * model));
-			vertArrays[0]->draw(GL_TRIANGLES, 0);
-		}
-		view = glm::translate(
-		    view, vec3(0, j * SPACE_BETWEEN / 2, SPACE_BETWEEN * BOX_COUNT));
+	int MAX_CUBE = 50;
+
+	for (int i = 0; i < MAX_CUBE; ++i) {
+		mat4 _view =
+		    glm::translate(view, vec3(rand() % MAX_CUBE, rand() % MAX_CUBE,
+		                              rand() % MAX_CUBE));
+		glUniformMatrix4fv(mvpLoc, 1, GL_FALSE,
+		                   glm::value_ptr(proj * _view * model));
+		vertArrays[0]->draw(GL_TRIANGLES, 0);
 	}
 }
 
