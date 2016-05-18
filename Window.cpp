@@ -11,12 +11,19 @@ Window::Window(GLFWwindow *window) : window(window)
 	printf("Window constructed!\n");
 
 	glfwSetWindowUserPointer(window, static_cast<void *>(this));
+    
 	glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode,
 	                              int action, int mods) {
 		static_cast<Window *>(glfwGetWindowUserPointer(window))
 		    ->keyCallback(key, scancode, action, mods);
 	});
-	/* glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); */
+	glfwSetCursorPosCallback(
+	    window, [](GLFWwindow *window, double x, double y) {
+		    static_cast<Window *>(glfwGetWindowUserPointer(window))
+		        ->mouseCallback(static_cast<int>(x), static_cast<int>(y));
+		});
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	int width, height;
 	getSize(width, height);
@@ -50,6 +57,8 @@ void Window::update(double deltaTime)
 	} else if (keys[GLFW_KEY_S]) {
 		transl = translate(transl, -cameraSpeed * normalize(cameraFront));
 		cameraPos = transl * vec4(cameraPos.x, cameraPos.y, cameraPos.z, 1);
+	} else if (keys[GLFW_KEY_A]) {
+		/* transl = translate(transl, -cameraSpeed * normalizefx ) */
 	}
 }
 

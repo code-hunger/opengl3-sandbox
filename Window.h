@@ -45,6 +45,8 @@ public:
 
 	void keyCallback(int key, int scancode, int action, int mods);
 
+    void mouseCallback(int x, int y);
+
 	void static setHints();
 
 	Window(const Window &) = delete;
