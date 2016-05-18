@@ -16,7 +16,6 @@
 #include "glm/glm/gtc/type_ptr.hpp"
 #pragma GCC diagnostic pop
 
-
 #include "ShaderProgram.h"
 #include "VertexArray.h"
 
@@ -44,8 +43,6 @@ public:
 	            const VertexArrays &) const;
 
 	void keyCallback(int key, int scancode, int action, int mods);
-
-    void mouseCallback(int x, int y);
 
 	void static setHints();
 

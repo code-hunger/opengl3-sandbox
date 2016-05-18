@@ -11,17 +11,12 @@ Window::Window(GLFWwindow *window) : window(window)
 	printf("Window constructed!\n");
 
 	glfwSetWindowUserPointer(window, static_cast<void *>(this));
-    
+
 	glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode,
 	                              int action, int mods) {
 		static_cast<Window *>(glfwGetWindowUserPointer(window))
 		    ->keyCallback(key, scancode, action, mods);
 	});
-	glfwSetCursorPosCallback(
-	    window, [](GLFWwindow *window, double x, double y) {
-		    static_cast<Window *>(glfwGetWindowUserPointer(window))
-		        ->mouseCallback(static_cast<int>(x), static_cast<int>(y));
-		});
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
