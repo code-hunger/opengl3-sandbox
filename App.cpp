@@ -91,7 +91,7 @@ App::App()
 	printf("App booted successfully!\n");
 }
 
-void App::run(Window const &window) const
+void App::run(Window &window) const
 {
 	printf("Start running!\n");
 	double prevTime = glfwGetTime();
@@ -112,6 +112,7 @@ void App::run(Window const &window) const
 			window.getCursorPos(&x, &y);
 			printf("Cursor: %dx%d\n", x, y);
 		}
+        window.update(deltaTime);
 		window.render(deltaTime, shaderPrograms, vertexArrays);
 	}
 	printf("Stop running!\n");

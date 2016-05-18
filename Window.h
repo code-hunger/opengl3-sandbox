@@ -4,6 +4,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <memory>
+#include <vector>
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Weffc++"
 #pragma GCC diagnostic ignored "-Wpedantic"
@@ -13,8 +16,6 @@
 #include "glm/glm/gtc/type_ptr.hpp"
 #pragma GCC diagnostic pop
 
-#include <memory>
-#include <vector>
 
 #include "ShaderProgram.h"
 #include "VertexArray.h"
@@ -37,6 +38,8 @@ public:
 	void use(); // use this method when using multiple windows. Call it before
 	            // using a window
 
+	void update(double deltaTime);
+
 	void render(double deltaTime, const ShaderPrograms &,
 	            const VertexArrays &) const;
 
@@ -50,6 +53,12 @@ public:
 private:
 	GLFWwindow *const window;
 	static const bool hintsSet{false};
+
+	int lastMouseX = 0, lastMouseY = 0;
+	glm::vec3 cameraPos{glm::vec3(0, 2, 3)}, cameraFront{glm::vec3(0, 0, -1)},
+	    cameraUp{glm::vec3(0, 1, 0)};
+
+	bool keys[1024]{false};
 
 	GLint transfLoc = 0;
 };
