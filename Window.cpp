@@ -49,16 +49,22 @@ void Window::update(double deltaTime)
 	mat4 transl;
 	if (keys[GLFW_KEY_W]) {
 		transl = translate(transl, cameraSpeed * normalize(cameraFront));
-		cameraPos = transl * vec4(cameraPos.x, cameraPos.y, cameraPos.z, 1);
 	} else if (keys[GLFW_KEY_S]) {
 		transl = translate(transl, -cameraSpeed * normalize(cameraFront));
-		cameraPos = transl * vec4(cameraPos.x, cameraPos.y, cameraPos.z, 1);
-	}
+	} else if (keys[GLFW_KEY_D]) {
+		transl =
+		    translate(transl, normalize(glm::cross(cameraFront, cameraUp)));
+	} else if (keys[GLFW_KEY_A]) {
+		transl =
+		    translate(transl, normalize(-glm::cross(cameraFront, cameraUp)));
+    }
+	
+	cameraPos = transl * vec4(cameraPos.x, cameraPos.y, cameraPos.z, 1);
 
 	double _x, _y;
 	glfwGetCursorPos(window, &_x, &_y);
 	int x = static_cast<int>(_x), y = static_cast<int>(_y);
-	int deltaX = x - lastMouseX, deltaY = - y + lastMouseY;
+	int deltaX = x - lastMouseX, deltaY = -y + lastMouseY;
 
 	lastMouseX = x;
 	lastMouseY = y;
@@ -67,10 +73,10 @@ void Window::update(double deltaTime)
 	yaw += sensitivity * float(deltaX);
 	pitch += sensitivity * float(deltaY);
 
-    glm::vec3 front;
-    front.x = float(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
-    front.y = float(sin(glm::radians(pitch)));
-    front.z = float(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+	glm::vec3 front;
+	front.x = float(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
+	front.y = float(sin(glm::radians(pitch)));
+	front.z = float(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
 	cameraFront = glm::normalize(front);
 }
 
@@ -106,10 +112,8 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	int width, height;
 	this->getSize(width, height);
 
-	float deltaX = float(width / 2 - mouseX) /
-	               float(width),
-	      deltaY = float(height / 2 - mouseY) /
-	               float(height);
+	float deltaX = float(width / 2 - mouseX) / float(width),
+	      deltaY = float(height / 2 - mouseY) / float(height);
 	(void)deltaX;
 	(void)deltaY;
 
@@ -117,7 +121,8 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 
 	float scale_factor = float(glfwGetTime() * 8);
 
-	mat4 proj, model, view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	mat4 proj, model,
+	    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
 	model = glm::rotate(model, scale_factor, vec3(0.8f, 1.0f, .0f));
 	proj = glm::perspective(45.f, 1.0f, 0.1f, 150.f);
