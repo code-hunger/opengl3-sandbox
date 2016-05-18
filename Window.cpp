@@ -4,7 +4,8 @@ using glm::vec3;
 using glm::mat4;
 using glm::vec4;
 using glm::translate;
-/* using glm:: */
+
+#define float(a) static_cast<float>(a)
 
 Window::Window(GLFWwindow *window) : window(window)
 {
@@ -44,7 +45,7 @@ void Window::update(double deltaTime)
 	glfwSwapBuffers(window);
 	glfwPollEvents();
 
-	float cameraSpeed = static_cast<float>(deltaTime) * 20;
+	float cameraSpeed = float(deltaTime) * 20;
 	mat4 transl;
 	if (keys[GLFW_KEY_W]) {
 		transl = translate(transl, cameraSpeed * normalize(cameraFront));
@@ -52,8 +53,6 @@ void Window::update(double deltaTime)
 	} else if (keys[GLFW_KEY_S]) {
 		transl = translate(transl, -cameraSpeed * normalize(cameraFront));
 		cameraPos = transl * vec4(cameraPos.x, cameraPos.y, cameraPos.z, 1);
-	} else if (keys[GLFW_KEY_A]) {
-		/* transl = translate(transl, -cameraSpeed * normalizefx ) */
 	}
 
 	double _x, _y;
@@ -64,16 +63,14 @@ void Window::update(double deltaTime)
 	lastMouseX = x;
 	lastMouseY = y;
 
-	GLfloat sensitivity = 0.5f;
-	yaw += sensitivity * static_cast<float>(deltaX);
-	pitch += sensitivity * static_cast<float>(deltaY);
+	GLfloat sensitivity = 1.5f * float(deltaTime);
+	yaw += sensitivity * float(deltaX);
+	pitch += sensitivity * float(deltaY);
 
-	vec3 front;
-	front.x =
-	    static_cast<float>(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
-	front.y = static_cast<float>(sin(glm::radians(pitch)));
-	front.z =
-	    static_cast<float>(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+    glm::vec3 front;
+    front.x = float(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
+    front.y = float(sin(glm::radians(pitch)));
+    front.z = float(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
 	cameraFront = glm::normalize(front);
 }
 
@@ -109,21 +106,21 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	int width, height;
 	this->getSize(width, height);
 
-	float deltaX = static_cast<float>(width / 2 - mouseX) /
-	               static_cast<float>(width),
-	      deltaY = static_cast<float>(height / 2 - mouseY) /
-	               static_cast<float>(height);
+	float deltaX = float(width / 2 - mouseX) /
+	               float(width),
+	      deltaY = float(height / 2 - mouseY) /
+	               float(height);
 	(void)deltaX;
 	(void)deltaY;
 
 	int BOX_COUNT = 10, SPACE_BETWEEN = 10;
 
-	float scale_factor = static_cast<float>(glfwGetTime() * 8);
+	float scale_factor = float(glfwGetTime() * 8);
 
-	mat4 proj, model, view = glm::lookAt(cameraPos, cameraFront, cameraUp);
+	mat4 proj, model, view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
 	model = glm::rotate(model, scale_factor, vec3(0.8f, 1.0f, .0f));
-	proj = glm::perspective(45.f, 1.0f, 0.1f, 100.f);
+	proj = glm::perspective(45.f, 1.0f, 0.1f, 150.f);
 
 	programs[0]->use();
 
