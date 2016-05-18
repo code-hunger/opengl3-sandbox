@@ -59,6 +59,8 @@ private:
 
 	bool keys[1024]{false};
 
+	float yaw = 0, pitch = 0;
+
 	GLint transfLoc = 0;
 };
 

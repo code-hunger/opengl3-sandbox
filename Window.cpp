@@ -55,6 +55,26 @@ void Window::update(double deltaTime)
 	} else if (keys[GLFW_KEY_A]) {
 		/* transl = translate(transl, -cameraSpeed * normalizefx ) */
 	}
+
+	double _x, _y;
+	glfwGetCursorPos(window, &_x, &_y);
+	int x = static_cast<int>(_x), y = static_cast<int>(_y);
+	int deltaX = x - lastMouseX, deltaY = y - lastMouseY;
+
+	lastMouseX = x;
+	lastMouseY = y;
+
+	GLfloat sensitivity = 0.5f;
+	yaw += sensitivity * static_cast<float>(deltaX);
+	pitch += sensitivity * static_cast<float>(deltaY);
+
+	vec3 front;
+	front.x =
+	    static_cast<float>(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
+	front.y = static_cast<float>(sin(glm::radians(pitch)));
+	front.z =
+	    static_cast<float>(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+	cameraFront = glm::normalize(front);
 }
 
 void Window::keyCallback(int key, int scancode, int action, int mods)
