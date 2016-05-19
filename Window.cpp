@@ -1,5 +1,8 @@
 #include "Window.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
 #include <cstdlib>
 
 using glm::vec3;
@@ -56,7 +59,7 @@ void Window::update(double deltaTime)
 		} else if (keys[GLFW_KEY_S]) {
 			isForward = -1;
 		}
-		transl = translate(transl, isForward * 4 * cameraSpeed *
+		transl = translate(transl, isForward * cameraSpeed *
 		                               normalize(cameraFront));
 	}
 
@@ -95,6 +98,9 @@ void Window::update(double deltaTime)
 	GLfloat sensitivity = 3 * float(deltaTime);
 	yaw += sensitivity * float(deltaX);
 	pitch += sensitivity * float(deltaY);
+
+	if (pitch > 89.0f) pitch = 89.0f;
+	if (pitch < -89.0f) pitch = -89.0f;
 
 	float _yaw = glm::radians(yaw), _pitch = glm::radians(pitch);
 
@@ -162,6 +168,15 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	    mvpLoc, 1, GL_FALSE,
 	    glm::value_ptr(proj * view * glm::mat4())); // don't rotate ground!
 	vertArrays[2]->draw(GL_TRIANGLES, 0);
+
+    model = mat4();
+    model = rotate(model, glm::radians(90.f), vec3(0, 0, 1));
+
+	glUniformMatrix4fv(
+	    mvpLoc, 1, GL_FALSE,
+	    glm::value_ptr(proj * view * model)); // don't rotate ground!
+	vertArrays[2]->draw(GL_TRIANGLES, 0);
+
 }
 
 Window::~Window()
