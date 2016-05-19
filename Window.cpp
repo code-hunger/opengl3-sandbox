@@ -56,8 +56,8 @@ void Window::update(double deltaTime)
 		} else if (keys[GLFW_KEY_S]) {
 			isForward = -1;
 		}
-		transl =
-		    translate(transl, isForward * cameraSpeed * normalize(cameraFront));
+		transl = translate(transl, isForward * 4 * cameraSpeed *
+		                               normalize(cameraFront));
 	}
 
 	if (keys[GLFW_KEY_D] xor keys[GLFW_KEY_A]) {
@@ -72,6 +72,16 @@ void Window::update(double deltaTime)
 		                          normalize(glm::cross(cameraFront, cameraUp)));
 	}
 
+	if (keys[GLFW_KEY_J] xor keys[GLFW_KEY_K]) {
+		float isUp = 0;
+		if (keys[GLFW_KEY_K]) {
+			isUp = 1;
+		} else if (keys[GLFW_KEY_J]) {
+			isUp = -1;
+		}
+		transl = translate(transl, isUp * cameraSpeed * normalize(cameraUp));
+	}
+
 	cameraPos = transl * vec4(cameraPos.x, cameraPos.y, cameraPos.z, 1);
 
 	double _x, _y;
@@ -82,14 +92,16 @@ void Window::update(double deltaTime)
 	lastMouseX = x;
 	lastMouseY = y;
 
-	GLfloat sensitivity = 1.5f * float(deltaTime);
+	GLfloat sensitivity = 3 * float(deltaTime);
 	yaw += sensitivity * float(deltaX);
 	pitch += sensitivity * float(deltaY);
 
+	float _yaw = glm::radians(yaw), _pitch = glm::radians(pitch);
+
 	glm::vec3 front;
-	front.x = float(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
-	front.y = float(sin(glm::radians(pitch)));
-	front.z = float(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+	front.x = float(cos(_yaw) * cos(_pitch));
+	front.y = float(sin(_pitch));
+	front.z = float(sin(_yaw) * cos(_pitch));
 	cameraFront = glm::normalize(front);
 }
 
@@ -128,14 +140,15 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	mat4 proj, model,
 	    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-	model = glm::rotate(model, float(glfwGetTime() * 8), vec3(0.8f, 1.0f, .0f));
+	/* model = glm::rotate(model, float(glfwGetTime() * 8), vec3(0.8f, 1.0f,
+	 * .0f)); */
 	proj = glm::perspective(45.f, 1.0f, 0.1f, 150.f);
 
 	programs[0]->use();
 
 	srand(42);
 
-	int MAX_CUBE = 50;
+	int MAX_CUBE = 100;
 
 	for (int i = 0; i < MAX_CUBE; ++i) {
 		mat4 _view =
