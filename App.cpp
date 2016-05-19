@@ -75,14 +75,21 @@ App::App()
 		axisVertexArray->build(3, false);
 		vertexArrays.push_back(std::move(axisVertexArray));
 
-		/* GLfloat groundVertices[] = { */
-        /*     -5, 0, 0, 5, 0, 0, -5, 0, 10, 5, 0, 10, */
-		/* }; */
+		// clang-format off
+		GLfloat groundVertices[] = {
+             100, 0, 0,   0, 1, 0,
+             0,   0, 0,   0, 1, 0,
+             100, 0, 100, 0, 1, 0,
+             100, 0, 100, 0, 1 ,0,
+             0,   0, 0,   0, 1, 0,
+             0,   0, 100, 0, 1, 0
+		};
+		// clang-format on
 
-		/* auto groundVertexArray = std::make_unique<VertexArray>( */
-		/*     groundVertices, sizeof groundVertices); */
-		/* groundVertexArray->build(3, false); */
-		/* vertexArrays.push_back(std::move(groundVertexArray)); */
+		auto groundVertexArray = std::make_unique<VertexArray>(
+		    groundVertices, sizeof groundVertices);
+		groundVertexArray->build(3, true);
+		vertexArrays.push_back(std::move(groundVertexArray));
 
 	} catch (const char *e) {
 		printf("%s\n", e);
@@ -112,7 +119,7 @@ void App::run(Window &window) const
 			window.getCursorPos(&x, &y);
 			printf("Cursor: %dx%d\n", x, y);
 		}
-        window.update(deltaTime);
+		window.update(deltaTime);
 		window.render(deltaTime, shaderPrograms, vertexArrays);
 	}
 	printf("Stop running!\n");

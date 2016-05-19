@@ -34,7 +34,7 @@ void VertexArray::build(unsigned dimention, bool hasColor)
 		           &EBO);
 	}
 
-	unsigned stride = static_cast<unsigned>(dimention) + (hasColor ? 3 : 0);
+	unsigned stride = static_cast<unsigned>(dimention) + (hasColor ? 3 : 0); // color has 3 components
 	enableVertexArray(0, static_cast<int>(dimention), stride, 0);
 
 	if (hasColor) {
