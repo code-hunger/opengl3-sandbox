@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <SOIL/SOIL.h>
 
 #include <cstdio>
 #include <memory>
@@ -30,11 +31,6 @@ App::App()
             +.5f, +.5f,  .5f, 0.f, .0f, .9f, // face    top right // 5
             -.5f, -.5f, +.5f, 1.f, 1.f, 0.f, // face bottom left  // 6
             +.5f, -.5f, +.5f, 1.f, 1.f, 1.f, // face bottom right // 7
-            /* -.5f,  -.5f, -.5f, .0f, .3f, .8f, */
-            /* -.3f,   .5f, -.2f, .8f, .0f, .5f, */
-            /*  .5f,   .5f,  .3f, 1.f, 1.f, 1.f, */
-            /*  .5f,  -.5f,  .2f, 1.f, 1.f, 0.f, */
-            /* -.75f,  .0f,  .1f, .0f, .5f, .5f */
         };
 
         GLuint trapezoid[] = {

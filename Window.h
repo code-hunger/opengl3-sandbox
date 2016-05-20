@@ -60,8 +60,6 @@ private:
 	bool keys[1024]{false};
 
 	float yaw = 0, pitch = 0;
-
-	GLint transfLoc = 0;
 };
 
 #endif /* end of include guard: WINDOW_H */
