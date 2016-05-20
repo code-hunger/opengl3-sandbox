@@ -10,7 +10,11 @@ using glm::mat4;
 using glm::vec4;
 using glm::translate;
 
-#define float(a) static_cast < float > (a)
+// clang-format off
+#define float(a) static_cast<float>(a)
+// clang-format on
+#define setMVP(mvpLoc, mvp)                                                    \
+	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp))
 
 Window::Window(GLFWwindow *window) : window(window)
 {
@@ -59,8 +63,8 @@ void Window::update(double deltaTime)
 		} else if (keys[GLFW_KEY_S]) {
 			isForward = -1;
 		}
-		transl = translate(transl, isForward * cameraSpeed *
-		                               normalize(cameraFront));
+		transl =
+		    translate(transl, isForward * cameraSpeed * normalize(cameraFront));
 	}
 
 	if (keys[GLFW_KEY_D] xor keys[GLFW_KEY_A]) {
@@ -156,27 +160,19 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	int MAX_CUBE = 100;
 
 	for (int i = 0; i < MAX_CUBE; ++i) {
-		mat4 _view =
-		    glm::translate(view, vec3(rand() % MAX_CUBE, rand() % MAX_CUBE,
-		                              rand() % MAX_CUBE));
-		glUniformMatrix4fv(mvpLoc, 1, GL_FALSE,
-		                   glm::value_ptr(proj * _view * model));
+		mat4 _view = translate(view, vec3(rand() % MAX_CUBE, rand() % MAX_CUBE,
+		                                  rand() % MAX_CUBE));
+		setMVP(mvpLoc, proj * _view * model);
 		vertArrays[0]->draw(GL_TRIANGLES, 0);
 	}
 
-	glUniformMatrix4fv(
-	    mvpLoc, 1, GL_FALSE,
-	    glm::value_ptr(proj * view * glm::mat4())); // don't rotate ground!
+	setMVP(mvpLoc, proj * view);
 	vertArrays[2]->draw(GL_TRIANGLES, 0);
 
-    model = mat4();
-    model = rotate(model, glm::radians(90.f), vec3(0, 0, 1));
+	model = rotate(mat4(), glm::radians(90.f), vec3(0, 0, 1));
 
-	glUniformMatrix4fv(
-	    mvpLoc, 1, GL_FALSE,
-	    glm::value_ptr(proj * view * model)); // don't rotate ground!
+	setMVP(mvpLoc, proj * view * model);
 	vertArrays[2]->draw(GL_TRIANGLES, 0);
-
 }
 
 Window::~Window()
