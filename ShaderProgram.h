@@ -2,14 +2,13 @@
 #define SHADER_PROGRAM_H
 
 #include <GL/glew.h>
-#include "Shader.h"
+#include <cstdio>
+#include <string>
 
-class ShaderProgram
-{
-public:
+struct ShaderProgram {
 	const GLuint id{glCreateProgram()};
 
-	ShaderProgram(const Shader &vert, const Shader &frag);
+	ShaderProgram(GLuint vertexShaderId, GLuint fragmentShaderId);
 
 	void link() const;
 

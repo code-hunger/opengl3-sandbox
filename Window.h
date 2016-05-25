@@ -16,8 +16,8 @@
 #include "glm/glm/gtc/type_ptr.hpp"
 #pragma GCC diagnostic pop
 
-#include "ShaderProgram.h"
-#include "VertexArray.h"
+class ShaderProgram; 
+class VertexArray;
 
 typedef std::vector<std::unique_ptr<ShaderProgram>> ShaderPrograms;
 typedef std::vector<std::unique_ptr<VertexArray>> VertexArrays;

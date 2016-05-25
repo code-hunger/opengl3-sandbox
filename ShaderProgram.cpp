@@ -1,9 +1,9 @@
 #include "ShaderProgram.h"
 
-ShaderProgram::ShaderProgram(const Shader &vert, const Shader &frag)
+ShaderProgram::ShaderProgram(GLuint vertexShaderId, GLuint fragmentShaderId)
 {
-	glAttachShader(id, vert.id);
-	glAttachShader(id, frag.id);
+	glAttachShader(id, vertexShaderId);
+	glAttachShader(id, fragmentShaderId);
 }
 
 void ShaderProgram::link() const

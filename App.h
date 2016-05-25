@@ -2,9 +2,15 @@
 #define APP_H
 
 #include <vector>
-#include "Window.h"
 #include "ShaderProgram.h"
 #include "VertexArray.h"
+
+#include <memory>
+#include <vector>
+
+class Window;
+typedef std::vector<std::unique_ptr<ShaderProgram>> ShaderPrograms;
+typedef std::vector<std::unique_ptr<VertexArray>> VertexArrays;
 
 class App
 {

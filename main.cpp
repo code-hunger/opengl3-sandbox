@@ -1,3 +1,5 @@
+#include <cstdio>
+
 #include "App.h"
 #include "Window.h"
 

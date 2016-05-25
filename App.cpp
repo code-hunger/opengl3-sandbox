@@ -6,9 +6,9 @@
 #include <memory>
 #include <vector>
 
+#include "Window.h"
 #include "App.h"
 #include "Shader.h"
-#include "ShaderProgram.h"
 #include "utils.h"
 
 bool paused = false;
@@ -131,7 +131,7 @@ void App::createShaderPrograms()
 	frag_sh.compile();
 	vert_sh.compile();
 
-	auto program = std::make_unique<ShaderProgram>(vert_sh, frag_sh);
+	auto program = std::make_unique<ShaderProgram>(vert_sh.id, frag_sh.id);
 	program->link();
 
 	shaderPrograms.push_back(std::move(program));
