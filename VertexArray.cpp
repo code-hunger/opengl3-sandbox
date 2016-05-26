@@ -45,7 +45,7 @@ void VertexArray::build(unsigned dimention, bool hasColor)
 	printf("Vertex array built!\n");
 }
 
-void VertexArray::draw(GLenum mode, long unsigned int start, GLsizei count)
+void VertexArray::draw(GLenum mode, long unsigned int start, GLsizei count) const
 {
 	glBindVertexArray(VAO);
 	if (indices.size()) {

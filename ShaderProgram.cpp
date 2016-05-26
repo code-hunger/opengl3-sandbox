@@ -30,4 +30,4 @@ void ShaderProgram::dumpInfoLog(FILE *stream = stderr)
 	        getInfoLog().c_str());
 }
 
-void ShaderProgram::use() { glUseProgram(id); }
+void ShaderProgram::use() const { glUseProgram(id); }

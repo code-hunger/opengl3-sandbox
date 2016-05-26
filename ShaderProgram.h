@@ -16,11 +16,11 @@ struct ShaderProgram {
 
 	void dumpInfoLog(FILE *stream);
 
-	void use();
+	void use() const;
 	~ShaderProgram() {}
 
-	ShaderProgram(const ShaderProgram &) = delete;
-	void operator=(const ShaderProgram &) = delete;
+	/* ShaderProgram(const ShaderProgram &) = delete; */
+	/* void operator=(const ShaderProgram &) = delete; */
 };
 
 #endif /* SHADER_PROGRAM_H */

@@ -49,11 +49,10 @@ App::App()
         };
 		// clang-format on
 
-		auto vertexArray = std::make_unique<VertexArray>(
-		    vertices, sizeof vertices, trapezoid, sizeof trapezoid);
+		VertexArray myVertexArray{vertices, sizeof vertices, trapezoid, sizeof trapezoid};
 
-		vertexArray->build(3);
-		vertexArrays.push_back(std::move(vertexArray));
+		myVertexArray.build(3);
+		vertexArrays.push_back(myVertexArray);
 
 		// clang-format off
         GLfloat axisVertices[] = {
@@ -66,10 +65,9 @@ App::App()
         };
 		// clang-format on
 
-		auto axisVertexArray =
-		    std::make_unique<VertexArray>(axisVertices, sizeof axisVertices);
-		axisVertexArray->build(3, false);
-		vertexArrays.push_back(std::move(axisVertexArray));
+		VertexArray axisVertexArray (axisVertices, sizeof axisVertices);
+		axisVertexArray.build(3, false);
+		vertexArrays.push_back(axisVertexArray);
 
 		// clang-format off
 		GLfloat groundVertices[] = {
@@ -82,10 +80,9 @@ App::App()
 		};
 		// clang-format on
 
-		auto groundVertexArray = std::make_unique<VertexArray>(
-		    groundVertices, sizeof groundVertices);
-		groundVertexArray->build(3, true);
-		vertexArrays.push_back(std::move(groundVertexArray));
+		VertexArray groundVertexArray {groundVertices, sizeof groundVertices};
+		groundVertexArray.build(3, true);
+		vertexArrays.push_back(groundVertexArray);
 
 	} catch (const char *e) {
 		printf("%s\n", e);
@@ -131,10 +128,9 @@ void App::createShaderPrograms()
 	frag_sh.compile();
 	vert_sh.compile();
 
-	auto program = std::make_unique<ShaderProgram>(vert_sh.id, frag_sh.id);
-	program->link();
-
-	shaderPrograms.push_back(std::move(program));
+	ShaderProgram program {vert_sh.id, frag_sh.id};
+	program.link();
+	shaderPrograms.push_back(program);
 
 	printf("Shader programs created!\n");
 }

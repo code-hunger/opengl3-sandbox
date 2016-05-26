@@ -143,7 +143,7 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	(void)deltaTime;
-	int mvpLoc = glGetUniformLocation(programs[0]->id, "model_view_projection");
+	int mvpLoc = glGetUniformLocation(programs[0].id, "model_view_projection");
 
 	int mouseX, mouseY;
 	this->getCursorPos(&mouseX, &mouseY);
@@ -156,7 +156,7 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	model = glm::rotate(model, float(glfwGetTime() * 8), vec3(0.8f, 1.0f, .0f));
 	proj = glm::perspective(45.f, 1.0f, 0.1f, 250.f);
 
-	programs[0]->use();
+	programs[0].use();
 
 	srand(42);
 
@@ -166,16 +166,16 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 		mat4 _view = translate(view, vec3(rand() % MAX_CUBE, rand() % MAX_CUBE,
 		                                  rand() % MAX_CUBE));
 		setMVP(mvpLoc, proj * _view * model);
-		vertArrays[0]->draw(GL_TRIANGLES, 0);
+		vertArrays[0].draw(GL_TRIANGLES, 0);
 	}
 
 	setMVP(mvpLoc, proj * view);
-	vertArrays[2]->draw(GL_TRIANGLES, 0);
+	vertArrays[2].draw(GL_TRIANGLES, 0);
 
 	model = rotate(mat4(), glm::radians(90.f), vec3(0, 0, 1));
 
 	setMVP(mvpLoc, proj * view * model);
-	vertArrays[2]->draw(GL_TRIANGLES, 0);
+	vertArrays[2].draw(GL_TRIANGLES, 0);
 }
 
 Window::~Window()

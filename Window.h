@@ -19,8 +19,8 @@
 class ShaderProgram; 
 class VertexArray;
 
-typedef std::vector<std::unique_ptr<ShaderProgram>> ShaderPrograms;
-typedef std::vector<std::unique_ptr<VertexArray>> VertexArrays;
+typedef std::vector<ShaderProgram> ShaderPrograms;
+typedef std::vector<VertexArray> VertexArrays;
 
 class Window
 {

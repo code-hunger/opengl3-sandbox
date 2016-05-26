@@ -22,8 +22,8 @@ public:
 	};
 	void build(unsigned dimention);
 	void build(unsigned dimention, bool hasColor);
-	void draw(GLenum mode, long unsigned start, GLsizei count);
-	void draw(GLenum mode, long unsigned start)
+	void draw(GLenum mode, long unsigned start, GLsizei count) const;
+	void draw(GLenum mode, long unsigned start) const
 	{
 		if (indices.size())
 			draw(mode, start, static_cast<int>(indices.size()));
@@ -34,8 +34,8 @@ public:
 	GLuint getVAO() { return VAO; }
 	virtual ~VertexArray();
 
-	VertexArray(const VertexArray &) = delete;
-	void operator=(const VertexArray &) = delete;
+	/* VertexArray(const VertexArray &) = delete; */
+	/* void operator=(const VertexArray &) = delete; */
 
 private:
 	vector<float> points;
