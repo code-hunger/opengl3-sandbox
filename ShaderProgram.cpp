@@ -17,17 +17,9 @@ void ShaderProgram::link() const
 	}
 }
 
-std::string ShaderProgram::getInfoLog()
+void ShaderProgram::getInfoLog(char* infoLog)
 {
-	GLchar infoLog[512];
 	glGetProgramInfoLog(id, 512, NULL, infoLog);
-	return {infoLog};
-}
-
-void ShaderProgram::dumpInfoLog(FILE *stream = stderr)
-{
-	fprintf(stream, "Shader program building failed!\n%s\n",
-	        getInfoLog().c_str());
 }
 
 void ShaderProgram::use() const { glUseProgram(id); }

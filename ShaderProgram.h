@@ -2,7 +2,6 @@
 #define SHADER_PROGRAM_H
 
 #include <GL/glew.h>
-#include <cstdio>
 #include <string>
 
 struct ShaderProgram {
@@ -12,9 +11,7 @@ struct ShaderProgram {
 
 	void link() const;
 
-	std::string getInfoLog();
-
-	void dumpInfoLog(FILE *stream);
+    void getInfoLog(char* infoLog); // 512 long
 
 	void use() const;
 	~ShaderProgram() {}
