@@ -4,8 +4,6 @@
 #include <string>
 #include <GL/glew.h>
 
-#include <exception>
-
 class Shader
 {
 public:
