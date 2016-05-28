@@ -4,7 +4,6 @@
 
 #include <cstdio>
 #include <memory>
-#include <vector>
 
 #include "Window.h"
 #include "App.h"

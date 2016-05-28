@@ -1,12 +1,8 @@
 #ifndef APP_H
 #define APP_H
 
-#include <vector>
 #include "ShaderProgram.h"
 #include "VertexArray.h"
-
-#include <memory>
-#include <vector>
 
 class Window;
 typedef std::vector<ShaderProgram> ShaderPrograms;
