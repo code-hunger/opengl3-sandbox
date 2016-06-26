@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 2.8.9)
-project (opengl-sandbox)
+project (jk)
 
 file(GLOB SOURCES "*.cpp")
 
-add_executable(opengl-sandbox ${SOURCES})
-target_link_libraries (opengl-sandbox GL GLU glfw GLEW)
+include_directories(lib/glm)
+
+add_executable(jk ${SOURCES})
+target_link_libraries (jk GL GLU glfw GLEW)
 
