@@ -1,23 +1,22 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 #include <memory>
 #include <vector>
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Weffc++"
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Wold-style-cast"
+/* #pragma GCC diagnostic push */
+/* #pragma GCC diagnostic ignored "-Weffc++" */
+/* #pragma GCC diagnostic ignored "-Wpedantic" */
+/* #pragma GCC diagnostic ignored "-Wold-style-cast" */
+/* #pragma GCC diagnostic ignored "-Wsign-conversion" */
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#pragma GCC diagnostic pop
+/* #pragma GCC diagnostic pop */
 
-class ShaderProgram; 
+class ShaderProgram;
 class VertexArray;
+class GLFWwindow;
 
 typedef std::vector<ShaderProgram> ShaderPrograms;
 typedef std::vector<VertexArray> VertexArrays;
@@ -25,10 +24,10 @@ typedef std::vector<VertexArray> VertexArrays;
 class Window
 {
 public:
-	Window(GLFWwindow *window);
+	Window();
 	virtual ~Window();
 
-	bool shouldClose() const { return glfwWindowShouldClose(window); }
+	bool shouldClose() const;
 
 	void getSize(int &width, int &height) const;
 
@@ -44,14 +43,14 @@ public:
 
 	void keyCallback(int key, int scancode, int action, int mods);
 
-	void static setHints();
+	static void setHints() ;
 
 	Window(const Window &) = delete;
 	void operator=(const Window &) = delete;
 
 private:
 	GLFWwindow *const window;
-	static const bool hintsSet{false};
+	static bool hintsSet;
 
 	int lastMouseX = 0, lastMouseY = 0;
 	glm::vec3 cameraPos{glm::vec3(0, 2, 3)}, cameraFront{glm::vec3(0, 0, -1)},

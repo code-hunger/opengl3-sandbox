@@ -3,10 +3,19 @@
 #include "ShaderProgram.h"
 #include "VertexArray.h"
 
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+/* #include <assimp/Importer.hpp> */
+/* #include <assimp/postprocess.h> */
+/* #include <assimp/scene.h> */
+
 #include <cstdlib>
+
+#include <assert.h>
+
+#define WIDTH 766
+#define HEIGHT 766
 
 using glm::vec3;
 using glm::mat4;
@@ -18,9 +27,48 @@ using glm::translate;
 // clang-format on
 #define setMVP(mvpLoc, mvp)                                                    \
 	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp))
+#define CREATE_WINDOW()                                                        \
+	glfwCreateWindow(HEIGHT, WIDTH, "Window Title", NULL, NULL)
 
-Window::Window(GLFWwindow *window) : window(window)
+bool Window::hintsSet = false;
+
+void Window::setHints()
 {
+	if (!glfwInit()) {
+		throw "Glfw init fail!";
+	}
+
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+	Window::hintsSet = true;
+}
+
+Window::Window() : window(CREATE_WINDOW())
+{
+	if (!window) {
+		throw "A window could not be created!";
+	}
+
+	// Window::setHints must be called before constructing a Window, otherwise
+	// OpenGL doesn't work
+	assert(hintsSet);
+
+	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1);
+
+	glewExperimental = true;
+	if (glewInit() != GLEW_OK) {
+		throw "Glew init fail";
+	}
+
+    if (!GLEW_VERSION_3_3) {
+        throw "No glew_version_3_3!";
+    }
+
 	printf("Window constructed!\n");
 
 	glfwSetWindowUserPointer(window, static_cast<void *>(this));
@@ -43,6 +91,8 @@ void Window::getSize(int &width, int &height) const
 {
 	glfwGetFramebufferSize(window, &width, &height);
 }
+
+bool Window::shouldClose() const { return glfwWindowShouldClose(window); }
 
 void Window::getCursorPos(int *x, int *y) const
 {
@@ -92,7 +142,7 @@ void Window::update(double deltaTime)
 		transl = translate(transl, isUp * cameraSpeed * normalize(cameraUp));
 	}
 
-	cameraPos = transl * vec4(cameraPos.x, cameraPos.y, cameraPos.z, 1);
+	/* cameraPos = transl * vec4(cameraPos.x, cameraPos.y, cameraPos.z, 1); */
 
 	double _x, _y;
 	glfwGetCursorPos(window, &_x, &_y);

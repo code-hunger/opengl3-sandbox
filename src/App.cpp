@@ -5,9 +5,9 @@
 #include <cstdio>
 #include <memory>
 
-#include "Window.h"
 #include "App.h"
 #include "Shader.h"
+#include "Window.h"
 #include "utils.h"
 
 bool paused = false;
@@ -48,7 +48,8 @@ App::App()
         };
 		// clang-format on
 
-		VertexArray myVertexArray{vertices, sizeof vertices, trapezoid, sizeof trapezoid};
+		VertexArray myVertexArray{vertices, sizeof vertices, trapezoid,
+		                          sizeof trapezoid};
 
 		myVertexArray.build(3);
 		vertexArrays.push_back(myVertexArray);
@@ -64,7 +65,7 @@ App::App()
         };
 		// clang-format on
 
-		VertexArray axisVertexArray (axisVertices, sizeof axisVertices);
+		VertexArray axisVertexArray(axisVertices, sizeof axisVertices);
 		axisVertexArray.build(3, false);
 		vertexArrays.push_back(axisVertexArray);
 
@@ -79,7 +80,7 @@ App::App()
 		};
 		// clang-format on
 
-		VertexArray groundVertexArray {groundVertices, sizeof groundVertices};
+		VertexArray groundVertexArray{groundVertices, sizeof groundVertices};
 		groundVertexArray.build(3, true);
 		vertexArrays.push_back(groundVertexArray);
 
@@ -121,13 +122,17 @@ void App::createShaderPrograms()
 {
 	printf("Creating shader programms...\n");
 
+    printf("%d\n", GL_FRAGMENT_SHADER);
+	Shader rag_sh(std::string("1"), GL_FRAGMENT_SHADER);
+    printf("Created shader!\n");
+
 	Shader frag_sh(readFile("fragment_shader.glsl"), GL_FRAGMENT_SHADER),
 	    vert_sh(readFile("vertex_shader.glsl"), GL_VERTEX_SHADER);
 
 	frag_sh.compile();
 	vert_sh.compile();
 
-	ShaderProgram program {vert_sh.id, frag_sh.id};
+	ShaderProgram program{vert_sh.id, frag_sh.id};
 	program.link();
 	shaderPrograms.push_back(program);
 

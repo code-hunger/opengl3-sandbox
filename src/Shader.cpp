@@ -23,7 +23,7 @@ void Shader::compile()
 	GLint success;
 	glGetShaderiv(id, GL_COMPILE_STATUS, &success);
 	if (GL_TRUE != success) {
-		dumpInfoLog(stderr);
+		dumpInfoLog();
 		throw("Shader compilation failed");
 	}
 	printf("Shader compiled!\n");
@@ -36,7 +36,7 @@ std::string Shader::getInfoLog() const
 	return {infoLog};
 }
 
-void Shader::dumpInfoLog(FILE *stream)
+void Shader::dumpInfoLog()
 {
-	fprintf(stream, "%s", getInfoLog().c_str());
+	fprintf(stderr, "%s", getInfoLog().c_str());
 }

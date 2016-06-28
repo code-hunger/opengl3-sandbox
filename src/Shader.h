@@ -3,6 +3,7 @@
 
 #include <string>
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 class Shader
 {
@@ -14,7 +15,7 @@ public:
 	virtual ~Shader();
 
 	std::string getInfoLog() const;
-	void dumpInfoLog(FILE *stream);
+	void dumpInfoLog();
     void compile();
 
 	Shader(const Shader &) = delete;
