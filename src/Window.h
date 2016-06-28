@@ -1,21 +1,17 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <memory>
 #include <vector>
 
-/* #pragma GCC diagnostic push */
-/* #pragma GCC diagnostic ignored "-Weffc++" */
-/* #pragma GCC diagnostic ignored "-Wpedantic" */
-/* #pragma GCC diagnostic ignored "-Wold-style-cast" */
-/* #pragma GCC diagnostic ignored "-Wsign-conversion" */
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-/* #pragma GCC diagnostic pop */
 
-class ShaderProgram;
-class VertexArray;
+#include "Shader.h"
+#include "ShaderProgram.h"
+#include "VertexArray.h"
+#include "utils.h"
+
 class GLFWwindow;
 
 typedef std::vector<ShaderProgram> ShaderPrograms;
@@ -29,7 +25,7 @@ public:
 
 	bool shouldClose() const;
 
-	void getSize(int &width, int &height) const;
+	void getSize(int *width, int *height) const;
 
 	void getCursorPos(int *x, int *y) const;
 
@@ -41,6 +37,8 @@ public:
 	void render(double deltaTime, const ShaderPrograms &,
 	            const VertexArrays &) const;
 
+	void run();
+
 	void keyCallback(int key, int scancode, int action, int mods);
 
 	static void setHints() ;
@@ -51,6 +49,11 @@ public:
 private:
 	GLFWwindow *const window;
 	static bool hintsSet;
+
+	ShaderPrograms shaderPrograms{};
+    VertexArrays vertexArrays{};
+
+	void createShaderPrograms();
 
 	int lastMouseX = 0, lastMouseY = 0;
 	glm::vec3 cameraPos{glm::vec3(0, 2, 3)}, cameraFront{glm::vec3(0, 0, -1)},

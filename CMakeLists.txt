@@ -14,11 +14,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wdouble-promot
 -Wsign-promo \\\
 -Wno-error=unused-variable")
 
-include_directories(lib)
+set(SHADER_DIRECTORY ${PROJECT_SOURCE_DIR}/src/shaders)
 
-set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+configure_file (
+  "${PROJECT_SOURCE_DIR}/src/config.h.in"
+  "${PROJECT_SOURCE_DIR}/src/config.h"
+  )
 
 add_executable(jk ${SOURCES})
 target_link_libraries (jk GL GLU glfw GLEW)

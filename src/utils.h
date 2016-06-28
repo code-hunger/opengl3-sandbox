@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 
-std::string readFile(const char *fileName)
+inline std::string readFile(const char *fileName)
 {
     printf("Reading file %s\n", fileName);
 	std::string s;

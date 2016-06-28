@@ -1,10 +1,9 @@
 #include "Window.h"
 
-#include "ShaderProgram.h"
-#include "VertexArray.h"
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include "config.h"
 
 /* #include <assimp/Importer.hpp> */
 /* #include <assimp/postprocess.h> */
@@ -65,9 +64,9 @@ Window::Window() : window(CREATE_WINDOW())
 		throw "Glew init fail";
 	}
 
-    if (!GLEW_VERSION_3_3) {
-        throw "No glew_version_3_3!";
-    }
+	if (!GLEW_VERSION_3_3) {
+		throw "No glew_version_3_3!";
+	}
 
 	printf("Window constructed!\n");
 
@@ -82,14 +81,115 @@ Window::Window() : window(CREATE_WINDOW())
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	int width, height;
-	getSize(width, height);
+	getSize(&width, &height);
 	glViewport(0, 0, width, height);
 	glClearColor(1, 1.f, 1, 0);
+
+	try {
+		createShaderPrograms();
+
+		// clang-format off
+        GLfloat vertices[] = {
+            +.5f, +.5f, -.5f, 0.f, 1.f, 0.f, // back    top right // 0
+            -.5f, +.5f, -.5f, 1.f, 0.f, 0.f, // back    top left  // 1
+            -.5f, -.5f, -.5f, .0f, .0f, 1.f, // back bottom left  // 2
+            +.5f, -.5f, -.5f, 0.f, .5f, 0.f, // back bottom right // 3
+
+            -.5f, +.5f,  .5f, .5f, 0.f, 0.f, // face    top left  // 4
+            +.5f, +.5f,  .5f, 0.f, .0f, .9f, // face    top right // 5
+            -.5f, -.5f, +.5f, 1.f, 1.f, 0.f, // face bottom left  // 6
+            +.5f, -.5f, +.5f, 1.f, 1.f, 1.f, // face bottom right // 7
+        };
+
+        GLuint trapezoid[] = {
+            0, 1, 2, // back
+            0, 2, 3, 
+            2, 3, 6, // bottom
+            3, 6, 7, 
+            6, 4, 1, // left
+            1, 6, 2,
+            5, 7, 0, // right
+            0, 7, 3,
+            0, 1, 4, // top
+            0, 4, 5,
+            4, 5, 6, // face
+            6, 7, 5,
+        };
+		// clang-format on
+
+		VertexArray myVertexArray{vertices, sizeof vertices, trapezoid,
+		                          sizeof trapezoid};
+
+		myVertexArray.build(3);
+		vertexArrays.push_back(myVertexArray);
+
+		// clang-format off
+        GLfloat axisVertices[] = {
+            .0f, .0f, -10.f,
+            .0f, .0f, 10.f,
+            .0f, -10.f, .0f,
+            .0f, 10.f, 0.f,
+            -10.f, .0f, .0f,
+            10.f, 0.f, 0.f,
+        };
+		// clang-format on
+
+		VertexArray axisVertexArray(axisVertices, sizeof axisVertices);
+		axisVertexArray.build(3, false);
+		vertexArrays.push_back(axisVertexArray);
+
+		// clang-format off
+		GLfloat groundVertices[] = {
+             100, 0, 0,   0, 0, 1,
+             0,   0, 0,   0, 1, 0,
+             100, 0, 100, 0, 1, 0,
+             100, 0, 100, 0, 1 ,0,
+             0,   0, 0,   0, 0, 0,
+             0,   0, 100, 0, 1, 0
+		};
+		// clang-format on
+
+		VertexArray groundVertexArray{groundVertices, sizeof groundVertices};
+		groundVertexArray.build(3, true);
+		vertexArrays.push_back(groundVertexArray);
+
+	} catch (const char *e) {
+		printf("%s\n", e);
+		throw - 1;
+	}
+	printf("App booted successfully!\n");
 }
 
-void Window::getSize(int &width, int &height) const
+void Window::run()
 {
-	glfwGetFramebufferSize(window, &width, &height);
+	printf("Start running!\n");
+	double prevTime = glfwGetTime();
+
+	glEnable(GL_DEPTH_TEST);
+
+	int frames = 0;
+	double last_time_check = glfwGetTime();
+	while (!shouldClose()) {
+		double time = glfwGetTime(), deltaTime = time - prevTime;
+		prevTime = time;
+		++frames;
+		if (0 && time - last_time_check >= 1) {
+			printf("\t %f since last check", frames / (time - last_time_check));
+			last_time_check = glfwGetTime();
+			frames = 0;
+			int x, y;
+			getCursorPos(&x, &y);
+			printf("Cursor: %dx%d\n", x, y);
+		}
+		update(deltaTime);
+		render(deltaTime, shaderPrograms, vertexArrays);
+	}
+	printf("Stop running!\n");
+}
+
+void Window::getSize(int *width, int *height) const
+{
+	glfwGetFramebufferSize(window, width, height);
 }
 
 bool Window::shouldClose() const { return glfwWindowShouldClose(window); }
@@ -198,7 +298,7 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 	int mouseX, mouseY;
 	this->getCursorPos(&mouseX, &mouseY);
 	int width, height;
-	this->getSize(width, height);
+	this->getSize(&width, &height);
 
 	mat4 proj, model,
 	    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
@@ -226,6 +326,25 @@ void Window::render(const double deltaTime, const ShaderPrograms &programs,
 
 	setMVP(mvpLoc, proj * view * model);
 	vertArrays[2].draw(GL_TRIANGLES, 0);
+}
+
+void Window::createShaderPrograms()
+{
+	printf("Creating shader programms...\n");
+
+	Shader frag_sh(readFile(SHADER_DIRECTORY "/fragment_shader.glsl"),
+	               GL_FRAGMENT_SHADER),
+	    vert_sh(readFile(SHADER_DIRECTORY "/vertex_shader.glsl"),
+	            GL_VERTEX_SHADER);
+
+	frag_sh.compile();
+	vert_sh.compile();
+
+	ShaderProgram program{vert_sh.id, frag_sh.id};
+	program.link();
+	shaderPrograms.push_back(program);
+
+	printf("Shader programs created!\n");
 }
 
 Window::~Window()

@@ -1,6 +1,5 @@
 #include <cstdio>
 
-#include "App.h"
 #include "Window.h"
 
 void error_callback(int error, const char *desc)
@@ -12,10 +11,11 @@ int main()
 {
 	try {
         Window::setHints();
-		Window mywindow;
+		Window window;
+        window.run();
 
-        App app;
-		app.run(mywindow);
+        /* App app; */
+		/* app.run(window); */
 	} catch (int e) {
 		printf("Something bad happened. Code %d\n", e);
 		return e;
