@@ -2,11 +2,6 @@
 
 #include "Window.h"
 
-void error_callback(int error, const char *desc)
-{
-	printf("Error callback! #%d: %s\n", error, desc);
-}
-
 int main()
 {
 	try {
