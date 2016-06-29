@@ -13,9 +13,6 @@ int main()
         Window::setHints();
 		Window window;
         window.run();
-
-        /* App app; */
-		/* app.run(window); */
 	} catch (int e) {
 		printf("Something bad happened. Code %d\n", e);
 		return e;
