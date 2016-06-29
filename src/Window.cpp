@@ -1,16 +1,16 @@
+#include "Shader.h"
 #include "Window.h"
+#include "config.h"
+#include "utils.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
-#include "config.h"
 
 /* #include <assimp/Importer.hpp> */
 /* #include <assimp/postprocess.h> */
 /* #include <assimp/scene.h> */
 
 #include <cstdlib>
-
 #include <assert.h>
 
 #define WIDTH 766
@@ -36,6 +36,12 @@ void Window::setHints()
 	if (!glfwInit()) {
 		throw "Glfw init fail!";
 	}
+
+	glfwSetErrorCallback([](int code, const char *desc) {
+		fprintf(stderr, "Error callback. Code: %d, description: %s", code,
+		        desc);
+		throw "Error callback called!";
+	});
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
