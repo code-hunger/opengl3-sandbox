@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <string>
+#include <sstream>
 
 std::string readFile(const char *fileName)
 {

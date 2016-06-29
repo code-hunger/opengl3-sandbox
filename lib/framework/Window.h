@@ -21,25 +21,14 @@ public:
 	Window();
 	virtual ~Window();
 
-	bool shouldClose() const;
-
-	void getSize(int *width, int *height) const;
-
-	void getCursorPos(int *x, int *y) const;
-
 	void use(); // use this method when using multiple windows. Call it before
 	            // using a window
 
 	void update(double deltaTime);
 
-	void render(double deltaTime, const ShaderPrograms &,
-	            const VertexArrays &) const;
-
 	void run();
 
-	void keyCallback(int key, int scancode, int action, int mods);
-
-	static void setHints() ;
+	static void setHints();
 
 	Window(const Window &) = delete;
 	void operator=(const Window &) = delete;
@@ -49,15 +38,22 @@ private:
 	static bool hintsSet;
 
 	ShaderPrograms shaderPrograms{};
-    VertexArrays vertexArrays{};
-
-	void createShaderPrograms();
+	VertexArrays vertexArrays{};
 
 	int lastMouseX = 0, lastMouseY = 0;
 	glm::vec3 cameraPos{glm::vec3(0, 2, 3)}, cameraFront{glm::vec3(0, 0, -1)},
 	    cameraUp{glm::vec3(0, 1, 0)};
 
 	bool keys[1024]{false};
+
+	void createShaderPrograms();
+	void getCursorPos(int *x, int *y) const;
+	bool shouldClose() const;
+	void getSize(int *width, int *height) const;
+	void render(double deltaTime, const ShaderPrograms &,
+	            const VertexArrays &) const;
+
+	void keyCallback(int key, int scancode, int action, int mods);
 
 	float yaw = 0, pitch = 0;
 };
