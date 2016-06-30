@@ -5,9 +5,9 @@
 int main()
 {
 	try {
-        Window::setHints();
+		Window::setHints();
 		Window window;
-        window.run();
+		window.run();
 	} catch (int e) {
 		printf("Something bad happened. Code %d\n", e);
 		return e;

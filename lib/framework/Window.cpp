@@ -1,5 +1,5 @@
-#include "Shader.h"
 #include "Window.h"
+#include "Shader.h"
 #include "config.h"
 #include "utils.h"
 
@@ -10,8 +10,8 @@
 /* #include <assimp/postprocess.h> */
 /* #include <assimp/scene.h> */
 
-#include <cstdlib>
 #include <assert.h>
+#include <cstdlib>
 
 #define WIDTH 766
 #define HEIGHT 766

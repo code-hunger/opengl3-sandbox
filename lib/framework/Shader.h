@@ -1,9 +1,9 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <string>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <string>
 
 class Shader
 {
@@ -16,7 +16,7 @@ public:
 
 	std::string getInfoLog() const;
 	void dumpInfoLog();
-    void compile();
+	void compile();
 
 	Shader(const Shader &) = delete;
 	void operator=(const Shader &) = delete;

@@ -36,7 +36,4 @@ std::string Shader::getInfoLog() const
 	return {infoLog};
 }
 
-void Shader::dumpInfoLog()
-{
-	fprintf(stderr, "%s", getInfoLog().c_str());
-}
+void Shader::dumpInfoLog() { fprintf(stderr, "%s", getInfoLog().c_str()); }

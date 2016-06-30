@@ -8,8 +8,7 @@ class VertexArray
 {
 public:
 	VertexArray(float *points, int p_count, unsigned *indices, int i_count)
-	    : points(points, points + p_count),
-	      indices(indices, indices + i_count)
+	    : points(points, points + p_count), indices(indices, indices + i_count)
 	{
 		printf("Vertex array ctor initialized successfully!\n");
 	};

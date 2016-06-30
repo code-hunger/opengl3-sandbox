@@ -3,11 +3,10 @@
 
 #include <fstream>
 #include <string>
-#include <sstream>
 
 std::string readFile(const char *fileName)
 {
-    printf("Reading file %s\n", fileName);
+	printf("Reading file %s\n", fileName);
 	std::string s;
 	getline(std::ifstream(fileName), s, '\0');
 	return s;

@@ -17,7 +17,7 @@ void ShaderProgram::link() const
 	}
 }
 
-void ShaderProgram::getInfoLog(char* infoLog)
+void ShaderProgram::getInfoLog(char *infoLog)
 {
 	glGetProgramInfoLog(id, 512, NULL, infoLog);
 }

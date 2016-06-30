@@ -11,7 +11,7 @@ struct ShaderProgram {
 
 	void link() const;
 
-    void getInfoLog(char* infoLog); // 512 long
+	void getInfoLog(char *infoLog); // 512 long
 
 	void use() const;
 	~ShaderProgram() {}
