@@ -23,7 +23,7 @@ public:
 	void build(GLushort dimention, bool hasColor = true);
 
 	void draw(GLenum mode, GLulong start, GLsizei count) const;
-	void draw(GLenum mode, GLulong start) const
+	void draw(GLenum mode, GLulong start = 0) const
 	{
 		if (indices.size())
 			draw(mode, start, static_cast<signed>(indices.size()));

@@ -45,7 +45,7 @@ void HomeScreen::render(const double deltaTime, const State &state)
 
 	shaderProgram.use();
 
-	va.draw(GL_TRIANGLES, 0);
+	va.draw(GL_TRIANGLES);
 }
 
 HomeScreen::~HomeScreen() {}
