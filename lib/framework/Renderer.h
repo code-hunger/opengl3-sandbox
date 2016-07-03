@@ -5,7 +5,7 @@
 
 struct Renderer {
 	virtual void render(double deltaTime, const State &) const = 0;
-    virtual ~Renderer() {};
+	virtual ~Renderer(){};
 };
 
 #endif /* end of include guard: APP_H_TMV30BLE */

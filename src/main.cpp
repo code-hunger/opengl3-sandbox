@@ -1,12 +1,12 @@
 #include <cstdio>
 
+#include "Game.h"
 #include "Shader.h"
 #include "ShaderProgram.h"
 #include "VertexArray.h"
 #include "Window.h"
 #include "config.h"
 #include <GL/glew.h>
-#include "Game.h"
 
 int main()
 {
@@ -14,7 +14,7 @@ int main()
 		Window::prepareOpenGL();
 		Window window;
 
-        Game game;
+		Game game;
 		window.run(game);
 	} catch (int e) {
 		printf("Something bad happened. Code %d\n", e);

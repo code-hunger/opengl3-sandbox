@@ -1,8 +1,8 @@
 #ifndef VERTEX_ARRAY
 #define VERTEX_ARRAY
 
-#include <vector>
 #include "GL/glew.h" // GL-types
+#include <vector>
 using std::vector;
 
 class VertexArray

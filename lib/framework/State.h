@@ -2,8 +2,8 @@
 #define STATE_H_CODY3JAM
 
 struct State {
-    int mouseX, mouseY;
-    bool *const keys;
+	int mouseX, mouseY;
+	bool *const keys;
 };
 
 #endif /* end of include guard: STATE_H_CODY3JAM */

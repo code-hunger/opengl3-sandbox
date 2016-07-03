@@ -7,18 +7,14 @@
 #include "utils.h"
 #include <GL/glew.h>
 
-inline VertexArray getVa() {
-    GLfloat points[] = {
-        0,0,0, 1,1,0,
-        1,1,0, 1,1,0,
-        0,1,0, 1,1,0,
-    };
-    /* GLuint elements[] = {0,1,2}; */
+inline VertexArray getVa()
+{
+	GLfloat points[] = {0, 0, 1, 1, 0, 1};
 
-    VertexArray va{points, sizeof points};
-    va.build(3);
+	VertexArray va{points, sizeof points};
+	va.build(2, false);
 
-    return va;
+	return va;
 }
 
 Game::Game() : va(getVa())
@@ -51,7 +47,7 @@ void Game::render(double deltaTime, const State &state) const
 
 	shaderProgram.use();
 
-    va.draw(GL_TRIANGLES, 0);
+	va.draw(GL_TRIANGLES, 0);
 	/* programs[0].use(); */
 
 	/* srand(42); */

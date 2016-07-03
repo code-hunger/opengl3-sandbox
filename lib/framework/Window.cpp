@@ -1,6 +1,6 @@
+#include "Window.h"
 #include "Renderer.h"
 #include "State.h"
-#include "Window.h"
 #include "config.h"
 
 #include <GL/glew.h>
@@ -83,7 +83,7 @@ Window::Window() : window(createWindow("First Window Title"))
 	printf("Window constructed!\n");
 }
 
-void Window::run(const Renderer& renderer)
+void Window::run(const Renderer &renderer)
 {
 	printf("Start running!\n");
 
