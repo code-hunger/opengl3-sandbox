@@ -15,7 +15,7 @@ class Game : public Renderer
 public:
 	Game();
 	virtual ~Game();
-	void render(double deltaTime, const State &state) const;
+	void render(double deltaTime, State &state) const;
 
 	Game(const Game &) = delete;
 	Game operator=(const Game &) = delete;

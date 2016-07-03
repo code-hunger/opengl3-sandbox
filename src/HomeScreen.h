@@ -11,7 +11,7 @@ public:
 	HomeScreen();
 	virtual ~HomeScreen();
 
-	void update(double deltaTime, const State &state);
+	void update(double deltaTime, State &state);
 	void render(double deltaTime, const State &state);
 
 private:

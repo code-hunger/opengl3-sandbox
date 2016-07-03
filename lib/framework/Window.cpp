@@ -91,9 +91,9 @@ void Window::run(const Renderer &renderer)
 	glViewport(0, 0, width, height);
 	glClearColor(1, 1, 1, 0);
 
-	State state{0, 0, &(keys[0])};
+	State state{0, 0, 0, &(keys[0])};
 
-	while (!glfwWindowShouldClose(window)) {
+	while (!state.shouldClose && !glfwWindowShouldClose(window)) {
 		double time = glfwGetTime(), deltaTime = time - prevTime;
 		prevTime = time;
 
@@ -128,11 +128,6 @@ void Window::updateSize()
 
 void Window::keyCallback(int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, GL_TRUE);
-		return;
-	}
-
 	if (GLFW_PRESS == action) {
 		keys[key] = true;
 	} else if (GLFW_RELEASE == action) {

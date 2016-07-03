@@ -4,7 +4,7 @@
 #include "State.h"
 
 struct Renderer {
-	virtual void render(double deltaTime, const State &) const = 0;
+	virtual void render(double deltaTime, State &) const = 0;
 	virtual ~Renderer(){};
 };
 

@@ -2,6 +2,7 @@
 #include "Shader.h"
 #include "config.h"
 #include "utils.h"
+#include <GLFW/glfw3.h>
 #include <cstdio>
 
 inline VertexArray getVa()
@@ -31,25 +32,20 @@ HomeScreen::HomeScreen() : va(getVa())
 	shaderProgram.link();
 }
 
-void HomeScreen::update(double deltaTime, const State &state) {}
+void HomeScreen::update(const double deltaTime, State &state)
+{
+	if (state.keys[GLFW_KEY_ESCAPE]) {
+		state.shouldClose = true;
+	}
+}
 
-void HomeScreen::render(double deltaTime, const State &state)
+void HomeScreen::render(const double deltaTime, const State &state)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	(void)deltaTime;
-	(void)state;
 
 	shaderProgram.use();
 
 	va.draw(GL_TRIANGLES, 0);
-	/* programs[0].use(); */
-
-	/* srand(42); */
-
-	/* vertArrays[2].draw(GL_TRIANGLES, 0); */
-
-	/* vertArrays[2].draw(GL_TRIANGLES, 0); */
 }
 
 HomeScreen::~HomeScreen() {}

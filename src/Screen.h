@@ -7,7 +7,7 @@ class Screen
 {
 public:
 	Screen() {}
-	virtual void update(double deltaTime, const State &state) = 0;
+	virtual void update(double deltaTime, State &state) = 0;
 	virtual void render(double deltaTime, const State &state) = 0;
 	virtual ~Screen(){};
 };

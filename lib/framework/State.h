@@ -3,7 +3,7 @@
 
 struct State {
 	int mouseX, mouseY;
-	bool *const keys;
+	bool shouldClose, *const keys;
 };
 
 #endif /* end of include guard: STATE_H_CODY3JAM */
