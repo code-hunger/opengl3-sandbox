@@ -16,7 +16,7 @@ int main()
 		printf("Something bad happened. Code %d\n", e);
 		return e;
 	} catch (const char *e) {
-		printf("Something bad happened. Error text:\n%s\n", e);
+		printf("Something bad happened. Error text: %s\n", e);
 		return EXIT_FAILURE;
 	}
 
