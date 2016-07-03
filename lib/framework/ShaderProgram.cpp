@@ -1,9 +1,10 @@
 #include "ShaderProgram.h"
 
-ShaderProgram::ShaderProgram(GLuint vertexShaderId, GLuint fragmentShaderId)
+void ShaderProgram::attachShader(GLuint shaderId) const
 {
-	glAttachShader(id, vertexShaderId);
-	glAttachShader(id, fragmentShaderId);
+	if (!glIsShader(shaderId)) throw "This is not a shader!";
+
+	glAttachShader(id, shaderId);
 }
 
 void ShaderProgram::link() const
@@ -17,7 +18,7 @@ void ShaderProgram::link() const
 	}
 }
 
-void ShaderProgram::getInfoLog(char *infoLog)
+void ShaderProgram::getInfoLog(char *infoLog) const
 {
 	glGetProgramInfoLog(id, 512, NULL, infoLog);
 }

@@ -13,7 +13,7 @@ Shader::~Shader()
 {
 	printf("Shader destruction. Delete shader!\n");
 	glDeleteShader(id);
-} // @TODO: should it be virual or not?
+}
 
 void Shader::compile()
 {

@@ -1,13 +1,11 @@
-#ifndef SHADER_H
-#define SHADER_H
+#ifndef SHADER_H_837DGZOX
+#define SHADER_H_837DGZOX
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <string>
 
-class Shader
-{
-public:
+struct Shader {
 	const GLuint id;
 	const GLenum type;
 
@@ -22,4 +20,4 @@ public:
 	void operator=(const Shader &) = delete;
 };
 
-#endif /* SHADER_H */
+#endif /* end of include guard: SHADER_H_837DGZOX */

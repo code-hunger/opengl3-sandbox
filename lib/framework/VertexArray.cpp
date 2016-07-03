@@ -1,4 +1,3 @@
-#include <GL/glew.h>
 #include <cstdio>
 
 #include "VertexArray.h"

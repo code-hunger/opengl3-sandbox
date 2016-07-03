@@ -12,7 +12,7 @@ configure_file (
 
 include_directories(${PROJECT_SOURCE_DIR}/lib/framework)
 
-add_executable(game src/main.cpp)
+add_executable(game src/main.cpp src/Game.cpp)
 target_link_libraries (game Framework GL GLU glfw GLEW)
 
 add_subdirectory(lib/framework)

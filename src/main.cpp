@@ -1,13 +1,21 @@
 #include <cstdio>
 
+#include "Shader.h"
+#include "ShaderProgram.h"
+#include "VertexArray.h"
 #include "Window.h"
+#include "config.h"
+#include <GL/glew.h>
+#include "Game.h"
 
 int main()
 {
 	try {
-		Window::setHints();
+		Window::prepareOpenGL();
 		Window window;
-		window.run();
+
+        Game game;
+		window.run(game);
 	} catch (int e) {
 		printf("Something bad happened. Code %d\n", e);
 		return e;

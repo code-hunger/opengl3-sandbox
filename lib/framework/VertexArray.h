@@ -2,6 +2,7 @@
 #define VERTEX_ARRAY
 
 #include <vector>
+#include "GL/glew.h" // GL-types
 using std::vector;
 
 class VertexArray

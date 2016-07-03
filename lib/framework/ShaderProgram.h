@@ -1,5 +1,5 @@
-#ifndef SHADER_PROGRAM_H
-#define SHADER_PROGRAM_H
+#ifndef SHADER_PROGRAM_H_IKLFSRJ5
+#define SHADER_PROGRAM_H_IKLFSRJ5
 
 #include <GL/glew.h>
 #include <string>
@@ -7,17 +7,17 @@
 struct ShaderProgram {
 	const GLuint id{glCreateProgram()};
 
-	ShaderProgram(GLuint vertexShaderId, GLuint fragmentShaderId);
-
 	void link() const;
 
-	void getInfoLog(char *infoLog); // 512 long
+	void attachShader(GLuint shaderId) const;
+
+	void getInfoLog(char *infoLog) const; // 512 long
 
 	void use() const;
-	~ShaderProgram() {}
+	/* virtual ~ShaderProgram() {} */
 
-	/* ShaderProgram(const ShaderProgram &) = delete; */
+	/* Shader ShaderProgram(const ShaderProgram &) = delete; */
 	/* void operator=(const ShaderProgram &) = delete; */
 };
 
-#endif /* SHADER_PROGRAM_H */
+#endif /* end of include guard: SHADER_PROGRAM_H_IKLFSRJ5 */
