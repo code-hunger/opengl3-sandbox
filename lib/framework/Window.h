@@ -23,7 +23,7 @@ protected:
 
 	static bool hintsSet;
 
-	bool keys[1024];
+	bool keys[1024]{false};
 
 	GLubyte width = 0, height = 0;
 	void updateSize();
