@@ -72,8 +72,6 @@ Window::Window() : window(createWindow("First Window Title"))
 		    ->keyCallback(key, scancode, action, mods);
 	});
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
 	printf("Window constructed!\n");
 }
 
