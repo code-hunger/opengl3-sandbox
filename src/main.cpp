@@ -1,11 +1,7 @@
 #include <cstdio>
 
 #include "Game.h"
-#include "Shader.h"
-#include "ShaderProgram.h"
-#include "VertexArray.h"
 #include "Window.h"
-#include "config.h"
 #include <GL/glew.h>
 
 int main()

@@ -14,12 +14,6 @@
 #define HEIGHT 766
 #define PRINT_FPS
 
-// clang-format off
-#define float(a) static_cast<float>(a)
-// clang-format on
-#define setMVP(mvpLoc, mvp)                                                    \
-	glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, glm::value_ptr(mvp))
-
 bool Window::hintsSet = false;
 
 void Window::prepareOpenGL()
@@ -29,8 +23,7 @@ void Window::prepareOpenGL()
 	}
 
 	glfwSetErrorCallback([](int code, const char *desc) {
-		fprintf(stderr, "Error callback. Code: %d, description: %s", code,
-		        desc);
+		fprintf(stderr, "GLFW error #%d: %s", code, desc);
 		throw "Error callback called!";
 	});
 
@@ -54,8 +47,9 @@ Window::Window() : window(createWindow("First Window Title"))
 		throw "A window could not be created!";
 	}
 
-	// Window::setHints must be called before constructing a Window, otherwise
-	// OpenGL doesn't work
+	// Window::prepareOpenGL must be called before constructing a Window,
+	// otherwise OpenGL doesn't work
+
 	assert(hintsSet);
 
 	glfwMakeContextCurrent(window);
@@ -97,7 +91,7 @@ void Window::run(const Renderer &renderer)
 	updateSize();
 
 	glViewport(0, 0, width, height);
-	glClearColor(1, 1.f, 1, 0);
+	glClearColor(1, 1, 1, 0);
 
 	State state{0, 0, &(keys[0])};
 
@@ -108,7 +102,7 @@ void Window::run(const Renderer &renderer)
 		++frames;
 #ifdef PRINT_FPS
 		if (time - last_time_check >= 1) {
-			printf("\t %f since last check", frames / (time - last_time_check));
+			printf("%f since last check\n", frames / (time - last_time_check));
 			last_time_check = glfwGetTime();
 			frames = 0;
 		}
@@ -123,7 +117,7 @@ void Window::run(const Renderer &renderer)
 
 		renderer.render(deltaTime, state);
 	}
-	printf("Stop running!\n");
+	printf("Main loop end: stop running!\n");
 }
 
 void Window::updateSize()
