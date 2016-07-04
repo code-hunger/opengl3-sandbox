@@ -1,6 +1,6 @@
 #include "Game.h"
 
-#include "screens/HomeScreen.h"
+#include "HomeScreen.h"
 #include "Shader.h"
 #include "ShaderProgram.h"
 #include "VertexArray.h"

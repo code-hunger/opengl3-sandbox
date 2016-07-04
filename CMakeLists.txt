@@ -11,6 +11,7 @@ configure_file (
   )
 
 include_directories(${PROJECT_SOURCE_DIR}/lib/framework)
+include_directories(${PROJECT_SOURCE_DIR}/src/include)
 
 file(GLOB SOURCES_RECURSIVE "src/**/*.cpp")
 file(GLOB SOURCES "src/*.cpp")
