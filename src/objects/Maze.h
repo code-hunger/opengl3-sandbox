@@ -6,16 +6,6 @@
 
 #include <unordered_set>
 
-/* namespace std */
-/* { */
-/* template <> struct hash<WeightLine2> { */
-/* 	size_t operator()(const WeightLine2 &line) const */
-/* 	{ */
-/* 		return static_cast<unsigned>(line.len_squared()); */
-/* 	} */
-/* }; */
-/* } */
-
 struct Hash {
 	size_t operator()(const WeightLine2 &line) const
 	{

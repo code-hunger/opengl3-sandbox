@@ -10,11 +10,7 @@ inline VertexArray generateVertArr(Lines lines)
 		points[i++] = line.a.y;
 		points[i++] = line.b.x;
 		points[i++] = line.b.y;
-		printf("This line: %dx%d to %dx%d\n", line.a.x, line.a.y, line.b.x,
-		       line.b.y);
 	}
-
-	printf("Count: %d\n", i);
 
 	VertexArray va(&(points[0]), i);
 	va.build(2, false);
