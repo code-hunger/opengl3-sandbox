@@ -7,15 +7,23 @@
 
 inline VertexArray getVa()
 {
+    puts("Creating vertex array for the triangle...");
 	GLfloat points[] = {0, 0, 1, 1, 0, 1};
-
-	VertexArray va{points, sizeof points};
-	va.build(2, false);
-
-	return va;
+	return {points, sizeof (points)/sizeof (GLfloat)};
 }
 
-HomeScreen::HomeScreen() : va(getVa())
+inline Maze getMaze()
+{
+	Lines lines;
+	WeightLine2 line;
+	line = {{1, 0}, 1, {-3, 1}, 1};
+	lines.insert(Lines::value_type(line));
+	line = {{-1, 1}, 1, {-4, 2}, 1};
+	lines.insert(Lines::value_type(line));
+	return {lines};
+}
+
+HomeScreen::HomeScreen() : va(getVa()), maze(getMaze())
 {
 	printf("Creating shader programms...\n");
 
@@ -30,6 +38,8 @@ HomeScreen::HomeScreen() : va(getVa())
 	shaderProgram.attachShader(vert_sh.id);
 	shaderProgram.attachShader(frag_sh.id);
 	shaderProgram.link();
+
+	va.build(2, false);
 }
 
 void HomeScreen::update(const double deltaTime, State &state)
@@ -46,6 +56,7 @@ void HomeScreen::render(const double deltaTime, const State &state)
 	shaderProgram.use();
 
 	va.draw(GL_TRIANGLES);
+	maze.draw();
 }
 
 HomeScreen::~HomeScreen() {}

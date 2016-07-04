@@ -4,6 +4,7 @@
 #include "Screen.h"
 #include "ShaderProgram.h"
 #include "VertexArray.h"
+#include "../objects/Maze.h"
 
 class HomeScreen : public Screen
 {
@@ -17,6 +18,7 @@ public:
 private:
 	ShaderProgram shaderProgram{};
 	VertexArray va;
+    Maze maze;
 };
 
 #endif /* end of include guard: HOMESCREEN_H_A3CBSROG */
