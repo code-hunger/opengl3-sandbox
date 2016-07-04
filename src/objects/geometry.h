@@ -2,7 +2,7 @@
 #define GEOMETRY_H_NTEYZYI7
 
 struct Point2 {
-	int x, y;
+	short int x, y;
 
 	inline bool operator==(const Point2 other) const
 	{
