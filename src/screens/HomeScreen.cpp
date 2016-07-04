@@ -1,29 +1,33 @@
 #include "HomeScreen.h"
 #include "Shader.h"
 #include "config.h"
+#include "geometry_io.h"
 #include "utils.h"
 #include <GLFW/glfw3.h>
 #include <cstdio>
+#include <fstream>
 
 inline VertexArray getVa()
 {
-    puts("Creating vertex array for the triangle...");
+	puts("Creating vertex array for the triangle...");
 	GLfloat points[] = {0, 0, 1, 1, 0, 1};
-	return {points, sizeof (points)/sizeof (GLfloat)};
+	return {points, sizeof(points) / sizeof(GLfloat)};
 }
 
-inline Maze getMaze()
+Maze getMazeFromFile(const char *fileName = MAZE_DIRECTORY "/maze1.txt")
 {
-	Lines lines;
+	puts("Get maze from file!");
+	std::ifstream input(fileName);
 	WeightLine2 line;
-	line = {{1, 0}, 1, {-3, 1}, 1};
-	lines.insert(Lines::value_type(line));
-	line = {{-1, 1}, 1, {-4, 2}, 1};
-	lines.insert(Lines::value_type(line));
+	Lines lines;
+	while (input >> line) {
+		puts("Fetching maze line...");
+		lines.insert(Lines::value_type(line));
+	}
 	return {lines};
 }
 
-HomeScreen::HomeScreen() : va(getVa()), maze(getMaze())
+HomeScreen::HomeScreen() : va(getVa()), maze(getMazeFromFile())
 {
 	printf("Creating shader programms...\n");
 

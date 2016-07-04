@@ -4,6 +4,7 @@ project (game)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wdouble-promotion -Wconversion -Wsign-conversion -Wlogical-op -Wabi  -Wctor-dtor-privacy -Wnon-virtual-dtor  -Wreorder -Weffc++  -Wstrict-null-sentinel -Wno-non-template-friend -Wold-style-cast -Woverloaded-virtual -Wno-pmf-conversions -Wsign-promo -Wno-error=unused-variable")
 
 set(SHADER_DIRECTORY ${PROJECT_SOURCE_DIR}/src/shaders)
+set(MAZE_DIRECTORY ${PROJECT_SOURCE_DIR}/data/mazes)
 
 configure_file (
     "${PROJECT_SOURCE_DIR}/src/config.h.in"
