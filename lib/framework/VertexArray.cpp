@@ -25,10 +25,11 @@ void VertexArray::build(GLushort dimention, bool hasColor)
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
-	initBuffer(GL_ARRAY_BUFFER, points.size(), points.data(), &VBO);
+	initBuffer(GL_ARRAY_BUFFER, points.size() * sizeof(points[0]),
+	           points.data(), &VBO);
 	if (indices.size() > 0) {
-		initBuffer(GL_ELEMENT_ARRAY_BUFFER, indices.size(), indices.data(),
-		           &EBO);
+		initBuffer(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]),
+		           indices.data(), &EBO);
 	}
 
 	unsigned stride = dimention;
