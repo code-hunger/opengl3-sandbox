@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "Renderer.h"
-#include "Screen.h"
+#include "screens/Screen.h"
 #include "ShaderProgram.h"
 #include "State.h"
 #include "VertexArray.h"
