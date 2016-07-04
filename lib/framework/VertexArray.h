@@ -3,6 +3,7 @@
 
 #include "GL/glew.h" // GL-types
 #include <vector>
+#include <cstdio>
 using std::vector;
 
 class VertexArray
