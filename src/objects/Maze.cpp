@@ -19,6 +19,6 @@ inline VertexArray generateVertArr(Lines lines)
 
 Maze::Maze(Lines paths) : paths(paths), vertArray(generateVertArr(paths)) {}
 
-void Maze::draw() { vertArray.draw(GL_LINES); }
+void Maze::draw() { vertArray.draw(GL_TRIANGLE_FAN); }
 
 Maze::~Maze() {}
