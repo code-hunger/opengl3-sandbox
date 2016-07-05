@@ -56,6 +56,7 @@ void HomeScreen::update(const double deltaTime, State &state)
 void HomeScreen::render(const double deltaTime, const State &state)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	maze.draw(GL_LINES);
 }
 
 HomeScreen::~HomeScreen() {}
