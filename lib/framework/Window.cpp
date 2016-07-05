@@ -122,8 +122,8 @@ void Window::updateSize()
 {
 	int w, h;
 	glfwGetFramebufferSize(window, &w, &h);
-	width = static_cast<GLubyte>(w);
-	height = static_cast<GLubyte>(h);
+	width = static_cast<GLushort>(w);
+	height = static_cast<GLushort>(h);
 }
 
 void Window::keyCallback(int key, int scancode, int action, int mods)

@@ -25,7 +25,7 @@ protected:
 
 	bool keys[1024]{false};
 
-	GLubyte width = 0, height = 0;
+	GLushort width = 0, height = 0;
 	void updateSize();
 
 	bool shouldClose() const;
