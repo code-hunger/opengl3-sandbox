@@ -17,7 +17,6 @@ public:
 
 private:
 	ShaderProgram shaderProgram{};
-	VertexArray va;
 	Maze maze;
 };
 

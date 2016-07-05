@@ -6,13 +6,9 @@
 #include <GLFW/glfw3.h>
 #include <cstdio>
 #include <fstream>
-
-inline VertexArray getVa()
-{
-	puts("Creating vertex array for the triangle...");
-	GLfloat points[] = {0, 0, 1, 1, 0, 1};
-	return {points, sizeof(points) / sizeof(GLfloat)};
-}
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 Maze getMazeFromFile(const char *fileName = MAZE_DIRECTORY "/maze1.txt")
 {
@@ -27,7 +23,7 @@ Maze getMazeFromFile(const char *fileName = MAZE_DIRECTORY "/maze1.txt")
 	return {lines};
 }
 
-HomeScreen::HomeScreen() : va(getVa()), maze(getMazeFromFile())
+HomeScreen::HomeScreen() : maze(getMazeFromFile())
 {
 	printf("Creating shader programms...\n");
 
@@ -43,7 +39,11 @@ HomeScreen::HomeScreen() : va(getVa()), maze(getMazeFromFile())
 	shaderProgram.attachShader(frag_sh.id);
 	shaderProgram.link();
 
-	va.build(2, false);
+	glm::mat4 proj = glm::ortho(0.f, 100.f, 0.f, 66.f, 0.1f, -.1f);
+	GLfloat *matrix = glm::value_ptr(proj);
+
+	shaderProgram.use();
+	shaderProgram.setUniformMatrix("model_view_projection", matrix);
 }
 
 void HomeScreen::update(const double deltaTime, State &state)
@@ -56,11 +56,6 @@ void HomeScreen::update(const double deltaTime, State &state)
 void HomeScreen::render(const double deltaTime, const State &state)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	shaderProgram.use();
-
-	va.draw(GL_TRIANGLES);
-	maze.draw();
 }
 
 HomeScreen::~HomeScreen() {}

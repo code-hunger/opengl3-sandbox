@@ -7,6 +7,6 @@ out vec3 vertexColor;
 uniform mat4 model_view_projection;
 
 void main() {
-    gl_Position =  vec4(position, 1.0f);
+    gl_Position = model_view_projection * vec4(position, 1.0f);
     vertexColor = color;
 } 

@@ -19,7 +19,7 @@ class Maze
 {
 public:
 	Maze(Lines paths);
-	void draw();
+	void draw(GLenum mode);
 	virtual ~Maze();
 
 private:

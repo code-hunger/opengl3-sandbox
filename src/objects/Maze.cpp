@@ -3,7 +3,7 @@
 inline VertexArray generateVertArr(Lines lines)
 {
 	puts("Generating vertex array for the maze\n");
-	float points[10 * 2] = {0};
+	float points[100 * 3];
 	int i = 0;
 	for (const auto &line : lines) {
 		points[i++] = line.a.x;
@@ -19,6 +19,6 @@ inline VertexArray generateVertArr(Lines lines)
 
 Maze::Maze(Lines paths) : paths(paths), vertArray(generateVertArr(paths)) {}
 
-void Maze::draw() { vertArray.draw(GL_TRIANGLE_FAN); }
+void Maze::draw(GLenum mode) { vertArray.draw(mode); }
 
 Maze::~Maze() {}
