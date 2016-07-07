@@ -2,7 +2,7 @@
 #define GEOMETRY_H_NTEYZYI7
 
 struct Point2 {
-	short int x, y;
+	float x, y;
 
 	inline bool operator==(const Point2 other) const
 	{
@@ -27,12 +27,10 @@ struct Line2 {
 };
 
 struct WeightLine2 {
-	Point2 a;
-	int weight_a;
-	Point2 b;
-	int weight_b;
+	Point2 a, b;
+	short int weight_a, weight_b;
 
-	int len() const
+	float len() const
 	{
 		return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
 	}
