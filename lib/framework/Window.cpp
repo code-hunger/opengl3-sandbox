@@ -10,9 +10,9 @@
 #include <cstdio>
 #include <cstdlib>
 
-#define WIDTH 766
+#define WIDTH 1200
 #define HEIGHT 766
-#define PRINT_FPS
+/* #define PRINT_FPS */
 
 bool Window::hintsSet = false;
 
@@ -38,7 +38,7 @@ void Window::prepareOpenGL()
 
 inline GLFWwindow *createWindow(const char *title)
 {
-	return glfwCreateWindow(HEIGHT, WIDTH, title, NULL, NULL);
+	return glfwCreateWindow(WIDTH, HEIGHT, title, NULL, NULL);
 }
 
 Window::Window() : window(createWindow("First Window Title"))
