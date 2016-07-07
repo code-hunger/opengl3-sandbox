@@ -23,7 +23,7 @@ void Window::prepareOpenGL()
 	}
 
 	glfwSetErrorCallback([](int code, const char *desc) {
-		fprintf(stderr, "GLFW error #%d: %s", code, desc);
+		fprintf(stderr, "GLFW error #%d: %s\n", code, desc);
 		throw "Error callback called!";
 	});
 
