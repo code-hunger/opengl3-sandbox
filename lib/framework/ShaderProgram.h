@@ -2,11 +2,13 @@
 #define SHADER_PROGRAM_H_IKLFSRJ5
 
 #include <GL/glew.h>
-#include <string>
 #include <unordered_map>
 
 struct ShaderProgram {
 	const GLuint id{glCreateProgram()};
+
+	// const char* instead of std::string because it's hard-coded in the program
+	// and doesn't need any special pointer-handling (like delete[])
 	std::unordered_map<const char *, GLint> uniforms;
 
 	void link() const;
