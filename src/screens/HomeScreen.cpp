@@ -48,6 +48,7 @@ HomeScreen::HomeScreen() : maze(getMazeFromFile())
 
 void HomeScreen::update(const double deltaTime, State &state)
 {
+	(void)deltaTime;
 	if (state.keys[GLFW_KEY_ESCAPE]) {
 		state.shouldClose = true;
 	}
@@ -55,6 +56,8 @@ void HomeScreen::update(const double deltaTime, State &state)
 
 void HomeScreen::render(const double deltaTime, const State &state)
 {
+	(void)deltaTime;
+	(void)state;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	maze.draw(GL_LINES);
 }
