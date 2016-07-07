@@ -30,7 +30,7 @@ struct WeightLine2 {
 	Point2 a, b;
 	short int weight_a, weight_b;
 
-	float len() const
+	float calcSquaredLen() const
 	{
 		return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
 	}

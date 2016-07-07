@@ -9,7 +9,7 @@
 struct Hash {
 	size_t operator()(const WeightLine2 &line) const
 	{
-		return static_cast<size_t>(line.a.x * line.a.y + line.len());
+		return static_cast<size_t>(line.a.x * line.a.y + line.calcSquaredLen());
 	}
 };
 
