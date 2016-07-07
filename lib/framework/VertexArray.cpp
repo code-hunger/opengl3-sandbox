@@ -2,8 +2,14 @@
 
 #include "VertexArray.h"
 
-void VertexArray::initBuffer(GLenum type, GLulong size, void *data,
-                             GLuint *buffer)
+VertexArray::VertexArray(const float *points, int p_count,
+                         const unsigned *indices, int i_count)
+    : points(points, points + p_count), indices(indices, indices + i_count)
+{
+}
+
+void VertexArray::initBuffer(GLenum type, GLulong size, const void *data,
+                             GLuint *buffer) const
 {
 	glGenBuffers(1, buffer);
 	glBindBuffer(type, *buffer);
@@ -11,7 +17,7 @@ void VertexArray::initBuffer(GLenum type, GLulong size, void *data,
 }
 
 void VertexArray::enableVertexArray(GLuint location, GLint size, GLenum type,
-                                    GLuint stride, GLuint start)
+                                    GLuint stride, GLuint start) const
 {
 	glVertexAttribPointer(location, size, type, GL_FALSE,
 	                      static_cast<GLsizei>(stride * sizeof type),
@@ -35,10 +41,10 @@ void VertexArray::build(GLushort dimention, bool hasColor)
 	unsigned stride = dimention;
 	if (hasColor) stride += 3; // color has 3 components
 
-	enableVertexArray(0, dimention, stride, 0);
+	enableVertexArray(0, dimention, GL_FLOAT, stride, 0);
 
 	if (hasColor) {
-		enableVertexArray(1, dimention, stride, dimention);
+		enableVertexArray(1, dimention, GL_FLOAT, stride, dimention);
 	}
 
 	glBindVertexArray(0); // unbind
@@ -49,9 +55,13 @@ void VertexArray::draw(GLenum mode, GLulong start, GLsizei count) const
 {
 	glBindVertexArray(VAO);
 	if (indices.size()) {
+		if (count == 0) count = static_cast<signed>(indices.size());
+
 		glDrawElements(mode, count, GL_UNSIGNED_INT,
 		               reinterpret_cast<GLvoid *>(start));
 	} else {
+		if (count == 0) count = static_cast<signed>(points.size());
+
 		glDrawArrays(mode, static_cast<signed>(start), count);
 	}
 	glBindVertexArray(0);

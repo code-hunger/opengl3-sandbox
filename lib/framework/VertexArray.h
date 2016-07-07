@@ -2,51 +2,31 @@
 #define VERTEX_ARRAY
 
 #include "GL/glew.h" // GL-types
-#include <vector>
 #include <cstdio>
+#include <vector>
 using std::vector;
 
 class VertexArray
 {
-public:
-	VertexArray(float *points, int p_count, unsigned *indices, int i_count)
-	    : points(points, points + p_count), indices(indices, indices + i_count)
-	{
-		printf("Vertex array ctor initialized successfully!\n");
-	};
+	const vector<float> points;
+	const vector<unsigned> indices;
+	GLuint VAO = 0, VBO = 0, EBO = 0;
+	void initBuffer(GLenum type, GLulong size, const GLvoid *data,
+	                GLuint *buffer) const;
 
-	VertexArray(float *points, int point_count)
-	    : points(points, points + point_count), indices()
-	{
-		printf("Vertex array ctor initialized successfully!\n");
-	};
+	void enableVertexArray(GLuint loc, GLint size, GLenum type, GLuint stride,
+	                       GLuint start) const;
+
+public:
+	VertexArray(const float *points, int point_count,
+	            const unsigned *indices = NULL, int indices_count = 0);
 
 	void build(GLushort dimention, bool hasColor = true);
 
-	void draw(GLenum mode, GLulong start, GLsizei count) const;
-	void draw(GLenum mode, GLulong start = 0) const
-	{
-		if (indices.size())
-			draw(mode, start, static_cast<signed>(indices.size()));
-		else
-			draw(mode, start, static_cast<signed>(points.size()));
-	}
+	void draw(GLenum mode, GLulong start = 0, GLsizei count = 0) const;
 
-	GLuint getVAO() { return VAO; }
+	GLuint getVAO() const { return VAO; }
 	virtual ~VertexArray();
-
-private:
-	vector<float> points;
-	vector<unsigned> indices;
-	GLuint VAO = 0, VBO = 0, EBO = 0;
-	void initBuffer(GLenum type, GLulong size, GLvoid *data, GLuint *buffer);
-
-	void enableVertexArray(GLuint loc, GLint size, GLenum type, GLuint stride,
-	                       GLuint start);
-	void enableVertexArray(GLuint loc, GLint size, GLuint stride, GLuint start)
-	{
-		enableVertexArray(loc, size, GL_FLOAT, stride, start);
-	}
 };
 
 #endif /* end of include guard: VERTEX_ARRAY */
