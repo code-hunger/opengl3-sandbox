@@ -4,7 +4,7 @@
 struct Point2 {
 	float x, y;
 
-	inline bool operator==(const Point2 other) const
+	inline bool operator==(const Point2 &other) const
 	{
 		return this->x == other.x && this->y == other.y;
 	}
@@ -28,17 +28,19 @@ struct Line2 {
 
 struct WeightLine2 {
 	Point2 a, b;
-	short int weight_a, weight_b;
+	short int weight_a, weight_b; // Would it be better to call it thikness?
 
 	float calcSquaredLen() const
 	{
 		return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
 	}
 
-	inline bool operator==(const WeightLine2 other) const
+	inline bool operator==(const WeightLine2 &other) const
 	{
-		return (this->a == other.a && this->b == other.b) ||
-		       (this->a == other.b && this->b == other.a);
+		return ((this->a == other.a && this->b == other.b) ||
+		        (this->a == other.b && this->b == other.a)) &&
+		       (this->weight_a == other.weight_a &&
+		        this->weight_b == other.weight_b);
 	}
 };
 
