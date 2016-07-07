@@ -1,9 +1,14 @@
 #include "Maze.h"
+#include <assert.h>
+#define MAX_LINES 10
 
 inline VertexArray generateVertArr(Lines lines)
 {
 	puts("Generating vertex array for the maze\n");
-	float points[100 * 3];
+
+    assert(lines.size() <= MAX_LINES);
+	float points[MAX_LINES * 4];
+
 	int i = 0;
 	for (const auto &line : lines) {
 		points[i++] = line.a.x;
