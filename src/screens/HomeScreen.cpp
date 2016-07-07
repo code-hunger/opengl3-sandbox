@@ -40,7 +40,7 @@ HomeScreen::HomeScreen() : maze(getMazeFromFile())
 	shaderProgram.link();
 
 	glm::mat4 proj = glm::ortho(0.f, 100.f, 0.f, 66.f, 0.1f, -.1f);
-	GLfloat *matrix = glm::value_ptr(proj);
+	const GLfloat * const matrix = glm::value_ptr(proj);
 
 	shaderProgram.use();
 	shaderProgram.setUniformMatrix("model_view_projection", matrix);
