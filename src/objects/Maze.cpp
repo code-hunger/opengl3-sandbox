@@ -4,7 +4,7 @@
 #define MAX_LINES 10
 #define PI 3.141592653589793
 
-inline VertexArray generateVertArr(Lines lines)
+VertexArray generateVertArr(Lines lines)
 {
 	assert(lines.size() <= MAX_LINES);
 	puts("Generating vertex array for the maze\n");
@@ -21,23 +21,28 @@ inline VertexArray generateVertArr(Lines lines)
 		      deltaYA = line.weight_a * angle_cos,
 		      deltaYB = line.weight_b * angle_cos;
 
-		points[i++] = line.a.x + deltaXA;
-		points[i++] = line.a.y - deltaYA;
+		Line2 upper{line.a.x + deltaXA, line.a.y - deltaYA, line.b.x + deltaXB,
+		            line.b.y - deltaYB},
+		    lower{line.b.x - deltaXB, line.b.y + deltaYB, line.a.x - deltaXA,
+		          line.a.y + deltaYA};
 
-		points[i++] = line.b.x + deltaXB;
-		points[i++] = line.b.y - deltaYB;
+		points[i++] = upper.a.x;
+		points[i++] = upper.a.y;
 
-		points[i++] = line.b.x - deltaXB;
-		points[i++] = line.b.y + deltaYB;
+		points[i++] = upper.b.x;
+		points[i++] = upper.b.y;
 
-		points[i++] = line.a.x - deltaXA;
-		points[i++] = line.a.y + deltaYA;
+		points[i++] = lower.a.x;
+		points[i++] = lower.a.y;
 
-		points[i++] = line.a.x;
-		points[i++] = line.a.y;
+		points[i++] = lower.b.x;
+		points[i++] = lower.b.y;
 
-		points[i++] = line.b.x;
-		points[i++] = line.b.y;
+		/* points[i++] = line.a.x; */
+		/* points[i++] = line.a.y; */
+
+		/* points[i++] = line.b.x; */
+		/* points[i++] = line.b.y; */
 	}
 
 	VertexArray va(&(points[0]), i);
