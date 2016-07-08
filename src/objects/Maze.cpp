@@ -1,10 +1,11 @@
 #include "Maze.h"
 #include <cassert>
 #include <cmath>
+
 #define MAX_LINES 10
 #define PI 3.141592653589793
 
-VertexArray generateVertArr(Lines lines)
+Maze Maze::fromPaths(Lines lines)
 {
 	assert(lines.size() <= MAX_LINES);
 	puts("Generating vertex array for the maze\n");
@@ -44,14 +45,13 @@ VertexArray generateVertArr(Lines lines)
 		/* points[i++] = line.b.x; */
 		/* points[i++] = line.b.y; */
 	}
+    Lines walls;
 
 	VertexArray va(&(points[0]), i);
 	va.build(2, false);
-	return va;
-}
 
-Maze::Maze(Lines paths) : paths(paths), vertArray(generateVertArr(paths)) {}
+	return {lines, walls, va};
+}
 
 void Maze::draw(GLenum mode) { vertArray.draw(mode); }
 
-Maze::~Maze() {}

@@ -5,7 +5,6 @@
 #include "utils.h"
 #include <GLFW/glfw3.h>
 #include <cstdio>
-#include <fstream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -20,7 +19,7 @@ Maze getMazeFromFile(const char *fileName = MAZE_DIRECTORY "/maze1.txt")
 		puts("Fetching maze line...");
 		lines.insert(Lines::value_type(line));
 	}
-	return {lines};
+	return Maze::fromPaths(lines);
 }
 
 HomeScreen::HomeScreen() : maze(getMazeFromFile())

@@ -15,16 +15,12 @@ struct Hash {
 
 typedef std::unordered_set<WeightLine2, Hash> Lines;
 
-class Maze
-{
-public:
-	Maze(Lines paths);
-	void draw(GLenum mode);
-	virtual ~Maze();
-
-private:
-	Lines paths;
+struct Maze {
+	Lines paths, walls;
 	VertexArray vertArray;
+
+	void draw(GLenum mode);
+	static Maze fromPaths(Lines paths);
 };
 
 #endif /* end of include guard: MAZE_H_UAWB7QD4 */
