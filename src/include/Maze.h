@@ -7,13 +7,13 @@
 #include <unordered_set>
 
 struct Hash {
-	size_t operator()(const WeightLine2 &line) const
+	size_t operator()(const WideRoad2 &line) const
 	{
 		return static_cast<size_t>(line.a.x * line.a.y + line.calcSquaredLen());
 	}
 };
 
-typedef std::unordered_set<WeightLine2, Hash> Lines;
+typedef std::unordered_set<WideRoad2, Hash> Lines;
 
 struct Maze {
 	Lines paths, walls;

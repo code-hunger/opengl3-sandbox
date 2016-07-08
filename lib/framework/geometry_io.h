@@ -17,9 +17,9 @@ std::istream &operator>>(std::istream &in, Line2 &line)
 	return in >> line.a >> line.b;
 }
 
-std::istream &operator>>(std::istream &in, WeightLine2 &line)
+std::istream &operator>>(std::istream &in, WideRoad2 &line)
 {
-	return in >> line.a >> line.weight_a >> line.b >> line.weight_b;
+	return in >> line.a >> line.width_a >> line.b >> line.width_b;
 }
 
 #endif /* end of include guard: GEOMETRY_IO_H_W6BMNIRU */

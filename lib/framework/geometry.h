@@ -26,21 +26,21 @@ struct Line2 {
 	Point2 a, b;
 };
 
-struct WeightLine2 {
+struct WideRoad2 {
 	Point2 a, b;
-	short int weight_a, weight_b; // Would it be better to call it thikness?
+	short int width_a, width_b; // Would it be better to call it thikness?
 
 	float calcSquaredLen() const
 	{
 		return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
 	}
 
-	inline bool operator==(const WeightLine2 &other) const
+	inline bool operator==(const WideRoad2 &other) const
 	{
 		return ((this->a == other.a && this->b == other.b) ||
 		        (this->a == other.b && this->b == other.a)) &&
-		       (this->weight_a == other.weight_a &&
-		        this->weight_b == other.weight_b);
+		       (this->width_a == other.width_a &&
+		        this->width_b == other.width_b);
 	}
 };
 

@@ -13,7 +13,7 @@ Maze getMazeFromFile(const char *fileName = MAZE_DIRECTORY "/maze1.txt")
 {
 	puts("Get maze from file!");
 	std::ifstream input(fileName);
-	WeightLine2 line;
+	WideRoad2 line;
 	Lines lines;
 	while (input >> line) {
 		puts("Fetching maze line...");
