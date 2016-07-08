@@ -5,17 +5,18 @@
 #define MAX_LINES 10
 #define PI 3.141592653589793
 
-Maze Maze::fromPaths(Lines lines)
+Maze Maze::fromPaths(Ways paths)
 {
-	assert(lines.size() <= MAX_LINES);
-	puts("Generating vertex array for the maze\n");
+	assert(paths.size() <= MAX_LINES);
+	puts("Generating vertex array for the maze");
 
 	float points[MAX_LINES * 4 * 3];
 
-    Lines walls;
+	Lines walls;
 
 	int i = 0;
-	for (const auto &line : lines) {
+
+	for (const auto &line : paths) {
 		double line_angle = atan((line.b.y - line.a.y) / (line.b.x - line.a.x));
 		float angle_sin = static_cast<float>(sin(line_angle)),
 		      angle_cos = static_cast<float>(cos(line_angle)),
@@ -29,30 +30,42 @@ Maze Maze::fromPaths(Lines lines)
 		    lower{line.b.x - deltaXB, line.b.y + deltaYB, line.a.x - deltaXA,
 		          line.a.y + deltaYA};
 
-		points[i++] = upper.a.x;
-		points[i++] = upper.a.y;
+		bool noUpper = false, noLower = false;
 
-		points[i++] = upper.b.x;
-		points[i++] = upper.b.y;
+		for (const auto &other : walls) {
+			Point2 crossPoint;
 
-		points[i++] = lower.a.x;
-		points[i++] = lower.a.y;
+			if (other.intersectsWith(lower, &crossPoint)) {
+				noLower = true;
+			}
+			if (other.intersectsWith(upper, &crossPoint)) {
+				noUpper = true;
+			}
+		}
 
-		points[i++] = lower.b.x;
-		points[i++] = lower.b.y;
+		if (!noUpper) {
+			walls.insert(Lines::value_type(upper));
+			points[i++] = upper.a.x;
+			points[i++] = upper.a.y;
 
-		/* points[i++] = line.a.x; */
-		/* points[i++] = line.a.y; */
+			points[i++] = upper.b.x;
+			points[i++] = upper.b.y;
+		}
 
-		/* points[i++] = line.b.x; */
-		/* points[i++] = line.b.y; */
+		if (!noLower) {
+			walls.insert(Lines::value_type(lower));
+			points[i++] = lower.a.x;
+			points[i++] = lower.a.y;
+
+			points[i++] = lower.b.x;
+			points[i++] = lower.b.y;
+		}
 	}
 
 	VertexArray va(&(points[0]), i);
 	va.build(2, false);
 
-	return {lines, walls, va};
+	return {paths, walls, va};
 }
 
 void Maze::draw(GLenum mode) { vertArray.draw(mode); }
-

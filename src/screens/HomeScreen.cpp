@@ -14,10 +14,10 @@ Maze getMazeFromFile(const char *fileName = MAZE_DIRECTORY "/maze1.txt")
 	puts("Get maze from file!");
 	std::ifstream input(fileName);
 	WideRoad2 line;
-	Lines lines;
+	Ways lines;
 	while (input >> line) {
 		puts("Fetching maze line...");
-		lines.insert(Lines::value_type(line));
+		lines.insert(Ways::value_type(line));
 	}
 	return Maze::fromPaths(lines);
 }
@@ -39,7 +39,7 @@ HomeScreen::HomeScreen() : maze(getMazeFromFile())
 	shaderProgram.link();
 
 	glm::mat4 proj = glm::ortho(0.f, 100.f, 0.f, 66.f, 0.1f, -.1f);
-	const GLfloat * const matrix = glm::value_ptr(proj);
+	const GLfloat *const matrix = glm::value_ptr(proj);
 
 	shaderProgram.use();
 	shaderProgram.setUniformMatrix("model_view_projection", matrix);
