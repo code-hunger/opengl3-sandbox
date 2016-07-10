@@ -4,13 +4,13 @@
 #include "Window.h"
 #include <GL/glew.h>
 
-int main()
+int main(int argc, char **argv)
 {
 	try {
 		Window::prepareOpenGL();
 		Window window;
 
-		Game game;
+		Game game(argc >= 2 ? atoi(argv[1]) : 1);
 		window.run(game);
 	} catch (int e) {
 		printf("Something bad happened. Code %d\n", e);

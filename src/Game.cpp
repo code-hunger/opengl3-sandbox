@@ -7,7 +7,7 @@
 
 #include <GL/glew.h>
 
-Game::Game() : screen(std::make_unique<HomeScreen>())
+Game::Game(unsigned short maze_id) : screen(std::make_unique<HomeScreen>(maze_id))
 {
 	printf("Game constructor - home screen constructed.\n");
 }

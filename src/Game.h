@@ -13,7 +13,7 @@
 class Game : public Renderer
 {
 public:
-	Game();
+	Game(unsigned short maze_id);
 	virtual ~Game();
 	void render(double deltaTime, State &state) const;
 

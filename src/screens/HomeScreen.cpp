@@ -9,9 +9,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-Maze getMazeFromFile(const char *fileName = MAZE_DIRECTORY "/maze1.txt")
+Maze getMazeFromFile(unsigned short maze_id)
 {
 	puts("Get maze from file!");
+	std::string fileName(MAZE_DIRECTORY "/maze");
+	fileName += std::to_string(static_cast<unsigned>(maze_id));
+	fileName += ".txt";
+    puts(fileName.c_str());
 	std::ifstream input(fileName);
 	WideRoad2 line;
 	Ways lines;
@@ -22,7 +26,7 @@ Maze getMazeFromFile(const char *fileName = MAZE_DIRECTORY "/maze1.txt")
 	return Maze::fromPaths(lines);
 }
 
-HomeScreen::HomeScreen() : maze(getMazeFromFile())
+HomeScreen::HomeScreen(unsigned short maze_id) : maze(getMazeFromFile(maze_id))
 {
 	printf("Creating shader programms...\n");
 

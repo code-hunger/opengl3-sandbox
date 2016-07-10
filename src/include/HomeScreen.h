@@ -9,7 +9,7 @@
 class HomeScreen : public Screen
 {
 public:
-	HomeScreen();
+	HomeScreen(unsigned short maze_id);
 	virtual ~HomeScreen();
 
 	void update(double deltaTime, State &state);
