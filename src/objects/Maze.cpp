@@ -16,14 +16,15 @@ Maze Maze::fromPaths(Ways paths)
 
 	int i = 0;
 
-	for (const auto &line : paths) {
+	for (const auto &way : paths) {
+        const Line2& line = way.line;
 		double line_angle = atan((line.b.y - line.a.y) / (line.b.x - line.a.x));
 		float angle_sin = static_cast<float>(sin(line_angle)),
 		      angle_cos = static_cast<float>(cos(line_angle)),
-		      deltaXA = line.width_a * angle_sin,
-		      deltaXB = line.width_b * angle_sin,
-		      deltaYA = line.width_a * angle_cos,
-		      deltaYB = line.width_b * angle_cos;
+		      deltaXA = way.width_a * angle_sin,
+		      deltaXB = way.width_b * angle_sin,
+		      deltaYA = way.width_a * angle_cos,
+		      deltaYB = way.width_b * angle_cos;
 
 		Line2 upper{line.a.x + deltaXA, line.a.y - deltaYA, line.b.x + deltaXB,
 		            line.b.y - deltaYB},

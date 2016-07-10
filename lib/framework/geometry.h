@@ -87,20 +87,15 @@ struct Line2 {
 };
 
 struct WideRoad2 {
-	Point2 a, b;
+	Line2 line;
 	short int width_a, width_b; // Would it be better to call it thikness?
-
-	float calcSquaredLen() const
-	{
-		return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
-	}
 
 	inline bool operator==(const WideRoad2 &other) const
 	{
-		return ((this->a == other.a && this->b == other.b) ||
-		        (this->a == other.b && this->b == other.a)) &&
-		       (this->width_a == other.width_a &&
-		        this->width_b == other.width_b);
+		return line.a == other.line.a && width_a == other.width_a &&
+		           line.b == other.line.b && width_b == other.width_b ||
+		       line.a == other.line.b && width_a == other.width_b &&
+		           line.b == other.line.a && width_b == other.width_a;
 	}
 };
 

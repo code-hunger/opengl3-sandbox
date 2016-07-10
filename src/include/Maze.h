@@ -7,8 +7,9 @@
 #include <unordered_set>
 
 struct Hash {
-	size_t operator()(const WideRoad2 &line) const
+	size_t operator()(const WideRoad2 &way) const
 	{
+        const Line2 &line = way.line;
 		return static_cast<size_t>(line.a.x * line.a.y + line.calcSquaredLen());
 	}
 
