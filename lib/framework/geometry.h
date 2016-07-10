@@ -99,4 +99,17 @@ struct WideRoad2 {
 	}
 };
 
+struct Hash {
+	size_t operator()(const WideRoad2 &way) const
+	{
+		const Line2 &line = way.line;
+		return static_cast<size_t>(line.a.x * line.a.y + line.calcSquaredLen());
+	}
+
+	size_t operator()(const Line2 &line) const
+	{
+		return static_cast<size_t>(line.a.x * line.a.y + line.calcSquaredLen());
+	}
+};
+
 #endif /* end of include guard: GEOMETRY_H_NTEYZYI7 */
