@@ -1,10 +1,10 @@
 #ifndef GEOMETRY_H_NTEYZYI7
 #define GEOMETRY_H_NTEYZYI7
 
+#include <cstddef>
+
 struct Point2 {
 	float x, y;
-
-	void print() const { printf("%f %f\n", x, y); }
 
 	inline bool operator==(const Point2 &other) const
 	{
@@ -26,7 +26,6 @@ struct Vector3 {
 
 struct LineEquation {
 	float a, b;
-	void print() const { printf("%f %f\n", a, b); }
 };
 
 struct Line2 {
@@ -92,10 +91,10 @@ struct WideRoad2 {
 
 	inline bool operator==(const WideRoad2 &other) const
 	{
-		return line.a == other.line.a && width_a == other.width_a &&
-		           line.b == other.line.b && width_b == other.width_b ||
-		       line.a == other.line.b && width_a == other.width_b &&
-		           line.b == other.line.a && width_b == other.width_a;
+		return (line.a == other.line.a && width_a == other.width_a &&
+		        line.b == other.line.b && width_b == other.width_b) ||
+		       (line.a == other.line.b && width_a == other.width_b &&
+		        line.b == other.line.a && width_b == other.width_a);
 	}
 };
 
@@ -108,7 +107,8 @@ struct Hash {
 
 	size_t operator()(const Line2 &line) const
 	{
-		return static_cast<size_t>(line.a.x * line.a.y + line.calcSquaredLen());
+		return static_cast<size_t>(10000 * line.a.x * line.a.y +
+		                           line.calcSquaredLen());
 	}
 };
 
