@@ -17,7 +17,7 @@ Maze Maze::fromPaths(Ways paths)
 	int i = 0;
 
 	for (const auto &way : paths) {
-        const Line2& line = way.line;
+		const Line2 &line = way.line;
 		double line_angle = atan((line.b.y - line.a.y) / (line.b.x - line.a.x));
 		float angle_sin = static_cast<float>(sin(line_angle)),
 		      angle_cos = static_cast<float>(cos(line_angle)),
@@ -31,36 +31,31 @@ Maze Maze::fromPaths(Ways paths)
 		    lower{line.b.x - deltaXB, line.b.y + deltaYB, line.a.x - deltaXA,
 		          line.a.y + deltaYA};
 
-		bool noUpper = false, noLower = false;
+		walls.insert(upper);
+		points[i++] = upper.a.x;
+		points[i++] = upper.a.y;
 
-		for (const auto &other : walls) {
-			Point2 crossPoint;
+		points[i++] = upper.b.x;
+		points[i++] = upper.b.y;
 
-			if (other.intersectsWith(lower, &crossPoint)) {
-				noLower = true;
-			}
-			if (other.intersectsWith(upper, &crossPoint)) {
-				noUpper = true;
-			}
-		}
+		points[i++] = upper.b.x;
+		points[i++] = upper.b.y;
 
-		if (!noUpper) {
-			walls.insert(Lines::value_type(upper));
-			points[i++] = upper.a.x;
-			points[i++] = upper.a.y;
+		points[i++] = lower.a.x;
+		points[i++] = lower.a.y;
 
-			points[i++] = upper.b.x;
-			points[i++] = upper.b.y;
-		}
+		points[i++] = upper.a.x;
+		points[i++] = upper.a.y;
 
-		if (!noLower) {
-			walls.insert(Lines::value_type(lower));
-			points[i++] = lower.a.x;
-			points[i++] = lower.a.y;
+		points[i++] = lower.b.x;
+		points[i++] = lower.b.y;
 
-			points[i++] = lower.b.x;
-			points[i++] = lower.b.y;
-		}
+		walls.insert(lower);
+		points[i++] = lower.a.x;
+		points[i++] = lower.a.y;
+
+		points[i++] = lower.b.x;
+		points[i++] = lower.b.y;
 	}
 
 	VertexArray va(&(points[0]), i);
