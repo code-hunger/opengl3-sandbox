@@ -101,8 +101,9 @@ struct WideRoad2 {
 struct Hash {
 	size_t operator()(const WideRoad2 &way) const
 	{
-		const Line2 &line = way.line;
-		return static_cast<size_t>(line.a.x * line.a.y + line.calcSquaredLen());
+		return static_cast<size_t>(
+		    static_cast<float>(way.width_a * way.width_b) +
+		    way.line.calcSquaredLen());
 	}
 
 	size_t operator()(const Line2 &line) const

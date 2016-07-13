@@ -10,7 +10,7 @@ int main(int argc, char **argv)
 		Window::prepareOpenGL();
 		Window window;
 
-		Game game(argc >= 2 ? atoi(argv[1]) : 1);
+		Game game(argc >= 2 ? static_cast<short unsigned>(atoi(argv[1])) : 1);
 		window.run(game);
 	} catch (int e) {
 		printf("Something bad happened. Code %d\n", e);
