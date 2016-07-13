@@ -3,7 +3,7 @@
 #include <cmath>
 
 #define MAX_LINES 10
-#define PI 3.141592653589793
+#define PI 3.141592653589793238462643383279502884L
 
 Maze Maze::fromPaths(Ways paths)
 {
