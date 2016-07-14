@@ -1,7 +1,6 @@
 #include "Maze.h"
 #include <cassert>
 #include <cmath>
-#include <map>
 
 #define MAX_LINES 10
 #define PI 3.141592653589793238462643383279502884L
@@ -16,7 +15,7 @@ Maze Maze::fromPaths(Ways paths)
 	Lines wallsP, wallsS; // primary and secondary
 
 	struct CrossRoad {
-		std::vector<Line2 *> lines;
+		std::vector<Segment2 *> lines;
 	};
 
 	std::vector<CrossRoad> cross_roads;
