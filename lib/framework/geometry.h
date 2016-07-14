@@ -33,16 +33,16 @@ struct LineEquation
 	float a, b;
 };
 
-struct Line2
+struct Segment2
 {
 	Point2 a, b;
 
-	bool operator==(const Line2& other) const
+	bool operator==(const Segment2& other) const
 	{
 		return (a == other.a && b == other.b) || (a == other.b && b == other.a);
 	}
 
-	bool intersectsWith(Line2 other, Point2* crossPoint) const
+	bool intersectsWith(Segment2 other, Point2* crossPoint) const
 	{
 		LineEquation eThis = getEquation(), eOther = other.getEquation();
 
@@ -93,7 +93,7 @@ struct Line2
 
 struct WideRoad2
 {
-	Line2 line;
+	Segment2 line;
 	short int width_a, width_b; // Would it be better to call it thikness?
 
 	inline bool operator==(const WideRoad2& other) const
@@ -114,7 +114,7 @@ struct Hash
 		    way.line.calcSquaredLen());
 	}
 
-	size_t operator()(const Line2& line) const
+	size_t operator()(const Segment2& line) const
 	{
 		return static_cast<size_t>(10000 * line.a.x * line.a.y +
 		                           line.calcSquaredLen());

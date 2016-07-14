@@ -7,7 +7,7 @@
 #include <unordered_set>
 
 typedef std::unordered_set<WideRoad2, Hash> Ways;
-typedef std::unordered_set<Line2, Hash> Lines;
+typedef std::unordered_set<Segment2, Hash> Lines;
 
 struct Maze
 {
