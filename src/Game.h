@@ -15,10 +15,10 @@ class Game : public Renderer
 public:
 	Game(unsigned short maze_id);
 	virtual ~Game();
-	void render(double deltaTime, State &state) const;
+	void render(double deltaTime, State& state) const;
 
-	Game(const Game &) = delete;
-	Game operator=(const Game &) = delete;
+	Game(const Game&) = delete;
+	Game operator=(const Game&) = delete;
 
 private:
 	std::unique_ptr<Screen> screen;

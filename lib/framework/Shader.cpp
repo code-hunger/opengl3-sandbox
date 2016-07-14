@@ -5,7 +5,7 @@ Shader::Shader(const std::string source, const GLenum type)
     : id(glCreateShader(type)), type(type)
 {
 	printf("Creating shader... ");
-	const char *str = source.c_str();
+	const char* str = source.c_str();
 	glShaderSource(id, 1, &str, NULL);
 	printf("created!\n");
 }

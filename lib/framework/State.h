@@ -1,7 +1,8 @@
 #ifndef STATE_H_CODY3JAM
 #define STATE_H_CODY3JAM
 
-struct State {
+struct State
+{
 	int mouseX, mouseY;
 	bool shouldClose, *const keys;
 };

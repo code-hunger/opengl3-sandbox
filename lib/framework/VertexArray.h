@@ -11,15 +11,15 @@ class VertexArray
 	const vector<float> points;
 	const vector<unsigned> indices;
 	GLuint VAO = 0, VBO = 0, EBO = 0;
-	void initBuffer(GLenum type, GLulong size, const GLvoid *data,
-	                GLuint *buffer) const;
+	void initBuffer(GLenum type, GLulong size, const GLvoid* data,
+	                GLuint* buffer) const;
 
 	void enableVertexArray(GLuint loc, GLint size, GLenum type, GLuint stride,
 	                       GLuint start) const;
 
 public:
-	VertexArray(const float *points, int point_count,
-	            const unsigned *indices = NULL, int indices_count = 0);
+	VertexArray(const float* points, int point_count,
+	            const unsigned* indices = NULL, int indices_count = 0);
 
 	void build(GLushort dimention, bool hasColor = true);
 

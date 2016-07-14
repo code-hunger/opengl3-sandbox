@@ -9,7 +9,8 @@
 typedef std::unordered_set<WideRoad2, Hash> Ways;
 typedef std::unordered_set<Line2, Hash> Lines;
 
-struct Maze {
+struct Maze
+{
 	Ways paths;
 	Lines walls;
 	VertexArray vertArray;

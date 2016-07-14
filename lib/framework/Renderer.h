@@ -3,8 +3,9 @@
 
 #include "State.h"
 
-struct Renderer {
-	virtual void render(double deltaTime, State &) const = 0;
+struct Renderer
+{
+	virtual void render(double deltaTime, State&) const = 0;
 	virtual ~Renderer(){};
 };
 

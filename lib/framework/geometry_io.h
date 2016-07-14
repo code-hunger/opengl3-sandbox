@@ -10,29 +10,29 @@
 
 using std::cout;
 
-std::istream &operator>>(std::istream &in, Point2 &point)
+std::istream& operator>>(std::istream& in, Point2& point)
 {
 	return in >> point.x >> point.y;
 }
 
-std::ostream &operator<<(std::ostream &out, const Point2 &point)
+std::ostream& operator<<(std::ostream& out, const Point2& point)
 {
 	return out << point.x << ' ' << point.y;
 }
 
-std::istream &operator>>(std::istream &in, Line2 &line)
+std::istream& operator>>(std::istream& in, Line2& line)
 {
 	return in >> line.a >> line.b;
 }
 
-std::ostream &operator<<(std::ostream &out, const Line2 &line)
+std::ostream& operator<<(std::ostream& out, const Line2& line)
 {
 	return out << line.a << ' ' << line.b;
 }
 
-std::istream &operator>>(std::istream &in, WideRoad2 &way)
+std::istream& operator>>(std::istream& in, WideRoad2& way)
 {
-	Line2 &line = way.line;
+	Line2& line = way.line;
 	return in >> line.a >> way.width_a >> line.b >> way.width_b;
 }
 

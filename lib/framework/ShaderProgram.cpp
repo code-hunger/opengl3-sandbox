@@ -18,14 +18,14 @@ void ShaderProgram::link() const
 	}
 }
 
-void ShaderProgram::getInfoLog(char *infoLog) const
+void ShaderProgram::getInfoLog(char* infoLog) const
 {
 	glGetProgramInfoLog(id, 512, NULL, infoLog);
 }
 
 void ShaderProgram::use() const { glUseProgram(id); }
 
-GLint ShaderProgram::loadUniformLocation(const char *uniform)
+GLint ShaderProgram::loadUniformLocation(const char* uniform)
 {
 	if (uniforms.count(uniform)) return uniforms[uniform];
 
@@ -37,13 +37,13 @@ GLint ShaderProgram::loadUniformLocation(const char *uniform)
 	return loc;
 }
 
-void ShaderProgram::setUniformMatrix(GLint location, const GLfloat *matrix_data)
+void ShaderProgram::setUniformMatrix(GLint location, const GLfloat* matrix_data)
 {
 	glUniformMatrix4fv(location, 1, GL_FALSE, matrix_data);
 }
 
-void ShaderProgram::setUniformMatrix(const char *location,
-                                     const GLfloat *matrix_data)
+void ShaderProgram::setUniformMatrix(const char* location,
+                                     const GLfloat* matrix_data)
 {
 	setUniformMatrix(loadUniformLocation(location), matrix_data);
 }

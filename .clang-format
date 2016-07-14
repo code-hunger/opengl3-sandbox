@@ -1,12 +1,16 @@
 Language: Cpp
-PointerAlignment: Right
+PointerAlignment: Left
 TabWidth: 4
 IndentWidth: 4
 UseTab: ForIndentation
-BreakBeforeBraces: Linux
+BreakBeforeBraces: Custom
 AllowShortIfStatementsOnASingleLine: true
 Standard: Cpp11
 ColumnLimit: 80
 AccessModifierOffset: -4
 Cpp11BracedListStyle: true
 SpacesInAngles: false
+BraceWrapping:
+    AfterStruct: true
+    AfterFunction: true
+    AfterClass: true

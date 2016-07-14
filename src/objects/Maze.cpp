@@ -16,8 +16,8 @@ Maze Maze::fromPaths(Ways paths)
 
 	int i = 0;
 
-	for (const auto &way : paths) {
-		const Line2 &line = way.line;
+	for (const auto& way : paths) {
+		const Line2& line = way.line;
 		double line_angle = atan((line.b.y - line.a.y) / (line.b.x - line.a.x));
 		float angle_sin = static_cast<float>(sin(line_angle)),
 		      angle_cos = static_cast<float>(cos(line_angle)),

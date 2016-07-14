@@ -3,40 +3,46 @@
 
 #include <cstddef>
 
-struct Point2 {
+struct Point2
+{
 	float x, y;
 
-	inline bool operator==(const Point2 &other) const
+	inline bool operator==(const Point2& other) const
 	{
 		return this->x == other.x && this->y == other.y;
 	}
 };
 
-struct Vector2 {
+struct Vector2
+{
 	int x, y;
 };
 
-struct Point3 {
+struct Point3
+{
 	int x, y, z;
 };
 
-struct Vector3 {
+struct Vector3
+{
 	int x, y, z;
 };
 
-struct LineEquation {
+struct LineEquation
+{
 	float a, b;
 };
 
-struct Line2 {
+struct Line2
+{
 	Point2 a, b;
 
-	bool operator==(const Line2 &other) const
+	bool operator==(const Line2& other) const
 	{
 		return (a == other.a && b == other.b) || (a == other.b && b == other.a);
 	}
 
-	bool intersectsWith(Line2 other, Point2 *crossPoint) const
+	bool intersectsWith(Line2 other, Point2* crossPoint) const
 	{
 		LineEquation eThis = getEquation(), eOther = other.getEquation();
 
@@ -85,11 +91,12 @@ struct Line2 {
 	}
 };
 
-struct WideRoad2 {
+struct WideRoad2
+{
 	Line2 line;
 	short int width_a, width_b; // Would it be better to call it thikness?
 
-	inline bool operator==(const WideRoad2 &other) const
+	inline bool operator==(const WideRoad2& other) const
 	{
 		return (line.a == other.line.a && width_a == other.width_a &&
 		        line.b == other.line.b && width_b == other.width_b) ||
@@ -98,15 +105,16 @@ struct WideRoad2 {
 	}
 };
 
-struct Hash {
-	size_t operator()(const WideRoad2 &way) const
+struct Hash
+{
+	size_t operator()(const WideRoad2& way) const
 	{
 		return static_cast<size_t>(
 		    static_cast<float>(way.width_a * way.width_b) +
 		    way.line.calcSquaredLen());
 	}
 
-	size_t operator()(const Line2 &line) const
+	size_t operator()(const Line2& line) const
 	{
 		return static_cast<size_t>(10000 * line.a.x * line.a.y +
 		                           line.calcSquaredLen());

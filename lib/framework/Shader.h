@@ -3,7 +3,8 @@
 
 #include <string>
 
-struct Shader {
+struct Shader
+{
 	const unsigned id;
 	const unsigned type;
 
@@ -14,8 +15,8 @@ struct Shader {
 	void dumpInfoLog();
 	void compile();
 
-	Shader(const Shader &) = delete;
-	void operator=(const Shader &) = delete;
+	Shader(const Shader&) = delete;
+	void operator=(const Shader&) = delete;
 };
 
 #endif /* end of include guard: SHADER_H_837DGZOX */

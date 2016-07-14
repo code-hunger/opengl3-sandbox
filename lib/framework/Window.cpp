@@ -22,7 +22,7 @@ void Window::prepareOpenGL()
 		throw "Glfw init fail!";
 	}
 
-	glfwSetErrorCallback([](int code, const char *desc) {
+	glfwSetErrorCallback([](int code, const char* desc) {
 		fprintf(stderr, "GLFW error #%d: %s\n", code, desc);
 		throw "Error callback called!";
 	});
@@ -36,7 +36,7 @@ void Window::prepareOpenGL()
 	Window::hintsSet = true;
 }
 
-inline GLFWwindow *createWindow(const char *title)
+inline GLFWwindow* createWindow(const char* title)
 {
 	return glfwCreateWindow(WIDTH, HEIGHT, title, NULL, NULL);
 }
@@ -64,18 +64,18 @@ Window::Window() : window(createWindow("First Window Title"))
 		throw "No glew_version_3_3!";
 	}
 
-	glfwSetWindowUserPointer(window, static_cast<void *>(this));
+	glfwSetWindowUserPointer(window, static_cast<void*>(this));
 
-	glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode,
+	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode,
 	                              int action, int mods) {
-		static_cast<Window *>(glfwGetWindowUserPointer(window))
+		static_cast<Window*>(glfwGetWindowUserPointer(window))
 		    ->keyCallback(key, scancode, action, mods);
 	});
 
 	printf("Window constructed!\n");
 }
 
-void Window::run(const Renderer &renderer)
+void Window::run(const Renderer& renderer)
 {
 	printf("Start running!\n");
 

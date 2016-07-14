@@ -2,14 +2,14 @@
 
 #include "VertexArray.h"
 
-VertexArray::VertexArray(const float *points, int p_count,
-                         const unsigned *indices, int i_count)
+VertexArray::VertexArray(const float* points, int p_count,
+                         const unsigned* indices, int i_count)
     : points(points, points + p_count), indices(indices, indices + i_count)
 {
 }
 
-void VertexArray::initBuffer(GLenum type, GLulong size, const void *data,
-                             GLuint *buffer) const
+void VertexArray::initBuffer(GLenum type, GLulong size, const void* data,
+                             GLuint* buffer) const
 {
 	glGenBuffers(1, buffer);
 	glBindBuffer(type, *buffer);
@@ -21,7 +21,7 @@ void VertexArray::enableVertexArray(GLuint location, GLint size, GLenum type,
 {
 	glVertexAttribPointer(location, size, type, GL_FALSE,
 	                      static_cast<GLsizei>(stride * sizeof type),
-	                      reinterpret_cast<GLvoid *>(sizeof(type) * start));
+	                      reinterpret_cast<GLvoid*>(sizeof(type) * start));
 	glEnableVertexAttribArray(location);
 }
 
@@ -58,7 +58,7 @@ void VertexArray::draw(GLenum mode, GLulong start, GLsizei count) const
 		if (count == 0) count = static_cast<signed>(indices.size());
 
 		glDrawElements(mode, count, GL_UNSIGNED_INT,
-		               reinterpret_cast<GLvoid *>(start));
+		               reinterpret_cast<GLvoid*>(start));
 	} else {
 		if (count == 0) count = static_cast<signed>(points.size());
 

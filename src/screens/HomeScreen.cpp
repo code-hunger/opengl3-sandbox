@@ -15,7 +15,7 @@ Maze getMazeFromFile(unsigned short maze_id)
 	std::string fileName(MAZE_DIRECTORY "/maze");
 	fileName += std::to_string(static_cast<unsigned>(maze_id));
 	fileName += ".txt";
-    puts(fileName.c_str());
+	puts(fileName.c_str());
 	std::ifstream input(fileName);
 	WideRoad2 line;
 	Ways lines;
@@ -43,13 +43,13 @@ HomeScreen::HomeScreen(unsigned short maze_id) : maze(getMazeFromFile(maze_id))
 	shaderProgram.link();
 
 	glm::mat4 proj = glm::ortho(0.f, 100.f, 0.f, 66.f, 0.1f, -.1f);
-	const GLfloat *const matrix = glm::value_ptr(proj);
+	const GLfloat* const matrix = glm::value_ptr(proj);
 
 	shaderProgram.use();
 	shaderProgram.setUniformMatrix("model_view_projection", matrix);
 }
 
-void HomeScreen::update(const double deltaTime, State &state)
+void HomeScreen::update(const double deltaTime, State& state)
 {
 	(void)deltaTime;
 	if (state.keys[GLFW_KEY_ESCAPE]) {
@@ -57,7 +57,7 @@ void HomeScreen::update(const double deltaTime, State &state)
 	}
 }
 
-void HomeScreen::render(const double deltaTime, const State &state)
+void HomeScreen::render(const double deltaTime, const State& state)
 {
 	(void)deltaTime;
 	(void)state;

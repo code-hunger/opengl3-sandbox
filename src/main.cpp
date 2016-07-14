@@ -4,7 +4,7 @@
 #include "Window.h"
 #include <GL/glew.h>
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 	try {
 		Window::prepareOpenGL();
@@ -15,7 +15,7 @@ int main(int argc, char **argv)
 	} catch (int e) {
 		printf("Something bad happened. Code %d\n", e);
 		return e;
-	} catch (const char *e) {
+	} catch (const char* e) {
 		printf("Something bad happened. Error text: %s\n", e);
 		return EXIT_FAILURE;
 	}
