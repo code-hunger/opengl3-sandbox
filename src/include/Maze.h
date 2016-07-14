@@ -5,9 +5,10 @@
 #include "geometry.h"
 
 #include <unordered_set>
+#include <vector>
 
 typedef std::unordered_set<WideRoad2, Hash> Ways;
-typedef std::unordered_set<Segment2, Hash> Lines;
+typedef std::vector<Segment2> Lines;
 
 struct Maze
 {

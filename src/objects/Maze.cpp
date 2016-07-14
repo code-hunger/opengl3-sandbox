@@ -14,16 +14,15 @@ Maze Maze::fromPaths(Ways paths)
 
 	Lines wallsP, wallsS; // primary and secondary
 
-	struct CrossRoad {
-		std::vector<Segment2 *> lines;
+	struct CrossRoad
+	{
+		std::vector<Segment2*> lines;
 	};
 
 	std::vector<CrossRoad> cross_roads;
 
-	int i = 0;
-
 	for (const auto& way : paths) {
-		const Segment2& line = way.getSegmnet2();
+		const Segment2 line = way.getSegmnet2();
 		double line_angle = atan((line.b.y - line.a.y) / (line.b.x - line.a.x));
 		float angle_sin = static_cast<float>(sin(line_angle)),
 		      angle_cos = static_cast<float>(cos(line_angle)),
@@ -37,42 +36,34 @@ Maze Maze::fromPaths(Ways paths)
 		    lower{line.b.x - deltaXB, line.b.y + deltaYB, line.a.x - deltaXA,
 		          line.a.y + deltaYA};
 
-		for (const auto &wall : wallsP) {
+		for (auto& wall : wallsP) {
 			Point2 ipointUpper, ipointLower;
 			bool iupper = wall.intersectsWith(upper, &ipointUpper),
 			     ilower = wall.intersectsWith(lower, &ipointLower);
 
 			if (iupper xor ilower) {
-				const auto &iline = iupper ? upper : lower;
+				Segment2& iline = iupper ? upper : lower;
+				const Point2& cpoint = iupper ? ipointUpper : ipointLower;
+				Point2 &thisCloser = iline.getEndCloserTo(cpoint),
+				       &otherCloser = wall.getEndCloserTo(cpoint);
+
+				// Cut these lines at the point of intersection
+				thisCloser = cpoint;
+				otherCloser = cpoint;
 			}
 		}
 
-		wallsP.insert(lower);
-		wallsP.insert(upper);
+		wallsP.push_back(lower);
+		wallsP.push_back(upper);
+	}
 
-		points[i++] = upper.a.x;
-		points[i++] = upper.a.y;
+	int i = 0;
+	for (const auto& wall : wallsP) {
+		points[i++] = wall.a.x;
+		points[i++] = wall.a.y;
 
-		points[i++] = upper.b.x;
-		points[i++] = upper.b.y;
-
-		points[i++] = upper.b.x;
-		points[i++] = upper.b.y;
-
-		points[i++] = lower.a.x;
-		points[i++] = lower.a.y;
-
-		points[i++] = upper.a.x;
-		points[i++] = upper.a.y;
-
-		points[i++] = lower.b.x;
-		points[i++] = lower.b.y;
-
-		points[i++] = lower.a.x;
-		points[i++] = lower.a.y;
-
-		points[i++] = lower.b.x;
-		points[i++] = lower.b.y;
+		points[i++] = wall.b.x;
+		points[i++] = wall.b.y;
 	}
 
 	VertexArray va(&(points[0]), i);

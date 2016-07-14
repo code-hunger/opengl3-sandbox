@@ -89,6 +89,15 @@ struct Segment2
 		float a = (this->a.y - b.y) / (this->a.x - b.x);
 		return {a, this->a.y - a * this->a.x};
 	}
+
+	Point2& getEndCloserTo(Point2 point)
+	{
+		if (Segment2{a, point}.calcSquaredLen() <
+		    Segment2{b, point}.calcSquaredLen()) {
+			return a;
+		}
+		return b;
+	}
 };
 
 struct WidePoint2
