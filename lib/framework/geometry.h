@@ -91,17 +91,28 @@ struct Segment2
 	}
 };
 
+struct WidePoint2
+{
+	Point2 point;
+	short unsigned width;
+	bool operator==(const WidePoint2& other) const
+	{
+		return point == other.point && width == other.width;
+	}
+};
+
 struct WideRoad2
 {
-	Segment2 line;
-	short int width_a, width_b; // Would it be better to call it thikness?
+	WidePoint2 a, b;
 
 	inline bool operator==(const WideRoad2& other) const
 	{
-		return (line.a == other.line.a && width_a == other.width_a &&
-		        line.b == other.line.b && width_b == other.width_b) ||
-		       (line.a == other.line.b && width_a == other.width_b &&
-		        line.b == other.line.a && width_b == other.width_a);
+		return (a == other.a && b == other.b) || (a == other.b && b == other.a);
+	}
+
+	constexpr Segment2 getSegmnet2() const
+	{
+		return Segment2{a.point, b.point};
 	}
 };
 
@@ -110,8 +121,8 @@ struct Hash
 	size_t operator()(const WideRoad2& way) const
 	{
 		return static_cast<size_t>(
-		    static_cast<float>(way.width_a * way.width_b) +
-		    way.line.calcSquaredLen());
+		    static_cast<float>(way.a.width * way.b.width) +
+		    way.getSegmnet2().calcSquaredLen());
 	}
 
 	size_t operator()(const Segment2& line) const

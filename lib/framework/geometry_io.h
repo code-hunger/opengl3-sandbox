@@ -30,9 +30,14 @@ std::ostream& operator<<(std::ostream& out, const Segment2& line)
 	return out << line.a << ' ' << line.b;
 }
 
+std::istream& operator>>(std::istream& in, WidePoint2& point)
+{
+	return in >> point.point >> point.width;
+}
+
 std::istream& operator>>(std::istream& in, WideRoad2& way)
 {
-	return in >> way.line.a >> way.width_a >> way.line.b >> way.width_b;
+	return in >> way.a >> way.b;
 }
 
 #endif /* end of include guard: GEOMETRY_IO_H_W6BMNIRU */

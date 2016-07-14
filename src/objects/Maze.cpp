@@ -17,14 +17,14 @@ Maze Maze::fromPaths(Ways paths)
 	int i = 0;
 
 	for (const auto& way : paths) {
-		const Segment2& line = way.line;
+		const Segment2& line = way.getSegmnet2();
 		double line_angle = atan((line.b.y - line.a.y) / (line.b.x - line.a.x));
 		float angle_sin = static_cast<float>(sin(line_angle)),
 		      angle_cos = static_cast<float>(cos(line_angle)),
-		      deltaXA = way.width_a * angle_sin,
-		      deltaXB = way.width_b * angle_sin,
-		      deltaYA = way.width_a * angle_cos,
-		      deltaYB = way.width_b * angle_cos;
+		      deltaXA = way.a.width * angle_sin,
+		      deltaXB = way.b.width * angle_sin,
+		      deltaYA = way.a.width * angle_cos,
+		      deltaYB = way.b.width * angle_cos;
 
 		Segment2 upper{line.a.x + deltaXA, line.a.y - deltaYA,
 		               line.b.x + deltaXB, line.b.y - deltaYB},
