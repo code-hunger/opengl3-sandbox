@@ -1,6 +1,7 @@
 #include "Maze.h"
 #include <cassert>
 #include <cmath>
+#include <map>
 
 #define MAX_LINES 10
 #define PI 3.141592653589793238462643383279502884L
@@ -12,7 +13,13 @@ Maze Maze::fromPaths(Ways paths)
 
 	float points[MAX_LINES * 4 * 3];
 
-	Lines walls;
+	Lines wallsP, wallsS; // primary and secondary
+
+	struct CrossRoad {
+		std::vector<Line2 *> lines;
+	};
+
+	std::vector<CrossRoad> cross_roads;
 
 	int i = 0;
 
@@ -31,7 +38,19 @@ Maze Maze::fromPaths(Ways paths)
 		    lower{line.b.x - deltaXB, line.b.y + deltaYB, line.a.x - deltaXA,
 		          line.a.y + deltaYA};
 
-		walls.insert(upper);
+		for (const auto &wall : wallsP) {
+			Point2 ipointUpper, ipointLower;
+			bool iupper = wall.intersectsWith(upper, &ipointUpper),
+			     ilower = wall.intersectsWith(lower, &ipointLower);
+
+			if (iupper xor ilower) {
+				const auto &iline = iupper ? upper : lower;
+			}
+		}
+
+		wallsP.insert(lower);
+		wallsP.insert(upper);
+
 		points[i++] = upper.a.x;
 		points[i++] = upper.a.y;
 
@@ -50,7 +69,6 @@ Maze Maze::fromPaths(Ways paths)
 		points[i++] = lower.b.x;
 		points[i++] = lower.b.y;
 
-		walls.insert(lower);
 		points[i++] = lower.a.x;
 		points[i++] = lower.a.y;
 
@@ -61,7 +79,7 @@ Maze Maze::fromPaths(Ways paths)
 	VertexArray va(&(points[0]), i);
 	va.build(2, false);
 
-	return {paths, walls, va};
+	return {paths, wallsP, va};
 }
 
 void Maze::draw(GLenum mode) { vertArray.draw(mode); }
