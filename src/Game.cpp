@@ -10,7 +10,6 @@
 Game::Game(unsigned short maze_id)
     : screen(std::make_unique<HomeScreen>(maze_id))
 {
-	printf("Game constructor - home screen constructed.\n");
 }
 
 void Game::render(const double deltaTime, State& state) const
@@ -19,4 +18,4 @@ void Game::render(const double deltaTime, State& state) const
 	screen->update(deltaTime, state);
 }
 
-Game::~Game() { printf("Game class destructor!\n"); }
+Game::~Game() {}

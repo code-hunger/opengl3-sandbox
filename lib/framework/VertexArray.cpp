@@ -27,7 +27,6 @@ void VertexArray::enableVertexArray(GLuint location, GLint size, GLenum type,
 
 void VertexArray::build(GLushort dimention, bool hasColor)
 {
-	printf("Building vertex array\n");
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
@@ -48,7 +47,6 @@ void VertexArray::build(GLushort dimention, bool hasColor)
 	}
 
 	glBindVertexArray(0); // unbind
-	printf("Vertex array built!\n");
 }
 
 void VertexArray::draw(GLenum mode, GLulong start, GLsizei count) const

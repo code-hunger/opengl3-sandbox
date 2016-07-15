@@ -71,14 +71,10 @@ Window::Window() : window(createWindow("First Window Title"))
 		static_cast<Window*>(glfwGetWindowUserPointer(window))
 		    ->keyCallback(key, scancode, action, mods);
 	});
-
-	printf("Window constructed!\n");
 }
 
 void Window::run(const Renderer& renderer)
 {
-	printf("Start running!\n");
-
 	glfwMakeContextCurrent(window);
 
 	int frames = 0;
@@ -115,7 +111,6 @@ void Window::run(const Renderer& renderer)
 
 		renderer.render(deltaTime, state);
 	}
-	printf("Main loop end: stop running!\n");
 }
 
 void Window::updateSize()
@@ -140,8 +135,4 @@ void Window::keyCallback(int key, int scancode, int action, int mods)
 	       key, scancode, action, mods);
 }
 
-Window::~Window()
-{
-	printf("Window destructor. Destroy window!\n");
-	glfwDestroyWindow(window);
-}
+Window::~Window() { glfwDestroyWindow(window); }

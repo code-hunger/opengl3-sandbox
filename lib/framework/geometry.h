@@ -1,11 +1,17 @@
 #ifndef GEOMETRY_H_NTEYZYI7
 #define GEOMETRY_H_NTEYZYI7
 
+#define GEOMETRY_H
+
 #include <cstddef>
+#include <vector>
+
+struct CrossRoad;
 
 struct Point2
 {
 	float x, y;
+	CrossRoad* crossRoad;
 
 	inline bool operator==(const Point2& other) const
 	{
@@ -108,6 +114,12 @@ struct WidePoint2
 	{
 		return point == other.point && width == other.width;
 	}
+};
+
+struct CrossRoad
+{
+	std::vector<Segment2*> lines;
+	std::vector<WidePoint2> points;
 };
 
 struct WideRoad2

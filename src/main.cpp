@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 
-	printf("Successfully exiting!!!\n");
+	/* printf("Successfully exiting!!!\n"); */
 
 	return EXIT_SUCCESS;
 }

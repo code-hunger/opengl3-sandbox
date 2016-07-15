@@ -4,21 +4,14 @@
 Shader::Shader(const std::string source, const GLenum type)
     : id(glCreateShader(type)), type(type)
 {
-	printf("Creating shader... ");
 	const char* str = source.c_str();
 	glShaderSource(id, 1, &str, NULL);
-	printf("created!\n");
 }
 
-Shader::~Shader()
-{
-	printf("Shader destruction. Delete shader!\n");
-	glDeleteShader(id);
-}
+Shader::~Shader() { glDeleteShader(id); }
 
 void Shader::compile()
 {
-	printf("Compiling shader... ");
 	glCompileShader(id);
 
 	GLint success;
@@ -27,7 +20,6 @@ void Shader::compile()
 		printf("failed!\nInfo log: %s\n", getInfoLog().c_str());
 		throw("Shader compilation failed");
 	}
-	printf("compiled!\n");
 }
 
 std::string Shader::getInfoLog() const

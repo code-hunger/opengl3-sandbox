@@ -8,28 +8,25 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 
 Maze getMazeFromFile(unsigned short maze_id)
 {
-	puts("Get maze from file!");
 	std::string fileName(MAZE_DIRECTORY "/maze");
 	fileName += std::to_string(static_cast<unsigned>(maze_id));
 	fileName += ".txt";
-	puts(fileName.c_str());
 	std::ifstream input(fileName);
 	WideRoad2 line;
 	Ways lines;
 	while (input >> line) {
-		puts("Fetching maze line...");
-		lines.insert(Ways::value_type(line));
+		lines.insert(line);
 	}
+	printf("Fetched %lu lines in maze!\n", lines.size());
 	return Maze::fromPaths(lines);
 }
 
 HomeScreen::HomeScreen(unsigned short maze_id) : maze(getMazeFromFile(maze_id))
 {
-	printf("Creating shader programms...\n");
-
 	Shader frag_sh(readFile(SHADER_DIRECTORY "/fragment_shader.glsl"),
 	               GL_FRAGMENT_SHADER),
 	    vert_sh(readFile(SHADER_DIRECTORY "/vertex_shader.glsl"),

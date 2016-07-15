@@ -6,36 +6,43 @@
 #endif
 
 #include <fstream>
-#include <iostream>
 
-using std::cout;
-
-std::istream& operator>>(std::istream& in, Point2& point)
+inline std::istream& operator>>(std::istream& in, Point2& point)
 {
 	return in >> point.x >> point.y;
 }
 
-std::ostream& operator<<(std::ostream& out, const Point2& point)
+inline std::ostream& operator<<(std::ostream& out, const Point2& point)
 {
 	return out << point.x << ' ' << point.y;
 }
 
-std::istream& operator>>(std::istream& in, Segment2& line)
+inline std::istream& operator>>(std::istream& in, Segment2& line)
 {
 	return in >> line.a >> line.b;
 }
 
-std::ostream& operator<<(std::ostream& out, const Segment2& line)
+inline std::ostream& operator<<(std::ostream& out, const Segment2& line)
 {
 	return out << line.a << ' ' << line.b;
 }
 
-std::istream& operator>>(std::istream& in, WidePoint2& point)
+inline std::ostream& operator<<(std::ostream& out, const WidePoint2& point)
+{
+	return out << point.point << ' ' << point.width;
+}
+
+inline std::ostream& operator<<(std::ostream& out, const WideRoad2& line)
+{
+	return out << line.a << ' ' << line.b;
+}
+
+inline std::istream& operator>>(std::istream& in, WidePoint2& point)
 {
 	return in >> point.point >> point.width;
 }
 
-std::istream& operator>>(std::istream& in, WideRoad2& way)
+inline std::istream& operator>>(std::istream& in, WideRoad2& way)
 {
 	return in >> way.a >> way.b;
 }
