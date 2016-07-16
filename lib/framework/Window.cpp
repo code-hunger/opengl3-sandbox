@@ -1,8 +1,8 @@
 #include "Window.h"
+
 #include "Renderer.h"
 #include "State.h"
 #include "config.h"
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -53,7 +53,9 @@ Window::Window() : window(createWindow("First Window Title"))
 	// Window::prepareOpenGL must be called before constructing a Window,
 	// otherwise OpenGL doesn't work
 
-	assert(hintsSet);
+	if (!hintsSet)
+		throw "You must call Window::setHints before constructing window, "
+		      "otherwise opengl won't work!";
 
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
@@ -83,9 +85,10 @@ void Window::run(const Renderer& renderer)
 	int frames = 0;
 	double prevTime = glfwGetTime()
 #ifdef PRINT_FPS
-		, last_time_check = prevTime
+	    ,
+	       last_time_check = prevTime
 #endif
-		;
+	    ;
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -97,7 +100,7 @@ void Window::run(const Renderer& renderer)
 	State state{0, 0, 0, &(keys[0])};
 
 #ifdef ANTI_ALIASING
-	glEnable(GL_MULTISAMPLE);  
+	glEnable(GL_MULTISAMPLE);
 #endif
 
 	while (!state.shouldClose && !glfwWindowShouldClose(window)) {

@@ -84,12 +84,16 @@ Maze Maze::fromPaths(Ways paths)
 				const Point2& cpoint = iupper ? ipointUpper : ipointLower;
 				Point2 &thisCloser = iline.getEndCloserTo(cpoint),
 				       &otherCloser = wall.getEndCloserTo(cpoint);
-				std::cout << "Just one intersect point! " << cpoint << std::endl;
+				std::cout << "Just one intersect point! " << cpoint
+				          << std::endl;
 				std::cout << "Other closer point: " << otherCloser << std::endl;
 
-				assert(otherCloser.crossRoad != nullptr);
+				if(nullptr == otherCloser.crossRoad ) {
+					throw "Point doesn't have crossRoad!";
+				}
 
-				std::cout << "Point which we're trying to add: " << way.a << std::endl;
+				std::cout << "Point which we're trying to add: " << way.a
+				          << std::endl;
 				if (tryToInsert(*otherCloser.crossRoad, way.a)) {
 					// Cut these lines at the point of intersection
 					thisCloser = cpoint;
@@ -110,7 +114,8 @@ Maze Maze::fromPaths(Ways paths)
 				} else
 					puts("First trial failed!");
 
-				std::cout << "Point which we're trying to add: " << way.b << std::endl;
+				std::cout << "Point which we're trying to add: " << way.b
+				          << std::endl;
 				if (tryToInsert(*otherCloser.crossRoad, way.b)) {
 					// Cut these lines at the point of intersection
 					thisCloser = cpoint;
@@ -162,7 +167,11 @@ Maze Maze::fromPaths(Ways paths)
 		if (++paths_inserted >= 3) break;
 	}
 
-	assert(wallsP.size() <= MAX_LINES);
+	if (wallsP.size() > MAX_LINES) {
+		printf("\n%lu walls generated, allowed at most %d\n", wallsP.size(),
+		       MAX_LINES);
+		throw - 1;
+	}
 	float points[MAX_LINES * 3];
 
 	int i = 0;
