@@ -13,6 +13,9 @@ using std::cout;
 
 bool tryToInsert(CrossRoad cr, WidePoint2 point_to_insert)
 {
+	if (cr.points.size() < 2)
+		throw "CrossRoad MUST have at least 2 points inside!";
+
 	for (const auto& point : cr.points) {
 		float dist =
 		          Segment2{point.point, point_to_insert.point}.calcSquaredLen(),
@@ -26,7 +29,6 @@ bool tryToInsert(CrossRoad cr, WidePoint2 point_to_insert)
 			puts("Push back two points that are near!");
 			return true;
 		}
-		/* printf("dist = %f, max_allowed: %f\n", dist, max_allowed); */
 	}
 	return false;
 }
