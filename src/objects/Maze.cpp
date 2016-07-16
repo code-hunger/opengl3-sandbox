@@ -88,7 +88,7 @@ Maze Maze::fromPaths(Ways paths)
 				          << std::endl;
 				std::cout << "Other closer point: " << otherCloser << std::endl;
 
-				if(nullptr == otherCloser.crossRoad ) {
+				if (nullptr == otherCloser.crossRoad) {
 					throw "Point doesn't have crossRoad!";
 				}
 
@@ -172,7 +172,9 @@ Maze Maze::fromPaths(Ways paths)
 		       MAX_LINES);
 		throw - 1;
 	}
-	float points[MAX_LINES * 3];
+
+	// 12 floats per line: per point 3x position and 3x color
+	float points[MAX_LINES * 12];
 
 	int i = 0;
 	for (const auto& wall : wallsP) { // Copy wallsP into points[]
