@@ -32,6 +32,9 @@ void Window::prepareOpenGL()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#ifdef ANTI_ALIASING
+	glfwWindowHint(GLFW_SAMPLES, 4);
+#endif
 
 	Window::hintsSet = true;
 }
@@ -92,6 +95,10 @@ void Window::run(const Renderer& renderer)
 	glClearColor(0, 0, 0, 0);
 
 	State state{0, 0, 0, &(keys[0])};
+
+#ifdef ANTI_ALIASING
+	glEnable(GL_MULTISAMPLE);  
+#endif
 
 	while (!state.shouldClose && !glfwWindowShouldClose(window)) {
 		double time = glfwGetTime(), deltaTime = time - prevTime;
