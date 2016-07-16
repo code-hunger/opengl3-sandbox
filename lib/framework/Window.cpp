@@ -10,8 +10,8 @@
 #include <cstdio>
 #include <cstdlib>
 
-#define WIDTH 1200
-#define HEIGHT 766
+#define WIDTH 500
+#define HEIGHT 328
 /* #define PRINT_FPS */
 
 bool Window::hintsSet = false;
@@ -85,7 +85,7 @@ void Window::run(const Renderer& renderer)
 	updateSize();
 
 	glViewport(0, 0, width, height);
-	glClearColor(1, 1, 1, 0);
+	glClearColor(0, 0, 0, 0);
 
 	State state{0, 0, 0, &(keys[0])};
 

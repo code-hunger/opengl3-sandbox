@@ -8,6 +8,12 @@
 
 struct CrossRoad;
 
+struct Color
+{
+	float r, g, b;
+	char const* name;
+};
+
 struct Point2
 {
 	float x, y;
@@ -42,6 +48,7 @@ struct LineEquation
 struct Segment2
 {
 	Point2 a, b;
+	Color color{};
 
 	bool operator==(const Segment2& other) const
 	{
@@ -88,8 +95,6 @@ struct Segment2
 		return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
 	}
 
-	// Returns the coefficients of the equation y = a*x + b in the form of a
-	// Point2(a, b)
 	LineEquation getEquation() const
 	{
 		float a = (this->a.y - b.y) / (this->a.x - b.x);

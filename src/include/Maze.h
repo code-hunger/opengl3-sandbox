@@ -8,12 +8,11 @@
 #include <vector>
 
 typedef std::unordered_set<WideRoad2, Hash> Ways;
-typedef std::vector<Segment2> Lines;
 
 struct Maze
 {
 	Ways paths;
-	Lines walls;
+	std::vector<Segment2> walls;
 	VertexArray vertArray;
 
 	void draw(GLenum mode);
