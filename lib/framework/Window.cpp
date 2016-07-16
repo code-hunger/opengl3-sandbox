@@ -78,7 +78,11 @@ void Window::run(const Renderer& renderer)
 	glfwMakeContextCurrent(window);
 
 	int frames = 0;
-	double prevTime = glfwGetTime(), last_time_check = prevTime;
+	double prevTime = glfwGetTime()
+#ifdef PRINT_FPS
+		, last_time_check = prevTime
+#endif
+		;
 
 	glEnable(GL_DEPTH_TEST);
 
