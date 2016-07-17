@@ -13,8 +13,8 @@ using std::cout;
 
 bool tryToInsert(CrossRoad cr, WidePoint2 point_to_insert)
 {
-	if (cr.points.size() < 2)
-		throw "CrossRoad MUST have at least 2 points inside!";
+	if (cr.points.size() < 1)
+		throw "CrossRoad MUST have at least 1 point inside!";
 
 	for (const auto& point : cr.points) {
 		float dist =
@@ -33,23 +33,43 @@ bool tryToInsert(CrossRoad cr, WidePoint2 point_to_insert)
 	return false;
 }
 
+bool check_lines_for_cross_roads(std::list<Segment2> walls)
+{
+	int i = 0;
+	for (auto el : walls) {
+		auto a_cross = el.a.crossRoad, b_cross = el.b.crossRoad;
+		if (nullptr == a_cross or nullptr == b_cross) {
+			std::cout << "element " << i << ": " << el << std::endl;
+			throw "crossRoad is NULLPTR!!";
+		}
+		if (a_cross->points.size() < 1 or b_cross->points.size() < 1) {
+			std::cout << "element " << i << ": " << el << std::endl;
+			throw "both cross points must have at least one point!";
+		}
+		++i;
+	}
+	puts("LINES CHECK passed!");
+	return true;
+}
+
 Maze Maze::fromPaths(Ways paths)
 {
-	std::vector<Segment2> wallsP, wallsS; // primary and secondary
+	std::list<Segment2> wallsP, wallsS; // primary and secondary
 
-	std::vector<CrossRoad> cross_roads;
+	std::list<CrossRoad> cross_roads;
 
-	std::vector<Color> colors;
-	colors.push_back({0, 0, 1, "blue"});
-	colors.push_back({0, 1, 0, "green"});
-	colors.push_back({1, 0, 0, "red"});
-	colors.push_back({1, 1, 1, "white"});
-	colors.push_back({0.5, .5, .5, "silver"});
-	colors.push_back({1, 1, 0, "yellow"});
+	std::vector<Color> colors = {
+	    {1, 1, 0, "yellow"}, {0.5, .5, .5, "silver"}, {1, 1, 1, "white"},
+	    {1, 0, 0, "red"},    {0, 1, 0, "green"},      {0, 0, 1, "blue"},
+	};
 	auto color_count = colors.size(), color = 0lu;
 
 	int paths_inserted = 0;
 	for (const auto& way : paths) {
+		if (!check_lines_for_cross_roads(wallsP)) {
+			throw "SOMETHING'S NOT RIGHT. TERMINATE!";
+		}
+
 		const Segment2 line = way.getSegmnet2();
 		double line_angle = atan((line.b.y - line.a.y) / (line.b.x - line.a.x));
 		float angle_sin = static_cast<float>(sin(line_angle)),
@@ -60,12 +80,15 @@ Maze Maze::fromPaths(Ways paths)
 		      deltaYB = way.b.width * angle_cos;
 
 		Segment2 upper = {line.a.x + deltaXA, line.a.y - deltaYA, nullptr,
-		                  line.b.x + deltaXB, line.b.y - deltaYB, nullptr},
-		         lower = {line.b.x - deltaXB, line.b.y + deltaYB, nullptr,
-		                  line.a.x - deltaXA, line.a.y + deltaYA, nullptr};
-
-		upper.color = colors[color];
-		lower.color = colors[(color + 1) % color_count];
+		                  line.b.x + deltaXB, line.b.y - deltaYB, nullptr,
+		                  colors[color]},
+		         lower = {line.b.x - deltaXB,
+		                  line.b.y + deltaYB,
+		                  nullptr,
+		                  line.a.x - deltaXA,
+		                  line.a.y + deltaYA,
+		                  nullptr,
+		                  colors[(color + 1) % color_count]};
 
 		printf("\n\nNEXT INSERT START: %s/%s\n", upper.color.name,
 		       lower.color.name);
@@ -93,75 +116,92 @@ Maze Maze::fromPaths(Ways paths)
 				if (nullptr == otherCloser.crossRoad) {
 					throw "Point doesn't have crossRoad!";
 				}
+				if(otherCloser.crossRoad->points.size() < 1) {
+					throw "Other closer's crossRoad has no points!";
+				}
 
-				std::cout << "Point which we're trying to add: " << way.a
-				          << std::endl;
+				std::cout << "Point which we're trying to add (way.a): "
+				          << way.a << std::endl;
 				if (tryToInsert(*otherCloser.crossRoad, way.a)) {
+					std::cout << "Successfully instered this point!" << std::endl;
 					// Cut these lines at the point of intersection
 					thisCloser = cpoint;
-					otherCloser = cpoint;
+					otherCloser.x = cpoint.x; // this way we keep the 
+					otherCloser.y = cpoint.y; // crossRoad's pointers
 					modified = true;
+
 					CrossRoad to_b{{}, {way.b}};
-					auto size = wallsP.size();
+					cross_roads.push_back(to_b);
+
 					wallsP.push_back(lower);
+					cross_roads.back().lines.push_back(
+					    /* lower */ &wallsP.back());
+
+					/* lower */
+					wallsP.back().b.crossRoad = &cross_roads.back();
+					wallsP.back().a.crossRoad = otherCloser.crossRoad;
+
 					wallsP.push_back(upper);
 
-					auto croad_count = cross_roads.size();
-					cross_roads.push_back(to_b);
-					cross_roads[croad_count].lines.push_back(&wallsP[size]);
-					cross_roads[croad_count].lines.push_back(&wallsP[size + 1]);
-
-					wallsP[size].b.crossRoad = &cross_roads[croad_count];
-					wallsP[size + 1].b.crossRoad = &cross_roads[croad_count];
+					cross_roads.back().lines.push_back(
+					    /* upper */ &wallsP.back());
+					/* upper */
+					wallsP.back().b.crossRoad = &cross_roads.back();
+					wallsP.back().a.crossRoad = otherCloser.crossRoad;
+					std::cout << otherCloser.crossRoad->points.size() << std::endl;
 				} else
 					puts("First trial failed!");
 
-				std::cout << "Point which we're trying to add: " << way.b
+				printf("Will check lines for crossroads...\n");
+				if (!check_lines_for_cross_roads({wallsP.back()}))
+					throw "FIX ME 912347892 :)";
+				std::cout << "Point which we're trying to add(way.b): " << way.b
 				          << std::endl;
-				if (tryToInsert(*otherCloser.crossRoad, way.b)) {
-					// Cut these lines at the point of intersection
-					thisCloser = cpoint;
-					otherCloser = cpoint;
-					modified = true;
-					CrossRoad to_a{{}, {way.a}};
-					auto size = wallsP.size();
-					wallsP.push_back(lower);
-					wallsP.push_back(upper);
 
-					auto croad_count = cross_roads.size();
-					cross_roads.push_back(to_a);
-					cross_roads[croad_count].lines.push_back(&wallsP[size]);
-					cross_roads[croad_count].lines.push_back(&wallsP[size + 1]);
+				/* if (tryToInsert(*otherCloser.crossRoad, way.b)) { */
+				/* 	// Cut these lines at the point of intersection */
+				/* 	thisCloser = cpoint; */
+				/* 	otherCloser = cpoint; */
+				/* 	modified = true; */
 
-					wallsP[size].a.crossRoad = &cross_roads[croad_count];
-					wallsP[size + 1].a.crossRoad = &cross_roads[croad_count];
-				} else
-					puts("Second trial failed!");
+				/* 	CrossRoad to_a{{}, {way.a}}; */
+				/* 	cross_roads.push_back(to_a); */
+
+				/* 	wallsP.push_back(lower); */
+				/* 	cross_roads.back().lines.push_back(&wallsP.back()); */
+				/* 	wallsP.back().a.crossRoad = &cross_roads.back(); */
+
+				/* 	wallsP.push_back(upper); */
+
+				/* 	cross_roads.back().lines.push_back(&wallsP.back()); */
+				/* 	wallsP.back().a.crossRoad = &cross_roads.back(); */
+				/* } else */
+				/* 	puts("second trial failed!"); */
+
 			} else
 				puts("They don't intersect!");
 		}
 
 		if (!modified) {
 			puts("\nnot modified!");
-			auto wall_count = wallsP.size();
 			wallsP.push_back(lower);
+			Segment2* first = &wallsP.back();
+
 			wallsP.push_back(upper);
+			Segment2* second = &wallsP.back();
 
-			CrossRoad to_a{{&wallsP[wall_count], &wallsP[wall_count + 1]},
-			               {way.a}};
-			CrossRoad to_b{{&wallsP[wall_count], &wallsP[wall_count + 1]},
-			               {way.b}};
+			CrossRoad to_a{{first, second}, {way.a}};
+			CrossRoad to_b{{first, second}, {way.b}};
 
-			auto cross_road_count = cross_roads.size();
 			cross_roads.push_back(to_a);
+			first->b.crossRoad = &cross_roads.back();
+			second->a.crossRoad = &cross_roads.back();
+
 			cross_roads.push_back(to_b);
+			first->a.crossRoad = &cross_roads.back();
+			second->b.crossRoad = &cross_roads.back();
 
-			wallsP[wall_count].b.crossRoad = &cross_roads[cross_road_count];
-			wallsP[wall_count].a.crossRoad = &cross_roads[cross_road_count + 1];
-
-			wallsP[wall_count + 1].b.crossRoad =
-			    &cross_roads[cross_road_count + 1];
-			wallsP[wall_count + 1].a.crossRoad = &cross_roads[cross_road_count];
+			check_lines_for_cross_roads(wallsP);
 		} else {
 			puts("\nit was modified!");
 		}
@@ -173,6 +213,10 @@ Maze Maze::fromPaths(Ways paths)
 		printf("\n%lu walls generated, allowed at most %d\n", wallsP.size(),
 		       MAX_LINES);
 		throw - 1;
+	}
+
+	if(!check_lines_for_cross_roads(wallsP)) {
+		throw "FIX ME 1764202438082";
 	}
 
 	// 12 floats per line: per point 3x position and 3x color

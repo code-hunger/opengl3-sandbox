@@ -7,12 +7,15 @@
 #include <unordered_set>
 #include <vector>
 
+// @TODO: USE forward_list
+#include <list>
+
 typedef std::unordered_set<WideRoad2, Hash> Ways;
 
 struct Maze
 {
 	Ways paths;
-	std::vector<Segment2> walls;
+	std::list<Segment2> walls;
 	VertexArray vertArray;
 
 	void draw(GLenum mode);
