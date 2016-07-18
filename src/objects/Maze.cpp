@@ -138,7 +138,7 @@ Maze Maze::fromPaths(Ways paths)
 						wallsP.push_back(upper);
 					}
 
-					Segment2 &lower_in_walls = *----wallsP.end(),
+					Segment2 &lower_in_walls = *std::prev(wallsP.end(), 2),
 					         &upper_in_walls = wallsP.back();
 
 					cross_roads.back().lines.push_back(&lower_in_walls);
