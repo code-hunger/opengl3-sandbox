@@ -134,20 +134,19 @@ Maze Maze::fromPaths(Ways paths)
 					cross_roads.push_back(to_b);
 
 					wallsP.push_back(lower);
-					cross_roads.back().lines.push_back(
-					    /* lower */ &wallsP.back());
-
-					/* lower */
-					wallsP.back().b.crossRoad = &cross_roads.back();
-					wallsP.back().a.crossRoad = otherCloser.crossRoad;
+					Segment2& lower_in_walls = wallsP.back();
 
 					wallsP.push_back(upper);
+					Segment2& upper_in_walls = wallsP.back();
 
-					cross_roads.back().lines.push_back(
-					    /* upper */ &wallsP.back());
-					/* upper */
-					wallsP.back().b.crossRoad = &cross_roads.back();
-					wallsP.back().a.crossRoad = otherCloser.crossRoad;
+					cross_roads.back().lines.push_back(&lower_in_walls);
+					lower_in_walls.b.crossRoad = &cross_roads.back();
+
+					cross_roads.back().lines.push_back(&upper_in_walls);
+					upper_in_walls.b.crossRoad = &cross_roads.back();
+
+					upper_in_walls.a.crossRoad = otherCloser.crossRoad;
+					lower_in_walls.a.crossRoad = otherCloser.crossRoad;
 
 					modified = true;
 					std::cout << otherCloser.crossRoad->points.size()
@@ -159,39 +158,6 @@ Maze Maze::fromPaths(Ways paths)
 				if (!check_lines_for_cross_roads({wallsP.back()}))
 					throw "FIX ME 912347892 :)";
 
-				std::cout << "Point which we're trying to add (way.b): "
-				          << way.b << std::endl;
-				if (tryToInsert(*otherCloser.crossRoad, way.b)) {
-					std::cout << "Successfully instered this point!"
-					          << std::endl;
-					// Cut these lines at the point of intersection
-					thisCloser = cpoint;
-					otherCloser.x = cpoint.x; // this way we keep the
-					otherCloser.y = cpoint.y; // crossRoad's pointers
-					modified = true;
-
-					CrossRoad to_a{{}, {way.a}};
-					cross_roads.push_back(to_a);
-
-					wallsP.push_back(lower);
-					cross_roads.back().lines.push_back(
-					    /* lower */ &wallsP.back());
-
-					/* lower */
-					wallsP.back().a.crossRoad = &cross_roads.back();
-					wallsP.back().b.crossRoad = otherCloser.crossRoad;
-
-					wallsP.push_back(upper);
-
-					cross_roads.back().lines.push_back(
-					    /* upper */ &wallsP.back());
-					/* upper */
-					wallsP.back().a.crossRoad = &cross_roads.back();
-					wallsP.back().b.crossRoad = otherCloser.crossRoad;
-					std::cout << "HERE!!!" << otherCloser.crossRoad->points.size()
-					          << std::endl;
-				} else
-					puts("Second trial failed!");
 			} else
 				puts("They don't intersect!");
 		}
