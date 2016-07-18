@@ -191,7 +191,7 @@ Maze Maze::fromPaths(Ways paths)
 					std::cout << "HERE!!!" << otherCloser.crossRoad->points.size()
 					          << std::endl;
 				} else
-					puts("First trial failed!");
+					puts("Second trial failed!");
 			} else
 				puts("They don't intersect!");
 		}
