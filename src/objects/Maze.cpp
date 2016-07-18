@@ -133,14 +133,22 @@ Maze Maze::fromPaths(Ways paths)
 					CrossRoad to_b{{}, {way.b}};
 					cross_roads.push_back(to_b);
 
-					wallsP.push_back(lower);
-					Segment2& lower_in_walls = wallsP.back();
+					if (!modified) {
+						wallsP.push_back(lower);
+						wallsP.push_back(upper);
+					}
 
-					wallsP.push_back(upper);
-					Segment2& upper_in_walls = wallsP.back();
+					Segment2 &lower_in_walls = *----wallsP.end(),
+					         &upper_in_walls = wallsP.back();
 
 					cross_roads.back().lines.push_back(&lower_in_walls);
 					lower_in_walls.b.crossRoad = &cross_roads.back();
+
+					std::cout << "LOOK HERE "
+					             "---------------------------------------------"
+					             "------------------"
+					          << (upper_in_walls == upper)
+					          << (lower_in_walls == lower) << std::endl;
 
 					cross_roads.back().lines.push_back(&upper_in_walls);
 					upper_in_walls.b.crossRoad = &cross_roads.back();
