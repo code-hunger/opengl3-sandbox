@@ -228,6 +228,8 @@ Maze Maze::fromPaths(Ways paths)
 		       MAX_LINES);
 		throw - 1;
 	}
+	std::cout << wallsP.size() << " walls generated from " << paths.size()
+	          << " lines" << std::endl;
 
 	if (!check_lines_for_cross_roads(wallsP)) {
 		throw "FIX ME 1764202438082";
