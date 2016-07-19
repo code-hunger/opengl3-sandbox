@@ -141,14 +141,14 @@ Maze Maze::fromPaths(Ways paths)
 					Segment2 &lower_in_walls = *std::prev(wallsP.end(), 2),
 					         &upper_in_walls = wallsP.back();
 
-					cross_roads.back().lines.push_back(&lower_in_walls);
-					lower_in_walls.b.crossRoad = &cross_roads.back();
-
 					std::cout << "LOOK HERE "
 					             "---------------------------------------------"
 					             "------------------"
 					          << (upper_in_walls == upper)
 					          << (lower_in_walls == lower) << std::endl;
+
+					cross_roads.back().lines.push_back(&lower_in_walls);
+					lower_in_walls.b.crossRoad = &cross_roads.back();
 
 					cross_roads.back().lines.push_back(&upper_in_walls);
 					upper_in_walls.b.crossRoad = &cross_roads.back();
@@ -161,6 +161,48 @@ Maze Maze::fromPaths(Ways paths)
 					          << std::endl;
 				} else
 					puts("First trial failed!");
+
+				std::cout << "Point which we're trying to add (way.b): "
+				          << way.b << std::endl;
+				if (tryToInsert(*otherCloser.crossRoad, way.b)) {
+					std::cout << "Successfully instered this point!"
+					          << std::endl;
+					// Cut these lines at the point of intersection
+					thisCloser = cpoint;
+					otherCloser.x = cpoint.x; // this way we keep the
+					otherCloser.y = cpoint.y; // crossRoad's pointers
+
+					CrossRoad to_a{{}, {way.a}};
+					cross_roads.push_back(to_a);
+
+					if (!modified) {
+						wallsP.push_back(lower);
+						wallsP.push_back(upper);
+					}
+
+					Segment2 &lower_in_walls = *std::prev(wallsP.end(), 2),
+					         &upper_in_walls = wallsP.back();
+
+					std::cout << "LOOK HERE "
+					             "---------------------------------------------"
+					             "------------------"
+					          << (upper_in_walls == upper)
+					          << (lower_in_walls == lower) << std::endl;
+
+					cross_roads.back().lines.push_back(&lower_in_walls);
+					lower_in_walls.a.crossRoad = &cross_roads.back();
+
+					cross_roads.back().lines.push_back(&upper_in_walls);
+					upper_in_walls.a.crossRoad = &cross_roads.back();
+
+					upper_in_walls.b.crossRoad = otherCloser.crossRoad;
+					lower_in_walls.b.crossRoad = otherCloser.crossRoad;
+
+					modified = true;
+					std::cout << otherCloser.crossRoad->points.size()
+					          << std::endl;
+				} else
+					puts("Second trial failed!");
 
 				printf("Will check lines for crossroads...\n");
 				if (!check_lines_for_cross_roads({wallsP.back()}))
