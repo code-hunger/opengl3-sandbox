@@ -219,11 +219,12 @@ Maze Maze::fromPaths(Ways paths)
 	std::list<CrossRoad> cross_roads;
 
 	std::vector<Color> colors = {
-	    {1, 1, 0, "yellow"},       {0.5, .5, .5, "silver"},
-	    {1, 1, 1, "white"},        {1, 0, 0, "red"},
-	    {0, 1, 0, "green"},        {0, 0, 1, "blue"},
-	    {1, 0.5, 0, "orange"},     {0.5, 0, 0.8, "violet"},
-	    {0.4, 0.4, 1, "lightblue"}, {0, 0.5, 0, "darkgreen"}};
+	    {1, 1, 0, "yellow"},          {0.5f, .5f, .5f, "silver"},
+	    {1, 1, 1, "white"},           {1, 0, 0, "red"},
+	    {0, 1, 0, "green"},           {0, 0, 1, "blue"},
+	    {1, 0.5f, 0, "orange"},       {0.5f, 0, 0.8f, "violet"},
+	    {0.4f, 0.4f, 1, "lightblue"}, {0, 0.5f, 0, "darkgreen"}};
+
 	auto color_count = colors.size(), color = 0lu;
 
 	int paths_inserted = 0;
