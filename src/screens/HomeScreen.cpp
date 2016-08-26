@@ -39,7 +39,7 @@ HomeScreen::HomeScreen(unsigned short maze_id) : maze(getMazeFromFile(maze_id))
 	shaderProgram.attachShader(frag_sh.id);
 	shaderProgram.link();
 
-	glm::mat4 proj = glm::ortho(0.f, 100.f, -3.f, 66.f, 0.1f, -.1f);
+	glm::mat4 proj = glm::ortho(0.f, 100.f, 0.f, 70.f, 0.1f, -.1f);
 	const GLfloat* const matrix = glm::value_ptr(proj);
 
 	shaderProgram.use();

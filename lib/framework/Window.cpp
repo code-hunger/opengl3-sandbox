@@ -10,8 +10,8 @@
 #include <cstdio>
 #include <cstdlib>
 
-#define WIDTH 500
-#define HEIGHT 328
+#define WIDTH 1000
+#define HEIGHT 700
 /* #define PRINT_FPS */
 
 bool Window::hintsSet = false;
