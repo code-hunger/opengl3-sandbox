@@ -45,6 +45,13 @@ struct LineEquation
 	float a, b;
 };
 
+inline constexpr float pythagoras(float a, float b) { return a * a + b * b; }
+
+inline constexpr float calcSquaredLen(const Point2& a, const Point2& b)
+{
+	return pythagoras(a.x - b.x, a.y - b.y);
+}
+
 struct Segment2
 {
 	Point2 a, b;
@@ -90,10 +97,7 @@ struct Segment2
 		return true;
 	}
 
-	float calcSquaredLen() const
-	{
-		return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
-	}
+	constexpr float calcSquaredLen() const { return ::calcSquaredLen(a, b); }
 
 	LineEquation getEquation() const
 	{
@@ -101,13 +105,10 @@ struct Segment2
 		return {a, this->a.y - a * this->a.x};
 	}
 
-	Point2& getEndCloserTo(Point2 point)
+	// NOT const - we may want to change the refference later
+	constexpr Point2& getEndCloserTo(Point2 point)
 	{
-		if (Segment2{a, point}.calcSquaredLen() <
-		    Segment2{b, point}.calcSquaredLen()) {
-			return a;
-		}
-		return b;
+		return ::calcSquaredLen(a, point) < ::calcSquaredLen(b, point) ? a : b;
 	}
 };
 
@@ -136,10 +137,7 @@ struct WideRoad2
 		return (a == other.a && b == other.b) || (a == other.b && b == other.a);
 	}
 
-	constexpr Segment2 getSegmnet2() const
-	{
-		return Segment2{a.point, b.point};
-	}
+	constexpr Segment2 getSegmnet2() const { return {a.point, b.point}; }
 };
 
 struct Hash
