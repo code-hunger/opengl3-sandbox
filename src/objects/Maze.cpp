@@ -111,60 +111,43 @@ void add_a_single_way_to_maze(auto& wallsP, auto& way, auto& colors,
 				throw "Other closer's crossRoad has no points!";
 			}
 
-			bool way_a_was_just_added = false;
-			{
-				std::cout << "Point which we're trying to add (way.a): "
-				          << way.a << std::endl;
-				if (tryToInsert(*otherCloser.crossRoad, way.a)) {
-					std::cout << "Successfully instered this point!"
-					          << std::endl;
-					// Cut these lines at the point of intersection
-					thisCloser.x = cross_point.x;
-					thisCloser.y = cross_point.y;
-					otherCloser.x = cross_point.x; // this way we keep the
-					otherCloser.y = cross_point.y; // crossRoad's pointers
+			std::cout << "Point which we're trying to add (way.a): " << way.a
+			          << std::endl;
+			if (tryToInsert(*otherCloser.crossRoad, way.a)) {
+				std::cout << "Successfully instered this point!\n";
+				// Cut these lines at the point of intersection
+				thisCloser.x = otherCloser.x = cross_point.x;
+				thisCloser.y = otherCloser.y = cross_point.y;
 
-					CrossRoad to_b{{}, {way.b}};
-					cross_roads.push_back(to_b);
+				CrossRoad to_b{{}, {way.b}};
+				cross_roads.push_back(to_b);
 
-					cross_roads.back().lines.push_back(&lower);
-					lower.b.crossRoad = &cross_roads.back();
+				cross_roads.back().lines.push_back(&lower);
+				cross_roads.back().lines.push_back(&upper);
 
-					cross_roads.back().lines.push_back(&upper);
-					upper.b.crossRoad = &cross_roads.back();
+				lower.b.crossRoad = upper.b.crossRoad = &cross_roads.back();
+				upper.a.crossRoad = lower.a.crossRoad = otherCloser.crossRoad;
 
-					upper.a.crossRoad = otherCloser.crossRoad;
-					lower.a.crossRoad = otherCloser.crossRoad;
+				modifiedA = true;
 
-					modifiedA = true;
-					way_a_was_just_added = 1;
-				}
-			}
-
-			if (!way_a_was_just_added) {
+			} else {
 				std::cout << "Point which we're trying to add (way.b): "
 				          << way.b << std::endl;
 				if (tryToInsert(*otherCloser.crossRoad, way.b)) {
-					std::cout << "Successfully instered this point!"
-					          << std::endl;
+					std::cout << "Successfully instered this point!\n";
 					// Cut these lines at the point of intersection
-					/* thisCloser = cross_point; */
-					thisCloser.x = cross_point.x;
-					thisCloser.y = cross_point.y;
-					otherCloser.x = cross_point.x; // this way we keep the
-					otherCloser.y = cross_point.y; // crossRoad's pointers
+					thisCloser.x = otherCloser.x = cross_point.x;
+					thisCloser.y = otherCloser.y = cross_point.y;
 
 					CrossRoad to_a{{}, {way.a}};
 					cross_roads.push_back(to_a);
 
 					cross_roads.back().lines.push_back(&upper);
-					upper.a.crossRoad = &cross_roads.back(); // switch a & b
-
 					cross_roads.back().lines.push_back(&lower);
-					lower.a.crossRoad = &cross_roads.back(); // switch a & b
 
-					lower.b.crossRoad = otherCloser.crossRoad; // switch a & b
-					upper.b.crossRoad = otherCloser.crossRoad; // switch a & b
+					upper.a.crossRoad = lower.a.crossRoad = &cross_roads.back();
+					lower.b.crossRoad = upper.b.crossRoad =
+					    otherCloser.crossRoad;
 
 					modifiedB = true;
 				}
@@ -182,7 +165,7 @@ void add_a_single_way_to_maze(auto& wallsP, auto& way, auto& colors,
 	if (!modifiedA && !modifiedB) {
 		/* puts("\nnot modified!"); */
 
-		// ATTENTION! lower IS REPLACED WITH THE ONE IN wallsP!
+		// ATTENTION! lower/upper REPLACED WITH THE ONES IN wallsP!
 		wallsP.push_back({lower, nullptr});
 		WallSegment2& lower = wallsP.back();
 
@@ -196,12 +179,12 @@ void add_a_single_way_to_maze(auto& wallsP, auto& way, auto& colors,
 		          to_b = {{&lower.segment, &upper.segment}, {way.b}};
 
 		cross_roads.push_back(to_a);
-		lower.segment.a.crossRoad = &cross_roads.back();
-		upper.segment.a.crossRoad = &cross_roads.back();
+		lower.segment.a.crossRoad = upper.segment.a.crossRoad =
+		    &cross_roads.back();
 
 		cross_roads.push_back(to_b);
-		lower.segment.b.crossRoad = &cross_roads.back();
-		upper.segment.b.crossRoad = &cross_roads.back();
+		lower.segment.b.crossRoad = upper.segment.b.crossRoad =
+		    &cross_roads.back();
 
 	} else {
 		/* puts("\nit was modified!"); */
