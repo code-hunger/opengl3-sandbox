@@ -106,10 +106,16 @@ struct Segment2
 	}
 
 	// NOT const - we may want to change the refference later
-	constexpr Point2& getEndCloserTo(Point2 point)
+	constexpr Point2& getEndCloserTo(Point2 point) 
 	{
 		return ::calcSquaredLen(a, point) < ::calcSquaredLen(b, point) ? a : b;
 	}
+};
+
+struct WallSegment2
+{
+	Segment2 segment, *opposite;
+	operator Segment2() { return segment; }
 };
 
 struct WidePoint2

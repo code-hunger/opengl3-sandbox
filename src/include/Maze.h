@@ -15,7 +15,7 @@ typedef std::unordered_set<WideRoad2, Hash> Ways;
 struct Maze
 {
 	Ways paths;
-	std::list<Segment2> walls;
+	std::list<WallSegment2> walls;
 	VertexArray vertArray;
 
 	void draw(GLenum mode);

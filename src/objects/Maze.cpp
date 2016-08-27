@@ -30,10 +30,13 @@ bool tryToInsert(CrossRoad& cr, WidePoint2 point_to_insert)
 	return false;
 }
 
-bool check_lines_for_cross_roads(std::list<Segment2> walls)
+bool check_lines_for_cross_roads(std::list<WallSegment2> walls)
 {
 	int i = 0;
-	for (auto el : walls) {
+
+	// NOTE the implicit cast from WallSegment2 to Segment2 (via the operator
+	// Segment2  function)
+	for (Segment2 el : walls) {
 		auto a_cross = el.a.crossRoad, b_cross = el.b.crossRoad;
 		if (nullptr == a_cross or nullptr == b_cross) {
 			std::cout << "element " << i << ": " << el << std::endl;
@@ -79,7 +82,8 @@ void add_a_single_way_to_maze(auto& wallsP, auto& way, auto& colors,
 
 	bool modifiedA = false, modifiedB;
 
-	for (auto& wall : wallsP) {
+	for (WallSegment2& wall_segment : wallsP) {
+		Segment2& wall = wall_segment.segment;
 		std::cout << "CHECK WITH " << wall.color.name << " " << wall << ":";
 		Point2 ipointUpper, ipointLower;
 		const bool iupper = wall.intersectsWith(upper, &ipointUpper),
@@ -90,7 +94,7 @@ void add_a_single_way_to_maze(auto& wallsP, auto& way, auto& colors,
 		} else if (iupper xor ilower) {
 			puts("Just one intersect point!");
 			// Disable stdout, no need for it now. Enabled again at end of `if`
-			std::cout.setstate(std::ios_base::failbit);
+			/* std::cout.setstate(std::ios_base::failbit); */
 			const Point2& cross_point = iupper ? ipointUpper : ipointLower;
 			Point2 &thisCloser =
 			           (iupper ? upper : lower).getEndCloserTo(cross_point),
@@ -170,35 +174,45 @@ void add_a_single_way_to_maze(auto& wallsP, auto& way, auto& colors,
 			if (!check_lines_for_cross_roads({wallsP.back()}))
 				throw "FIX ME 912347892 :)";
 
-			std::cout.clear();
+			/* std::cout.clear(); */
 		} else
 			puts("They don't intersect!");
 	}
 
 	if (!modifiedA && !modifiedB) {
 		/* puts("\nnot modified!"); */
-		wallsP.push_back(lower);
-		Segment2* lower = &wallsP.back(); // ATTENTION! lower IS REPLACED WITH
-		// THE ONE IN wallsP!
 
-		wallsP.push_back(upper);
-		Segment2* upper = &wallsP.back();
+		// ATTENTION! lower IS REPLACED WITH THE ONE IN wallsP!
+		wallsP.push_back({lower, nullptr});
+		WallSegment2& lower = wallsP.back();
 
-		CrossRoad to_a = {{lower, upper}, {way.a}},
-		          to_b = {{lower, upper}, {way.b}};
+		wallsP.push_back({upper, nullptr});
+		WallSegment2& upper = wallsP.back();
+
+		lower.opposite = &upper.segment;
+		upper.opposite = &lower.segment;
+
+		CrossRoad to_a = {{&lower.segment, &upper.segment}, {way.a}},
+		          to_b = {{&lower.segment, &upper.segment}, {way.b}};
 
 		cross_roads.push_back(to_a);
-		lower->a.crossRoad = &cross_roads.back();
-		upper->a.crossRoad = &cross_roads.back();
+		lower.segment.a.crossRoad = &cross_roads.back();
+		upper.segment.a.crossRoad = &cross_roads.back();
 
 		cross_roads.push_back(to_b);
-		lower->b.crossRoad = &cross_roads.back();
-		upper->b.crossRoad = &cross_roads.back();
+		lower.segment.b.crossRoad = &cross_roads.back();
+		upper.segment.b.crossRoad = &cross_roads.back();
 
 	} else {
 		/* puts("\nit was modified!"); */
-		wallsP.push_back(lower);
-		wallsP.push_back(upper);
+		wallsP.push_back({lower, nullptr});
+		WallSegment2& lower = wallsP.back();
+
+		wallsP.push_back({upper, nullptr});
+		WallSegment2& upper = wallsP.back();
+
+		lower.opposite = &upper.segment;
+		upper.opposite = &lower.segment;
 	}
 	check_lines_for_cross_roads(wallsP);
 	color = (color + 2) % color_count;
@@ -209,7 +223,7 @@ int put_walls_and_paths_to_vertex_points(float points[], auto& wallsP,
                                          auto& paths)
 {
 	int i = 0;
-	for (const auto& wall : wallsP) { // Copy wallsP into points[]
+	for (const Segment2& wall : wallsP) { // Copy wallsP into points[]
 		points[i++] = wall.a.x;
 		points[i++] = wall.a.y;
 		points[i++] = 0;
@@ -245,7 +259,7 @@ int put_walls_and_paths_to_vertex_points(float points[], auto& wallsP,
 
 Maze Maze::fromPaths(Ways paths)
 {
-	std::list<Segment2> wallsP, wallsS; // primary and secondary
+	std::list<WallSegment2> wallsP, wallsS; // primary and secondary
 
 	std::list<CrossRoad> cross_roads;
 
@@ -281,7 +295,7 @@ Maze Maze::fromPaths(Ways paths)
 		throw "FIX ME 1764202438082";
 	}
 
-	for (auto p : wallsP) {
+	for (const Segment2& p : wallsP) {
 		std::cout << p.color.name << std::endl;
 		std::cout << p.a << " : ";
 		for (auto c : p.a.crossRoad->lines) {
