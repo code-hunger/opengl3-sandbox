@@ -10,7 +10,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#define WIDTH 1000
+#define WIDTH 700
 #define HEIGHT 700
 /* #define PRINT_FPS */
 
