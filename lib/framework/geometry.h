@@ -106,7 +106,7 @@ struct Segment2
 	}
 
 	// NOT const - we may want to change the refference later
-	constexpr Point2& getEndCloserTo(Point2 point) 
+	Point2& getEndCloserTo(Point2 point) 
 	{
 		return ::calcSquaredLen(a, point) < ::calcSquaredLen(b, point) ? a : b;
 	}
