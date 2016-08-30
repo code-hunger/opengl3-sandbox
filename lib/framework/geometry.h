@@ -1,8 +1,6 @@
 #ifndef GEOMETRY_H_NTEYZYI7
 #define GEOMETRY_H_NTEYZYI7
 
-#define GEOMETRY_H
-
 #include <cstddef>
 #include <vector>
 
