@@ -81,8 +81,8 @@ void one_intersect_point(bool iupper, const Ways::value_type& way,
 	if (tryToInsert(*otherCloser.crossRoad, way.a)) {
 		cout << "Successfully instered this point!\n";
 		// Cut these lines at the point of intersection
-		thisCloser.x = otherCloser.x = cross_point.x;
-		thisCloser.y = otherCloser.y = cross_point.y;
+		thisCloser.moveTo(cross_point);
+		otherCloser.moveTo(cross_point);
 
 		if (!modifiedB) {
 			modifiedB = 1;
@@ -103,8 +103,8 @@ void one_intersect_point(bool iupper, const Ways::value_type& way,
 		if (tryToInsert(*otherCloser.crossRoad, way.b)) {
 			cout << "Successfully instered this point!\n";
 			// Cut these lines at the point of intersection
-			thisCloser.x = otherCloser.x = cross_point.x;
-			thisCloser.y = otherCloser.y = cross_point.y;
+			thisCloser.moveTo(cross_point);
+			otherCloser.moveTo(cross_point);
 
 			if (!modifiedA) {
 				modifiedA = 1;

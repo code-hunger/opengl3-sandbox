@@ -24,6 +24,13 @@ struct Point2
 
 	// Don't allow this - *crossRoad must be preserved
 	Point2 operator=(const Point2&) = delete;
+
+	// This only moves coordinates, doesn't copy *crossRoad
+	Point2& moveTo(const Point2& other) {
+		this->x = other.x;
+		this->y = other.y;
+		return *this;
+	}
 };
 
 struct Vector2
