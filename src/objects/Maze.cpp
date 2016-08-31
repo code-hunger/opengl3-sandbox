@@ -38,11 +38,11 @@ bool check_lines_for_cross_roads(Walls walls)
 	// Segment2  function)
 	for (Segment2 el : walls) {
 		auto a_cross = el.a.crossRoad, b_cross = el.b.crossRoad;
-		if (nullptr == a_cross or nullptr == b_cross) {
+		if (a_cross == nullptr || b_cross == nullptr) {
 			std::cout << "element " << i << ": " << el << std::endl;
 			throw "crossRoad is NULLPTR!!";
 		}
-		if (a_cross->points.size() < 1 or b_cross->points.size() < 1) {
+		if (a_cross->points.size() < 1 || b_cross->points.size() < 1) {
 			std::cout << "element " << i << ": " << el << std::endl;
 			throw "both cross points must have at least one point!";
 		}
@@ -60,9 +60,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
                               Colors& colors, Colors::size_type& color_count,
                               Colors::size_type& color, CrossRoads& cross_roads)
 {
-	if (!check_lines_for_cross_roads(wallsP)) {
-		throw "SOMETHING'S NOT RIGHT. TERMINATE!";
-	}
+	check_lines_for_cross_roads(wallsP);
 
 	const Segment2 line = way.getSegmnet2();
 	double line_angle = atan((line.b.y - line.a.y) / (line.b.x - line.a.x));
@@ -104,7 +102,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 			          << " Other closer crossRoad first point: "
 			          << otherCloser.crossRoad->points[0] << std::endl;
 
-			if (nullptr == otherCloser.crossRoad) {
+			if (otherCloser.crossRoad == nullptr) {
 				throw "Point doesn't have crossRoad!";
 			}
 			if (otherCloser.crossRoad->points.size() < 1) {
@@ -154,8 +152,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 			}
 
 			/* puts("Will check lines for crossroads..."); */
-			if (!check_lines_for_cross_roads({wallsP.back()}))
-				throw "FIX ME 912347892 :)";
+			check_lines_for_cross_roads({wallsP.back()});
 
 			/* std::cout.clear(); */
 		} else
@@ -273,9 +270,7 @@ Maze Maze::fromPaths(Ways paths)
 	}
 	printf(" from %lu lines\n", paths.size());
 
-	if (!check_lines_for_cross_roads(wallsP)) {
-		throw "FIX ME 1764202438082";
-	}
+	check_lines_for_cross_roads(wallsP);
 
 	for (const Segment2& p : wallsP) {
 		std::cout << p.color.name << std::endl;
