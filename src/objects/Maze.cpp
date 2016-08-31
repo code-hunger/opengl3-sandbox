@@ -40,7 +40,7 @@ bool check_lines_for_cross_roads(Walls walls)
 
 	// NOTE the implicit cast from WallSegment2 to Segment2 (via the operator
 	// Segment2  function)
-	for (Segment2 el : walls) {
+	for (const Segment2& el : walls) {
 		auto a_cross = el.a.crossRoad, b_cross = el.b.crossRoad;
 		if (a_cross == nullptr || b_cross == nullptr) {
 			cout << "element " << i << ": " << el << endl;
@@ -297,11 +297,11 @@ Maze Maze::fromPaths(Ways paths)
 
 	for (const Segment2& p : wallsP) {
 		cout << p.color.name << endl << p.a << " : ";
-		for (auto c : p.a.crossRoad->points) {
+		for (const auto& c : p.a.crossRoad->points) {
 			cout << c << ", ";
 		}
 		cout << endl << p.b << " : ";
-		for (auto c : p.b.crossRoad->points) {
+		for (const auto& c : p.b.crossRoad->points) {
 			cout << c << ", ";
 		}
 		cout << endl;
