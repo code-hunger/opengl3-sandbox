@@ -10,6 +10,10 @@
 
 #include <iostream>
 using std::cout;
+using std::endl;
+
+typedef std::vector<Color> Colors;
+typedef std::list<CrossRoad> CrossRoads;
 
 bool tryToInsert(CrossRoad& cr, WidePoint2 point_to_insert)
 {
@@ -39,11 +43,11 @@ bool check_lines_for_cross_roads(Walls walls)
 	for (Segment2 el : walls) {
 		auto a_cross = el.a.crossRoad, b_cross = el.b.crossRoad;
 		if (a_cross == nullptr || b_cross == nullptr) {
-			std::cout << "element " << i << ": " << el << std::endl;
+			cout << "element " << i << ": " << el << endl;
 			throw "crossRoad is NULLPTR!!";
 		}
 		if (a_cross->points.size() < 1 || b_cross->points.size() < 1) {
-			std::cout << "element " << i << ": " << el << std::endl;
+			cout << "element " << i << ": " << el << endl;
 			throw "both cross points must have at least one point!";
 		}
 		++i;
@@ -52,10 +56,92 @@ bool check_lines_for_cross_roads(Walls walls)
 	return true;
 }
 
-typedef std::vector<Color> Colors;
-typedef std::list<CrossRoad> CrossRoads;
+void one_intersect_point(bool iupper, const Ways::value_type& way,
+                         Point2& ipointUpper, Point2& ipointLower,
+                         Segment2& upper, Segment2& lower, Segment2& wall,
+                         bool& modifiedA, bool& modifiedB,
+                         CrossRoads& cross_roads)
+{
+	const Point2& cross_point = iupper ? ipointUpper : ipointLower;
+	Point2 &thisCloser = (iupper ? upper : lower).getEndCloserTo(cross_point),
+	       &otherCloser = wall.getEndCloserTo(cross_point);
+	cout << "CrossPoint: " << cross_point
+	     << "Other closer point: " << otherCloser
+	     << " Other closer crossRoad first point: "
+	     << otherCloser.crossRoad->points[0] << endl;
 
-// @TODO won't write full types now!
+	if (otherCloser.crossRoad == nullptr) {
+		throw "Point doesn't have crossRoad!";
+	}
+	if (otherCloser.crossRoad->points.size() < 1) {
+		throw "Other closer's crossRoad has no points!";
+	}
+
+	cout << "Point which we're trying to add (way.a): " << way.a << endl;
+	if (tryToInsert(*otherCloser.crossRoad, way.a)) {
+		cout << "Successfully instered this point!\n";
+		// Cut these lines at the point of intersection
+		thisCloser.x = otherCloser.x = cross_point.x;
+		thisCloser.y = otherCloser.y = cross_point.y;
+
+		if (!modifiedB) {
+			modifiedB = 1;
+			CrossRoad to_b{{}, {way.b}};
+			cross_roads.push_back(to_b);
+
+			cross_roads.back().lines.push_back(&lower);
+			cross_roads.back().lines.push_back(&upper);
+
+			lower.b.crossRoad = upper.b.crossRoad = &cross_roads.back();
+			upper.a.crossRoad = lower.a.crossRoad = otherCloser.crossRoad;
+		}
+
+		modifiedA = true;
+
+	} else {
+		cout << "Point which we're trying to add (way.b): " << way.b << endl;
+		if (tryToInsert(*otherCloser.crossRoad, way.b)) {
+			cout << "Successfully instered this point!\n";
+			// Cut these lines at the point of intersection
+			thisCloser.x = otherCloser.x = cross_point.x;
+			thisCloser.y = otherCloser.y = cross_point.y;
+
+			if (!modifiedA) {
+				modifiedA = 1;
+				CrossRoad to_a{{}, {way.a}};
+				cross_roads.push_back(to_a);
+
+				cross_roads.back().lines.push_back(&upper);
+				cross_roads.back().lines.push_back(&lower);
+
+				upper.a.crossRoad = lower.a.crossRoad = &cross_roads.back();
+				lower.b.crossRoad = upper.b.crossRoad = otherCloser.crossRoad;
+			}
+
+			modifiedB = true;
+		}
+	}
+}
+
+void two_intersect_points(WallSegment2& wall_segment, Segment2& upper,
+                          Segment2 lower, Point2 ipointUpper,
+                          Point2 ipointLower, Segment2 wall)
+{
+	Point2 ipointUpperOpposite, ipointLowerOpposite;
+	const bool iupperOpposite = wall_segment.opposite->intersectsWith(
+	               upper, &ipointUpperOpposite),
+	           ilowerOpposite = wall_segment.opposite->intersectsWith(
+	               lower, &ipointLowerOpposite);
+
+	cout << "iupperOpposite=" << iupperOpposite << ", ilowerOpposite"
+	     << ilowerOpposite << endl;
+	if (!iupperOpposite || !ilowerOpposite) {
+		cout << "Not the opposite" << endl;
+		(void)Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.a);
+		(void)Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.a);
+	}
+}
+
 void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
                               Colors& colors, Colors::size_type& color_count,
                               Colors::size_type& color, CrossRoads& cross_roads)
@@ -78,90 +164,28 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 
 	printf("\nNEXT INSERT START: %s/%s\n", upper.color.name, lower.color.name);
 
-	bool modifiedA = false, modifiedB;
+	bool modifiedA{}, modifiedB{};
 
 	for (WallSegment2& wall_segment : wallsP) {
 		Segment2& wall = wall_segment.segment;
-		std::cout << "CHECK WITH " << wall.color.name << " " << wall << ":";
+		cout << "CHECK WITH " << wall.color.name << " " << wall << ":";
 		Point2 ipointUpper, ipointLower;
 		const bool iupper = wall.intersectsWith(upper, &ipointUpper),
 		           ilower = wall.intersectsWith(lower, &ipointLower);
 
 		if (iupper && ilower) {
 			puts("BOTH INTERSECT!");
+			two_intersect_points(wall_segment, upper, lower, ipointUpper,
+			                     ipointLower, wall);
 		} else if (iupper xor ilower) {
 			puts("Just one intersect point!");
-			// Disable stdout, no need for it now. Enabled again at end of `if`
-			/* std::cout.setstate(std::ios_base::failbit); */
-			const Point2& cross_point = iupper ? ipointUpper : ipointLower;
-			Point2 &thisCloser =
-			           (iupper ? upper : lower).getEndCloserTo(cross_point),
-			       &otherCloser = wall.getEndCloserTo(cross_point);
-			std::cout << "CrossPoint: " << cross_point
-			          << "Other closer point: " << otherCloser
-			          << " Other closer crossRoad first point: "
-			          << otherCloser.crossRoad->points[0] << std::endl;
-
-			if (otherCloser.crossRoad == nullptr) {
-				throw "Point doesn't have crossRoad!";
-			}
-			if (otherCloser.crossRoad->points.size() < 1) {
-				throw "Other closer's crossRoad has no points!";
-			}
-
-			std::cout << "Point which we're trying to add (way.a): " << way.a
-			          << std::endl;
-			if (tryToInsert(*otherCloser.crossRoad, way.a)) {
-				std::cout << "Successfully instered this point!\n";
-				// Cut these lines at the point of intersection
-				thisCloser.x = otherCloser.x = cross_point.x;
-				thisCloser.y = otherCloser.y = cross_point.y;
-
-				CrossRoad to_b{{}, {way.b}};
-				cross_roads.push_back(to_b);
-
-				cross_roads.back().lines.push_back(&lower);
-				cross_roads.back().lines.push_back(&upper);
-
-				lower.b.crossRoad = upper.b.crossRoad = &cross_roads.back();
-				upper.a.crossRoad = lower.a.crossRoad = otherCloser.crossRoad;
-
-				modifiedA = true;
-
-			} else {
-				std::cout << "Point which we're trying to add (way.b): "
-				          << way.b << std::endl;
-				if (tryToInsert(*otherCloser.crossRoad, way.b)) {
-					std::cout << "Successfully instered this point!\n";
-					// Cut these lines at the point of intersection
-					thisCloser.x = otherCloser.x = cross_point.x;
-					thisCloser.y = otherCloser.y = cross_point.y;
-
-					CrossRoad to_a{{}, {way.a}};
-					cross_roads.push_back(to_a);
-
-					cross_roads.back().lines.push_back(&upper);
-					cross_roads.back().lines.push_back(&lower);
-
-					upper.a.crossRoad = lower.a.crossRoad = &cross_roads.back();
-					lower.b.crossRoad = upper.b.crossRoad =
-					    otherCloser.crossRoad;
-
-					modifiedB = true;
-				}
-			}
-
-			/* puts("Will check lines for crossroads..."); */
+			one_intersect_point(iupper, way, ipointUpper, ipointLower, upper,
+			                    lower, wall, modifiedA, modifiedB, cross_roads);
 			check_lines_for_cross_roads({wallsP.back()});
-
-			/* std::cout.clear(); */
-		} else
-			puts("They don't intersect!");
+		}
 	}
 
 	if (!modifiedA && !modifiedB) {
-		/* puts("\nnot modified!"); */
-
 		// ATTENTION! lower/upper REPLACED WITH THE ONES IN wallsP!
 		wallsP.push_back({lower, nullptr});
 		WallSegment2& lower = wallsP.back();
@@ -182,7 +206,6 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 		cross_roads.push_back(to_b);
 		lower.segment.b.crossRoad = upper.segment.b.crossRoad =
 		    &cross_roads.back();
-
 	} else {
 		/* puts("\nit was modified!"); */
 		wallsP.push_back({lower, nullptr});
@@ -251,7 +274,7 @@ Maze Maze::fromPaths(Ways paths)
 
 	auto color_count = colors.size(), color = 0lu;
 
-	freopen("out.txt", "w", stdout);
+	// freopen("out.txt", "w", stdout);
 	int paths_inserted = 0;
 	for (const auto& way : paths) {
 		add_a_single_way_to_maze(wallsP, way, colors, color_count, color,
@@ -273,17 +296,15 @@ Maze Maze::fromPaths(Ways paths)
 	check_lines_for_cross_roads(wallsP);
 
 	for (const Segment2& p : wallsP) {
-		std::cout << p.color.name << std::endl;
-		std::cout << p.a << " : ";
-		for (auto c : p.a.crossRoad->lines) {
-			std::cout << *c << ", ";
+		cout << p.color.name << endl << p.a << " : ";
+		for (auto c : p.a.crossRoad->points) {
+			cout << c << ", ";
 		}
-		std::cout << std::endl;
-		std::cout << p.b << " : ";
-		for (auto c : p.b.crossRoad->lines) {
-			std::cout << *c << ", ";
+		cout << endl << p.b << " : ";
+		for (auto c : p.b.crossRoad->points) {
+			cout << c << ", ";
 		}
-		std::cout << std::endl;
+		cout << endl;
 	}
 
 	// 12 floats per line: per point 3x position and 3x color
