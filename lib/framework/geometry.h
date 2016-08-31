@@ -21,6 +21,9 @@ struct Point2
 	{
 		return this->x == other.x && this->y == other.y;
 	}
+
+	// Don't allow this - *crossRoad must be preserved
+	Point2 operator=(const Point2&) = delete;
 };
 
 struct Vector2
@@ -104,7 +107,7 @@ struct Segment2
 	}
 
 	// NOT const - we may want to change the refference later
-	Point2& getEndCloserTo(Point2 point) 
+	Point2& getEndCloserTo(Point2 point)
 	{
 		return ::calcSquaredLen(a, point) < ::calcSquaredLen(b, point) ? a : b;
 	}
