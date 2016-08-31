@@ -30,7 +30,7 @@ bool tryToInsert(CrossRoad& cr, WidePoint2 point_to_insert)
 	return false;
 }
 
-bool check_lines_for_cross_roads(std::list<WallSegment2> walls)
+bool check_lines_for_cross_roads(Walls walls)
 {
 	int i = 0;
 
@@ -52,9 +52,13 @@ bool check_lines_for_cross_roads(std::list<WallSegment2> walls)
 	return true;
 }
 
+typedef std::vector<Color> Colors;
+typedef std::list<CrossRoad> CrossRoads;
+
 // @TODO won't write full types now!
-void add_a_single_way_to_maze(auto& wallsP, auto& way, auto& colors,
-                              auto& color_count, auto& color, auto& cross_roads)
+void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
+                              Colors& colors, Colors::size_type& color_count,
+                              Colors::size_type& color, CrossRoads& cross_roads)
 {
 	if (!check_lines_for_cross_roads(wallsP)) {
 		throw "SOMETHING'S NOT RIGHT. TERMINATE!";
@@ -67,15 +71,11 @@ void add_a_single_way_to_maze(auto& wallsP, auto& way, auto& colors,
 	      deltaXA = way.a.width * angle_sin, deltaXB = way.b.width * angle_sin,
 	      deltaYA = way.a.width * angle_cos, deltaYB = way.b.width * angle_cos;
 
-	Segment2 upper = {line.a.x + deltaXA, line.a.y - deltaYA, nullptr,
-	                  line.b.x + deltaXB, line.b.y - deltaYB, nullptr,
+	Segment2 upper = {{line.a.x + deltaXA, line.a.y - deltaYA, nullptr},
+	                  {line.b.x + deltaXB, line.b.y - deltaYB, nullptr},
 	                  colors[color]},
-	         lower = {line.a.x - deltaXA,
-	                  line.a.y + deltaYA,
-	                  nullptr,
-	                  line.b.x - deltaXB,
-	                  line.b.y + deltaYB,
-	                  nullptr,
+	         lower = {{line.a.x - deltaXA, line.a.y + deltaYA, nullptr},
+	                  {line.b.x - deltaXB, line.b.y + deltaYB, nullptr},
 	                  colors[(color + 1) % color_count]};
 
 	printf("\nNEXT INSERT START: %s/%s\n", upper.color.name, lower.color.name);
@@ -202,8 +202,8 @@ void add_a_single_way_to_maze(auto& wallsP, auto& way, auto& colors,
 }
 
 // @TODO full types
-int put_walls_and_paths_to_vertex_points(float points[], auto& wallsP,
-                                         auto& paths)
+int put_walls_and_paths_to_vertex_points(float points[], Walls& wallsP,
+                                         Ways& paths)
 {
 	int i = 0;
 	for (const Segment2& wall : wallsP) { // Copy wallsP into points[]
@@ -242,16 +242,15 @@ int put_walls_and_paths_to_vertex_points(float points[], auto& wallsP,
 
 Maze Maze::fromPaths(Ways paths)
 {
-	std::list<WallSegment2> wallsP, wallsS; // primary and secondary
+	Walls wallsP, wallsS; // primary and secondary
 
-	std::list<CrossRoad> cross_roads;
+	CrossRoads cross_roads;
 
-	std::vector<Color> colors = {
-	    {1, 1, 0, "yellow"}, //- {.5f, .5f, .5f, "silver"},
-	    {1, 1, 1, "white"},           {1, 0, 0, "red"},
-	    {0, 1, 0, "green"},           {0, 0, 1, "blue"},
-	    {1, 0.5f, 0, "orange"},       {0.5f, 0, 0.8f, "violet"},
-	    {0.4f, 0.4f, 1, "lightblue"}, {0, 0.5f, 0, "darkgreen"}};
+	Colors colors = {{1, 1, 0, "yellow"}, //- {.5f, .5f, .5f, "silver"},
+	                 {1, 1, 1, "white"},           {1, 0, 0, "red"},
+	                 {0, 1, 0, "green"},           {0, 0, 1, "blue"},
+	                 {1, 0.5f, 0, "orange"},       {0.5f, 0, 0.8f, "violet"},
+	                 {0.4f, 0.4f, 1, "lightblue"}, {0, 0.5f, 0, "darkgreen"}};
 
 	auto color_count = colors.size(), color = 0lu;
 

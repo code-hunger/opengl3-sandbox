@@ -11,11 +11,12 @@
 #include <list>
 
 typedef std::unordered_set<WideRoad2, Hash> Ways;
+typedef std::list<WallSegment2> Walls;
 
 struct Maze
 {
 	Ways paths;
-	std::list<WallSegment2> walls;
+	Walls walls;
 	VertexArray vertArray;
 
 	void draw(GLenum mode);
