@@ -123,9 +123,9 @@ void one_intersect_point(bool iupper, const Ways::value_type& way,
 	}
 }
 
-void two_intersect_points(WallSegment2& wall_segment, Segment2& upper,
-                          Segment2 lower, Point2 ipointUpper,
-                          Point2 ipointLower, Segment2 wall)
+void two_intersect_points(WallSegment2& wall_segment, Segment2& wall,
+                          Point2& ipointUpper, Point2& ipointLower,
+                          Segment2& upper, Segment2& lower)
 {
 	Point2 ipointUpperOpposite, ipointLowerOpposite;
 	const bool iupperOpposite = wall_segment.opposite->intersectsWith(
@@ -135,10 +135,19 @@ void two_intersect_points(WallSegment2& wall_segment, Segment2& upper,
 
 	cout << "iupperOpposite=" << iupperOpposite << ", ilowerOpposite"
 	     << ilowerOpposite << endl;
-	if (!iupperOpposite || !ilowerOpposite) {
-		cout << "Not the opposite" << endl;
-		(void)Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.a);
-		(void)Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.a);
+	if (iupperOpposite && ilowerOpposite) {
+		cout << "The opposite is crossed too by both lower and upper!!" << endl;
+	} else {
+		//Point2 cpoint_of_A =
+			//Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.a);
+		/*Point2 cpoint_of_B =
+			Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.b);*/
+
+		/*wall.a.moveTo(cpoint_of_A);
+		wall_segment.opposite->a.moveTo(cpoint_of_A);
+
+		lower.getEndCloserTo(ipointLower).moveTo(ipointLower);
+		upper.getEndCloserTo(ipointUpper).moveTo(ipointUpper);*/
 	}
 }
 
@@ -175,8 +184,8 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 
 		if (iupper && ilower) {
 			puts("BOTH INTERSECT!");
-			two_intersect_points(wall_segment, upper, lower, ipointUpper,
-			                     ipointLower, wall);
+			two_intersect_points(wall_segment, wall, ipointUpper, ipointLower,
+			                     upper, lower);
 		} else if (iupper xor ilower) {
 			puts("Just one intersect point!");
 			one_intersect_point(iupper, way, ipointUpper, ipointLower, upper,
