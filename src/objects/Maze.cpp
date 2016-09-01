@@ -89,8 +89,8 @@ void one_intersect_point(bool iupper, const Ways::value_type& way,
 			CrossRoad to_b{{}, {way.b}};
 			cross_roads.push_back(to_b);
 
-			cross_roads.back().lines.push_back(&lower.segment);
-			cross_roads.back().lines.push_back(&upper.segment);
+			cross_roads.back().lines.push_back(&lower);
+			cross_roads.back().lines.push_back(&upper);
 
 			lower.segment.b.crossRoad = upper.segment.b.crossRoad =
 			    &cross_roads.back();
@@ -113,8 +113,8 @@ void one_intersect_point(bool iupper, const Ways::value_type& way,
 				CrossRoad to_a{{}, {way.a}};
 				cross_roads.push_back(to_a);
 
-				cross_roads.back().lines.push_back(&upper.segment);
-				cross_roads.back().lines.push_back(&lower.segment);
+				cross_roads.back().lines.push_back(&upper);
+				cross_roads.back().lines.push_back(&lower);
 
 				upper.segment.a.crossRoad = lower.segment.a.crossRoad =
 				    &cross_roads.back();
@@ -136,6 +136,10 @@ void two_intersect_points(Wall2& wall, Point2& ipointUpper, Point2& ipointLower,
 	               upper.segment, &ipointUpperOpposite),
 	           ilowerOpposite = wall.opposite->intersectsWith(
 	               lower.segment, &ipointLowerOpposite);
+
+	// silence stupid warning - function not implement yet
+	(void)ipointLower;
+	(void)ipointUpper;
 
 	cout << "iupperOpposite=" << iupperOpposite << ", ilowerOpposite"
 	     << ilowerOpposite << endl;
@@ -168,28 +172,23 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 	      deltaXA = way.a.width * angle_sin, deltaXB = way.b.width * angle_sin,
 	      deltaYA = way.a.width * angle_cos, deltaYB = way.b.width * angle_cos;
 
-	Wall2 _upper = {{{line.a.x + deltaXA, line.a.y - deltaYA, {}},
-	                 {line.b.x + deltaXB, line.b.y - deltaYB, {}},
-	                 colors[color]},
-	                {}},
-	      _lower = {{{line.a.x - deltaXA, line.a.y + deltaYA, {}},
-	                 {line.b.x - deltaXB, line.b.y + deltaYB, {}},
-	                 colors[(color + 1) % color_count]},
-	                {}};
+	Segment2 _upper = {{line.a.x + deltaXA, line.a.y - deltaYA, nullptr},
+	                   {line.b.x + deltaXB, line.b.y - deltaYB, nullptr},
+	                   colors[color]},
+	         _lower = {{line.a.x - deltaXA, line.a.y + deltaYA, nullptr},
+	                   {line.b.x - deltaXB, line.b.y + deltaYB, nullptr},
+	                   colors[(color + 1) % color_count]};
 
-	wallsP.push_back(_upper);
+	wallsP.push_back({_upper, nullptr});
 	Wall2& upper = wallsP.back();
 
-	wallsP.push_back(_lower);
+	wallsP.push_back({_lower, nullptr});
 	Wall2& lower = wallsP.back();
 
-	CrossRoad to_a = {{&lower.segment, &upper.segment}, {way.a}},
-	          to_b = {{&lower.segment, &upper.segment}, {way.b}};
-
-	cross_roads.push_back(to_a);
+	cross_roads.push_back({{&lower, &upper}, {way.a}});
 	lower.segment.a.crossRoad = upper.segment.a.crossRoad = &cross_roads.back();
 
-	cross_roads.push_back(to_b);
+	cross_roads.push_back({{&lower, &upper}, {way.b}});
 	lower.segment.b.crossRoad = upper.segment.b.crossRoad = &cross_roads.back();
 
 	printf("\nNEXT INSERT START: %s/%s\n", upper.segment.color.name,

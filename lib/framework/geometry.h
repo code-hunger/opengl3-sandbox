@@ -137,7 +137,7 @@ struct WidePoint2
 
 struct CrossRoad
 {
-	std::vector<Segment2*> lines;
+	std::vector<Wall2*> lines;
 	std::vector<WidePoint2> points;
 };
 
