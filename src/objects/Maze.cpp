@@ -131,7 +131,7 @@ void two_intersect_points(Wall2& wall, Point2& ipointUpper, Point2& ipointLower,
                           Wall2& upper, Wall2& lower)
 {
 	return;
-	Point2 ipointUpperOpposite, ipointLowerOpposite;
+	Point2 ipointUpperOpposite{}, ipointLowerOpposite{};
 	const bool iupperOpposite = wall.opposite->intersectsWith(
 	               upper.segment, &ipointUpperOpposite),
 	           ilowerOpposite = wall.opposite->intersectsWith(
@@ -172,17 +172,17 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 	      deltaXA = way.a.width * angle_sin, deltaXB = way.b.width * angle_sin,
 	      deltaYA = way.a.width * angle_cos, deltaYB = way.b.width * angle_cos;
 
-	Segment2 _upper = {{line.a.x + deltaXA, line.a.y - deltaYA, nullptr},
-	                   {line.b.x + deltaXB, line.b.y - deltaYB, nullptr},
+	Segment2 _upper = {{line.a.x + deltaXA, line.a.y - deltaYA},
+	                   {line.b.x + deltaXB, line.b.y - deltaYB},
 	                   colors[color]},
-	         _lower = {{line.a.x - deltaXA, line.a.y + deltaYA, nullptr},
-	                   {line.b.x - deltaXB, line.b.y + deltaYB, nullptr},
+	         _lower = {{line.a.x - deltaXA, line.a.y + deltaYA},
+	                   {line.b.x - deltaXB, line.b.y + deltaYB},
 	                   colors[(color + 1) % color_count]};
 
-	wallsP.push_back({_upper, nullptr});
+	wallsP.push_back({_upper});
 	Wall2& upper = wallsP.back();
 
-	wallsP.push_back({_lower, nullptr});
+	wallsP.push_back({_lower});
 	Wall2& lower = wallsP.back();
 
 	cross_roads.push_back({{&lower, &upper}, {way.a}});
@@ -199,7 +199,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 	for (Wall2& wall : wallsP) {
 		Segment2& segment = wall.segment;
 		cout << "CHECK WITH " << segment.color.name << " " << segment << ":";
-		Point2 ipointUpper, ipointLower;
+		Point2 ipointUpper{}, ipointLower{};
 		const bool iupper = segment.intersectsWith(upper.segment, &ipointUpper),
 		           ilower = segment.intersectsWith(lower.segment, &ipointLower);
 

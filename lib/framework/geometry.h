@@ -15,7 +15,7 @@ struct Color
 struct Point2
 {
 	float x, y;
-	CrossRoad* crossRoad;
+	CrossRoad* crossRoad = nullptr;
 
 	inline bool operator==(const Point2& other) const
 	{
@@ -122,7 +122,7 @@ struct Segment2
 
 struct Wall2
 {
-	Segment2 segment, *opposite;
+	Segment2 segment, *opposite = nullptr;
 };
 
 struct WidePoint2

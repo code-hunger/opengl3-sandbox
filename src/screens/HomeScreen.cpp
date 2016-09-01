@@ -16,7 +16,7 @@ Maze getMazeFromFile(unsigned short maze_id)
 	fileName += std::to_string(static_cast<unsigned>(maze_id));
 	fileName += ".txt";
 	std::ifstream input(fileName);
-	WideRoad2 line;
+	WideRoad2 line{};
 	Ways lines;
 	while (input >> line) {
 		lines.insert(line);
