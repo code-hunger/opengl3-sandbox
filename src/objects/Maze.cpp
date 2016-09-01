@@ -214,38 +214,6 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 		}
 	}
 
-	/*if (!modifiedA && !modifiedB) {
-	    // ATTENTION! lower/upper REPLACED WITH THE ONES IN wallsP!
-	    wallsP.push_back({lower, nullptr});
-	    Wall2& lower = wallsP.back();
-
-	    wallsP.push_back({upper, nullptr});
-	    Wall2& upper = wallsP.back();
-
-	    lower.opposite = &upper.segment;
-	    upper.opposite = &lower.segment;
-
-	    CrossRoad to_a = {{&lower.segment, &upper.segment}, {way.a}},
-	              to_b = {{&lower.segment, &upper.segment}, {way.b}};
-
-	    cross_roads.push_back(to_a);
-	    lower.segment.a.crossRoad = upper.segment.a.crossRoad =
-	        &cross_roads.back();
-
-	    cross_roads.push_back(to_b);
-	    lower.segment.b.crossRoad = upper.segment.b.crossRoad =
-	        &cross_roads.back();
-	} else {
-	    [> puts("\nit was modified!"); <]
-	    wallsP.push_back({lower, nullptr});
-	    Wall2& lower = wallsP.back();
-
-	    wallsP.push_back({upper, nullptr});
-	    Wall2& upper = wallsP.back();
-
-	    lower.opposite = &upper.segment;
-	    upper.opposite = &lower.segment;
-	}*/
 	check_lines_for_cross_roads(wallsP);
 	color = (color + 2) % color_count;
 }
