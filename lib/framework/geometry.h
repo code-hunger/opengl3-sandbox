@@ -120,10 +120,9 @@ struct Segment2
 	}
 };
 
-struct WallSegment2
+struct Wall2
 {
 	Segment2 segment, *opposite;
-	operator Segment2() { return segment; }
 };
 
 struct WidePoint2

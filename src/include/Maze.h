@@ -11,7 +11,7 @@
 #include <list>
 
 typedef std::unordered_set<WideRoad2, Hash> Ways;
-typedef std::list<WallSegment2> Walls;
+typedef std::list<Wall2> Walls;
 
 struct Maze
 {
