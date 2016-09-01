@@ -38,8 +38,6 @@ bool check_lines_for_cross_roads(Walls walls)
 {
 	int i = 0;
 
-	// NOTE the implicit cast from Wall2 to Segment2 (via the operator
-	// Segment2  function)
 	for (const auto& el : walls) {
 		auto a_cross = el.segment.a.crossRoad, b_cross = el.segment.b.crossRoad;
 		if (a_cross == nullptr || b_cross == nullptr) {
@@ -127,8 +125,8 @@ void one_intersect_point(bool iupper, const Ways::value_type& way,
 	}
 }
 
-void two_intersect_points(Wall2& wall, Point2& ipointUpper, Point2& ipointLower,
-                          Wall2& upper, Wall2& lower)
+void two_intersect_points(Wall2& wall, Wall2& upper, Wall2& lower,
+                          Point2& ipointUpper, Point2& ipointLower)
 {
 	return;
 	Point2 ipointUpperOpposite{}, ipointLowerOpposite{};
@@ -137,25 +135,21 @@ void two_intersect_points(Wall2& wall, Point2& ipointUpper, Point2& ipointLower,
 	           ilowerOpposite = wall.opposite->intersectsWith(
 	               lower.segment, &ipointLowerOpposite);
 
-	// silence stupid warning - function not implement yet
-	(void)ipointLower;
-	(void)ipointUpper;
-
 	cout << "iupperOpposite=" << iupperOpposite << ", ilowerOpposite"
 	     << ilowerOpposite << endl;
 	if (iupperOpposite && ilowerOpposite) {
 		cout << "The opposite is crossed too by both lower and upper!!" << endl;
 	} else {
-		// Point2 cpoint_of_A =
-		// Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.a);
-		/*Point2 cpoint_of_B =
-		    Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.b);*/
+		Point2 cpoint_of_A =
+		    Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.segment.a);
+		//Point2 cpoint_of_B =
+			//Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.segment.b);
 
-		/*wall.a.moveTo(cpoint_of_A);
-		wall_segment.opposite->a.moveTo(cpoint_of_A);
+		wall.segment.a.moveTo(cpoint_of_A);
+		wall.opposite->a.moveTo(cpoint_of_A);
 
-		lower.getEndCloserTo(ipointLower).moveTo(ipointLower);
-		upper.getEndCloserTo(ipointUpper).moveTo(ipointUpper);*/
+		lower.segment.getEndCloserTo(ipointLower).moveTo(ipointLower);
+		upper.segment.getEndCloserTo(ipointUpper).moveTo(ipointUpper);
 	}
 }
 
@@ -205,7 +199,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 
 		if (iupper && ilower) {
 			puts("BOTH INTERSECT!");
-			two_intersect_points(wall, ipointUpper, ipointLower, upper, lower);
+			two_intersect_points(wall, upper, lower, ipointUpper, ipointLower);
 		} else if (iupper xor ilower) {
 			puts("Just one intersect point!");
 			one_intersect_point(iupper, way, ipointUpper, ipointLower, upper,
