@@ -19,7 +19,7 @@ class VertexArray
 
 public:
 	VertexArray(const float* points, int point_count,
-	            const unsigned* indices = NULL, int indices_count = 0);
+	            const unsigned* indices = nullptr, int indices_count = 0);
 
 	void build(GLushort dimention, bool hasColor = true);
 
