@@ -1,9 +1,9 @@
 #include "Game.h"
 
 #include "HomeScreen.h"
-#include "Shader.h"
-#include "ShaderProgram.h"
-#include "VertexArray.h"
+#include "graphics/Shader.h"
+#include "graphics/ShaderProgram.h"
+#include "graphics/VertexArray.h"
 
 #include <GL/glew.h>
 

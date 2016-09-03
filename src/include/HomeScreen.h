@@ -3,8 +3,8 @@
 
 #include "Maze.h"
 #include "Screen.h"
-#include "ShaderProgram.h"
-#include "VertexArray.h"
+#include "graphics/ShaderProgram.h"
+#include "graphics/VertexArray.h"
 
 class HomeScreen : public Screen
 {

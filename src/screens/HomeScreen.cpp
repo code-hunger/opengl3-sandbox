@@ -1,8 +1,8 @@
 #include "HomeScreen.h"
-#include "Shader.h"
-#include "config.h"
-#include "geometry_io.h"
-#include "utils.h"
+#include "graphics/Shader.h"
+#include "graphics/config.h"
+#include "graphics/geometry_io.h"
+#include "graphics/utils.h"
 #include <GLFW/glfw3.h>
 #include <cstdio>
 #include <glm/glm.hpp>

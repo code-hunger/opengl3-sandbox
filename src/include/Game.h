@@ -3,12 +3,12 @@
 
 #include <memory>
 
-#include "Renderer.h"
+#include "graphics/Renderer.h"
 #include "Screen.h"
-#include "ShaderProgram.h"
-#include "State.h"
-#include "VertexArray.h"
-#include "Window.h"
+#include "graphics/ShaderProgram.h"
+#include "graphics/State.h"
+#include "graphics/VertexArray.h"
+#include "graphics/Window.h"
 
 class Game : public Renderer
 {

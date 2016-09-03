@@ -1,6 +1,6 @@
 #include "Maze.h"
 
-#include "geometry_io.h"
+#include "graphics/geometry_io.h"
 
 #include <cassert>
 #include <cmath>

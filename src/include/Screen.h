@@ -1,7 +1,7 @@
 #ifndef SCREEN_H_4ZGYXQ9E
 #define SCREEN_H_4ZGYXQ9E
 
-#include "State.h"
+#include "graphics/State.h"
 
 class Screen
 {

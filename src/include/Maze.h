@@ -1,8 +1,8 @@
 #ifndef MAZE_H_UAWB7QD4
 #define MAZE_H_UAWB7QD4
 
-#include "VertexArray.h"
-#include "geometry.h"
+#include "graphics/VertexArray.h"
+#include "graphics/geometry.h"
 
 #include <unordered_set>
 #include <vector>

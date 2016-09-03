@@ -1,7 +1,7 @@
 #ifndef GEOMETRY_IO_H_W6BMNIRU
 #define GEOMETRY_IO_H_W6BMNIRU
 
-#include <geometry.h>
+#include <graphics/geometry.h>
 
 #include <fstream>
 

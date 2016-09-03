@@ -8,17 +8,17 @@ set(MAZE_DIRECTORY ${PROJECT_SOURCE_DIR}/data/mazes)
 
 configure_file (
     "${PROJECT_SOURCE_DIR}/src/config.h.in"
-    "${PROJECT_SOURCE_DIR}/lib/framework/config.h"
+    "${PROJECT_SOURCE_DIR}/lib/include/graphics/config.h"
   )
 
-include_directories(${PROJECT_SOURCE_DIR}/lib/framework)
+include_directories(${PROJECT_SOURCE_DIR}/lib/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/include)
 
 file(GLOB SOURCES_RECURSIVE "src/**/*.cpp")
 file(GLOB SOURCES "src/*.cpp")
 
 add_executable(game ${SOURCES_RECURSIVE} ${SOURCES})
-target_link_libraries (game Framework GL GLU glfw GLEW)
+target_link_libraries (game graphics GL GLU glfw GLEW)
 
-add_subdirectory(lib/framework)
+add_subdirectory(lib/graphics)
 
