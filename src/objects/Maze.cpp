@@ -7,6 +7,7 @@
 
 #define MAX_LINES 30
 #define PI 3.141592653589793238462643383279502884L
+#define FORCE_VALIDATE false
 
 #include <iostream>
 using std::cout;
@@ -34,24 +35,45 @@ bool tryToInsert(CrossRoad& cr, WidePoint2 point_to_insert)
 	return false;
 }
 
-bool check_lines_for_cross_roads(Walls walls)
+void validate_cross_road(CrossRoad* crossRoad)
 {
-	int i = 0;
-
-	for (const auto& el : walls) {
-		auto a_cross = el.segment.a.crossRoad, b_cross = el.segment.b.crossRoad;
-		if (a_cross == nullptr || b_cross == nullptr) {
-			cout << "element " << i << ": " << el.segment << endl;
-			throw "crossRoad is NULLPTR!!";
-		}
-		if (a_cross->points.size() < 1 || b_cross->points.size() < 1) {
-			cout << "element " << i << ": " << el.segment << endl;
-			throw "both cross points must have at least one point!";
-		}
-		++i;
+	if (crossRoad == nullptr) {
+		throw "CrossRoad pointer is empty!";
 	}
-	puts("LINES CHECK passed!");
-	return true;
+	if (crossRoad->points.size() < 2) {
+		throw "CrossRoads can't have less than 2 points!";
+	}
+	if (crossRoad->lines.size() < 2) {
+		throw "CrossRoads can't have less than 2 lines!";
+	}
+}
+
+void validate_walls(Walls walls, bool force = FORCE_VALIDATE)
+{
+	if(!force) { return; }
+	freopen("error.txt", "w", stdout);
+	bool valid = true;
+	for (const auto& wall : walls) {
+		// First check the opposite
+		if (wall.opposite == nullptr) {
+			cout << "Opposite is nullptr: " << wall.segment << endl;
+			valid = false;
+		} else if (wall.opposite->opposite != &wall) {
+			cout << "The opposite's opposite is not the current wall!";
+			valid = false;
+		}
+
+		try {
+			validate_cross_road(wall.segment.a.crossRoad);
+			validate_cross_road(wall.segment.b.crossRoad);
+		} catch (const char* err) {
+			cout << err << endl;
+			valid = false;
+		}
+	}
+	if (!valid) {
+		throw "Walls' state invalid!";
+	}
 }
 
 void one_intersect_point(bool iupper, const Ways::value_type& way,
@@ -138,18 +160,18 @@ void two_intersect_points(Wall2& wall, Wall2& upper, Wall2& lower,
 	cout << "iupperOpposite=" << iupperOpposite << ", ilowerOpposite"
 	     << ilowerOpposite << endl;
 	if (iupperOpposite && ilowerOpposite) {
-		cout << "The opposite is crossed too by both lower and upper!!" << endl;
+	    cout << "The opposite is crossed too by both lower and upper!!" << endl;
 	} else {
-		Point2 cpoint_of_A =
-		    Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.segment.a);
-		// Point2 cpoint_of_B =
-		// Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.segment.b);
+	    Point2 cpoint_of_A =
+	        Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.segment.a);
+	    // Point2 cpoint_of_B =
+	    // Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.segment.b);
 
-		wall.segment.a.moveTo(cpoint_of_A);
-		wall.opposite->a.moveTo(cpoint_of_A);
+	    wall.segment.a.moveTo(cpoint_of_A);
+	    wall.opposite->a.moveTo(cpoint_of_A);
 
-		lower.segment.getEndCloserTo(ipointLower).moveTo(ipointLower);
-		upper.segment.getEndCloserTo(ipointUpper).moveTo(ipointUpper);
+	    lower.segment.getEndCloserTo(ipointLower).moveTo(ipointLower);
+	    upper.segment.getEndCloserTo(ipointUpper).moveTo(ipointUpper);
 	}*/
 }
 
@@ -157,7 +179,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
                               Colors& colors, Colors::size_type& color_count,
                               Colors::size_type& color, CrossRoads& cross_roads)
 {
-	check_lines_for_cross_roads(wallsP);
+	validate_walls(wallsP);
 
 	const Segment2 line = way.getSegmnet2();
 	double line_angle = atan((line.b.y - line.a.y) / (line.b.x - line.a.x));
@@ -204,11 +226,10 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 			puts("Just one intersect point!");
 			one_intersect_point(iupper, way, ipointUpper, ipointLower, upper,
 			                    lower, wall, modifiedA, modifiedB, cross_roads);
-			check_lines_for_cross_roads({wallsP.back()});
 		}
 	}
 
-	check_lines_for_cross_roads(wallsP);
+	validate_walls(wallsP);
 	color = (color + 2) % color_count;
 }
 
@@ -275,6 +296,7 @@ Maze Maze::fromPaths(Ways paths)
 			break;
 		}
 	}
+	validate_walls(wallsP, true);
 
 	printf("\n%lu walls generated", wallsP.size());
 	if (wallsP.size() > MAX_LINES) {
@@ -282,8 +304,6 @@ Maze Maze::fromPaths(Ways paths)
 		throw - 1;
 	}
 	printf(" from %lu lines\n", paths.size());
-
-	check_lines_for_cross_roads(wallsP);
 
 	for (const auto& _p : wallsP) {
 		auto p = _p.segment;
@@ -301,11 +321,11 @@ Maze Maze::fromPaths(Ways paths)
 	// 12 floats per line: per point 3x position and 3x color
 	float points[MAX_LINES * 12];
 
-#pragma message ("Is this a bad style? Fix it!")
+#pragma message("Is this a bad style? Fix it!")
 	return {paths,
 	        wallsP,
-			// Instantiate VertexArray using only points (no indices)
-			// constructed from fill_vertex_points
+	        // Instantiate VertexArray using only points (no indices)
+	        // constructed from fill_vertex_points
 	        {{points, points + fill_vertex_points(points, wallsP, paths)}}};
 }
 
