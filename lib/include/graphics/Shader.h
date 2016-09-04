@@ -8,11 +8,9 @@ struct Shader
 	const unsigned id;
 	const unsigned type;
 
-	Shader(const std::string source, const unsigned type);
+	Shader(std::string source, unsigned type);
 	virtual ~Shader();
 
-	std::string getInfoLog() const;
-	void dumpInfoLog();
 	void compile();
 
 	Shader(const Shader&) = delete;
