@@ -122,7 +122,8 @@ struct Segment2
 
 struct Wall2
 {
-	Segment2 segment, *opposite = nullptr;
+	Segment2 segment;
+	Wall2 *opposite = nullptr;
 };
 
 struct WidePoint2
