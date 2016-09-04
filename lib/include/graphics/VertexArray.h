@@ -18,15 +18,12 @@ class VertexArray
 	                       GLuint start) const;
 
 public:
-	VertexArray(const float* points, int point_count,
-	            const unsigned* indices = nullptr, int indices_count = 0);
-
-	void build(GLushort dimention, bool hasColor = true);
+	VertexArray(vector<float> points, vector<unsigned> indices = {},
+	            bool is_3d = true, bool hasColor = true);
 
 	void draw(GLenum mode, GLulong start = 0, GLsizei count = 0) const;
 
 	GLuint getVAO() const { return VAO; }
-	virtual ~VertexArray();
 };
 
 #endif /* end of include guard: VERTEX_ARRAY */

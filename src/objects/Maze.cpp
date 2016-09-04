@@ -142,8 +142,8 @@ void two_intersect_points(Wall2& wall, Wall2& upper, Wall2& lower,
 	} else {
 		Point2 cpoint_of_A =
 		    Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.segment.a);
-		//Point2 cpoint_of_B =
-			//Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.segment.b);
+		// Point2 cpoint_of_B =
+		// Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.segment.b);
 
 		wall.segment.a.moveTo(cpoint_of_A);
 		wall.opposite->a.moveTo(cpoint_of_A);
@@ -212,9 +212,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 	color = (color + 2) % color_count;
 }
 
-// @TODO full types
-int put_walls_and_paths_to_vertex_points(float points[], Walls& wallsP,
-                                         Ways& paths)
+int fill_vertex_points(float points[], Walls& wallsP, Ways& paths)
 {
 	int i = 0;
 	for (const auto& _wall : wallsP) { // Copy wallsP into points[]
@@ -303,12 +301,12 @@ Maze Maze::fromPaths(Ways paths)
 	// 12 floats per line: per point 3x position and 3x color
 	float points[MAX_LINES * 12];
 
-	int vertex_count =
-	    put_walls_and_paths_to_vertex_points(points, wallsP, paths);
-	VertexArray va(&(points[0]), vertex_count);
-	va.build(3, true);
-
-	return {paths, wallsP, va};
+#pragma message ("Is this a bad style? Fix it!")
+	return {paths,
+	        wallsP,
+			// Instantiate VertexArray using only points (no indices)
+			// constructed from fill_vertex_points
+	        {{points, points + fill_vertex_points(points, wallsP, paths)}}};
 }
 
 void Maze::draw(GLenum mode) { vertArray.draw(mode); }

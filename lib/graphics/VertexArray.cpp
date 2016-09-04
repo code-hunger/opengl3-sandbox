@@ -2,10 +2,35 @@
 
 #include "VertexArray.h"
 
-VertexArray::VertexArray(const float* points, int p_count,
-                         const unsigned* indices, int i_count)
-    : points(points, points + p_count), indices(indices, indices + i_count)
+VertexArray::VertexArray(vector<float> points, vector<unsigned> indices,
+                         bool is_3d, bool hasColor)
+    : points(points), indices(indices)
 {
+	if (!is_3d || !hasColor) {
+		throw "Only colorful 3d VertexArray supported!";
+	}
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	initBuffer(GL_ARRAY_BUFFER, points.size() * sizeof(points[0]),
+	           points.data(), &VBO);
+	if (indices.size() > 0) {
+		initBuffer(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]),
+		           indices.data(), &EBO);
+	}
+
+	unsigned stride = is_3d ? 3 : 2;
+	if (hasColor) stride += 3; // color has 3 components
+
+	enableVertexArray(0, is_3d ? 3 : 2, GL_FLOAT, stride, 0);
+
+	if (hasColor) {
+		enableVertexArray(1, is_3d ? 3 : 2, GL_FLOAT, stride, is_3d ? 3 : 2);
+	}
+
+	glBindVertexArray(VAO);
+	glBindVertexArray(0); // unbind
 }
 
 void VertexArray::initBuffer(GLenum type, GLulong size, const void* data,
@@ -25,30 +50,6 @@ void VertexArray::enableVertexArray(GLuint location, GLint size, GLenum type,
 	glEnableVertexAttribArray(location);
 }
 
-void VertexArray::build(GLushort dimention, bool hasColor)
-{
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-
-	initBuffer(GL_ARRAY_BUFFER, points.size() * sizeof(points[0]),
-	           points.data(), &VBO);
-	if (indices.size() > 0) {
-		initBuffer(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]),
-		           indices.data(), &EBO);
-	}
-
-	unsigned stride = dimention;
-	if (hasColor) stride += 3; // color has 3 components
-
-	enableVertexArray(0, dimention, GL_FLOAT, stride, 0);
-
-	if (hasColor) {
-		enableVertexArray(1, dimention, GL_FLOAT, stride, dimention);
-	}
-
-	glBindVertexArray(0); // unbind
-}
-
 void VertexArray::draw(GLenum mode, GLulong start, GLsizei count) const
 {
 	glBindVertexArray(VAO);
@@ -65,4 +66,4 @@ void VertexArray::draw(GLenum mode, GLulong start, GLsizei count) const
 	glBindVertexArray(0);
 }
 
-VertexArray::~VertexArray() {}
+// VertexArray::~VertexArray() {}
