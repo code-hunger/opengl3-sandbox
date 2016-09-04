@@ -22,7 +22,7 @@ inline std::istream& operator>>(std::istream& in, Segment2& line)
 
 inline std::ostream& operator<<(std::ostream& out, const Segment2& line)
 {
-	return out << line.a << ' ' << line.b;
+	return out << line.color.name << ' ' << line.a << ' ' << line.b;
 }
 
 inline std::ostream& operator<<(std::ostream& out, const WidePoint2& point)
