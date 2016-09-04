@@ -48,18 +48,20 @@ void validate_cross_road(CrossRoad* crossRoad)
 	}
 }
 
-void validate_walls(Walls walls, bool force = FORCE_VALIDATE)
+void validate_walls(Walls& walls, bool force = FORCE_VALIDATE)
 {
-	if(!force) { return; }
+	if (!force) {
+		return;
+	}
 	freopen("error.txt", "w", stdout);
 	bool valid = true;
 	for (const auto& wall : walls) {
 		// First check the opposite
 		if (wall.opposite == nullptr) {
-			cout << "Opposite is nullptr: " << wall.segment << endl;
+			cout << "\nOpposite is nullptr: " << wall.segment << endl;
 			valid = false;
 		} else if (wall.opposite->opposite != &wall) {
-			cout << "The opposite's opposite is not the current wall!";
+			cout << "\nThe opposite's opposite is not the current wall!";
 			valid = false;
 		}
 
@@ -67,7 +69,7 @@ void validate_walls(Walls walls, bool force = FORCE_VALIDATE)
 			validate_cross_road(wall.segment.a.crossRoad);
 			validate_cross_road(wall.segment.b.crossRoad);
 		} catch (const char* err) {
-			cout << err << endl;
+			cout << "\n" << err << endl;
 			valid = false;
 		}
 	}
@@ -200,6 +202,9 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 
 	wallsP.push_back({_lower});
 	Wall2& lower = wallsP.back();
+
+	upper.opposite = &lower;
+	lower.opposite = &upper;
 
 	cross_roads.push_back({{&lower, &upper}, {way.a}});
 	lower.segment.a.crossRoad = upper.segment.a.crossRoad = &cross_roads.back();
