@@ -129,7 +129,7 @@ void two_intersect_points(Wall2& wall, Wall2& upper, Wall2& lower,
                           Point2& ipointUpper, Point2& ipointLower)
 {
 	return;
-	Point2 ipointUpperOpposite{}, ipointLowerOpposite{};
+	/*Point2 ipointUpperOpposite{}, ipointLowerOpposite{};
 	const bool iupperOpposite = wall.opposite->intersectsWith(
 	               upper.segment, &ipointUpperOpposite),
 	           ilowerOpposite = wall.opposite->intersectsWith(
@@ -150,7 +150,7 @@ void two_intersect_points(Wall2& wall, Wall2& upper, Wall2& lower,
 
 		lower.segment.getEndCloserTo(ipointLower).moveTo(ipointLower);
 		upper.segment.getEndCloserTo(ipointUpper).moveTo(ipointUpper);
-	}
+	}*/
 }
 
 void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
