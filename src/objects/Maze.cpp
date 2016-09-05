@@ -40,8 +40,8 @@ void validate_cross_road(CrossRoad* crossRoad)
 	if (crossRoad == nullptr) {
 		throw "CrossRoad pointer is empty!";
 	}
-	if (crossRoad->points.size() < 2) {
-		throw "CrossRoads can't have less than 2 points!";
+	if (crossRoad->points.size() < 1) {
+		throw "CrossRoads should have at least one point!";
 	}
 	if (crossRoad->lines.size() < 2) {
 		throw "CrossRoads can't have less than 2 lines!";
