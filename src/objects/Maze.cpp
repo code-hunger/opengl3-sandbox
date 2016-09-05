@@ -63,6 +63,19 @@ void validate_walls(Walls& walls, bool force = FORCE_VALIDATE)
 		} else if (wall.opposite->opposite != &wall) {
 			cout << "\nThe opposite's opposite is not the current wall!";
 			valid = false;
+		} else {
+			if (wall.segment.a.crossRoad !=
+			    wall.opposite->segment.a.crossRoad) {
+				cout << "\npointA's crossRoad is not the same as opposite's "
+				        "A.crossRoad";
+				valid = false;
+			}
+			if (wall.segment.b.crossRoad !=
+			    wall.opposite->segment.b.crossRoad) {
+				cout << "\npointB's crossRoad is not the same as opposite's "
+				        "B.crossRoad";
+				valid = false;
+			}
 		}
 
 		try {
