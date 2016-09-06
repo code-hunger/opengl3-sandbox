@@ -3,6 +3,8 @@
 #include "graphics/config.h"
 #include "graphics/geometry_io.h"
 #include "graphics/utils.h"
+#include "maze_builder/builder.h"
+#include <Maze.h>
 #include <GLFW/glfw3.h>
 #include <cstdio>
 #include <glm/glm.hpp>
@@ -10,6 +12,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
+typedef std::unordered_set<WideRoad2, Hash> Ways;
 Maze getMazeFromFile(unsigned short maze_id)
 {
 	std::string fileName(MAZE_DIRECTORY "/maze");
@@ -22,7 +25,8 @@ Maze getMazeFromFile(unsigned short maze_id)
 		lines.insert(line);
 	}
 	printf("Fetched %lu lines in maze!\n", lines.size());
-	return Maze::fromPaths(lines);
+
+	return Maze::build(lines, build_from_paths);
 }
 
 HomeScreen::HomeScreen(unsigned short maze_id) : maze(getMazeFromFile(maze_id))

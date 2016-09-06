@@ -18,7 +18,8 @@ file(GLOB SOURCES_RECURSIVE "src/**/*.cpp")
 file(GLOB SOURCES "src/*.cpp")
 
 add_executable(game ${SOURCES_RECURSIVE} ${SOURCES})
-target_link_libraries (game graphics GL GLU glfw GLEW)
+target_link_libraries (game graphics maze_builder GL GLU glfw GLEW)
 
 add_subdirectory(lib/graphics)
+add_subdirectory(lib/maze_builder)
 
