@@ -292,11 +292,11 @@ void build_from_paths(const Ways& paths, Walls& wallsP)
 
 	for (const auto& _p : wallsP) {
 		auto p = _p.segment;
-		cout << p.color.name << endl << p.a << " : ";
+		cout << p.color.name << endl << p.a << "(" << p.a.crossRoad << ") : ";
 		for (const auto& c : p.a.crossRoad->points) {
 			cout << c << ", ";
 		}
-		cout << endl << p.b << " : ";
+		cout << endl << p.b << "(" << p.b.crossRoad << ") : ";
 		for (const auto& c : p.b.crossRoad->points) {
 			cout << c << ", ";
 		}
