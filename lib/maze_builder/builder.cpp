@@ -54,7 +54,7 @@ void validate_walls(Walls& walls, bool force = FORCE_VALIDATE)
 	if (!force) {
 		return;
 	}
-	freopen("error.txt", "w", stdout);
+	cout << "Validating walls...";
 	bool valid = true;
 	for (const auto& wall : walls) {
 		// First check the opposite
@@ -90,6 +90,7 @@ void validate_walls(Walls& walls, bool force = FORCE_VALIDATE)
 	if (!valid) {
 		throw "Walls' state invalid!";
 	}
+	cout << " ready!" << endl;
 }
 
 void one_intersect_point(bool iupper, const Ways::value_type& way,
