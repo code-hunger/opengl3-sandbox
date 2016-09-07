@@ -175,8 +175,6 @@ void two_intersect_points(Wall2& wall, Wall2& upper, Wall2& lower,
 	           ilowerOpposite = wall.opposite->segment.intersectsWith(
 	               lower.segment, &ipointLowerOpposite);
 
-	cout << "iupperOpposite=" << iupperOpposite << ", ilowerOpposite"
-	     << ilowerOpposite << endl;
 	if (iupperOpposite && ilowerOpposite) {
 		cout << "The opposite is crossed too by both lower and upper!!" << endl;
 	} else {
@@ -193,6 +191,9 @@ void two_intersect_points(Wall2& wall, Wall2& upper, Wall2& lower,
 		CrossRoad* crossRoad =
 		    lower.segment.getEndCloserTo(ipointLower).crossRoad;
 		validate_cross_road(crossRoad);
+
+		wall.segment.a.crossRoad = crossRoad;
+		wall.opposite->segment.a.crossRoad = crossRoad;
 
 		// cut lower and upper to the point of intersection
 		lower.segment.getEndCloserTo(ipointLower).moveTo(ipointLower);
