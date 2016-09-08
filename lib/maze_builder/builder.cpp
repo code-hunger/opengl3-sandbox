@@ -129,7 +129,7 @@ void one_intersect_point(bool iupper, const Ways::value_type& way,
 	}
 
 	bool join_at_a = tryToInsert(*otherCloser.crossRoad, way.a),
-	     join_at_b = join_at_a || tryToInsert(*otherCloser.crossRoad, way.b);
+	     join_at_b = !join_at_a && tryToInsert(*otherCloser.crossRoad, way.b);
 
 	if (join_at_a || join_at_b) {
 		// Cut these lines at the point of intersection
