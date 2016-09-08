@@ -347,5 +347,7 @@ void build_from_paths(const Ways& paths, Walls& wallsP)
 		}
 		cout << endl;
 	}
-	cout << "Unique crossRoads: " << count_unique.size() << endl;
+	cout << "Unique crossRoads: " << count_unique.size()
+	     << "\nCrossRoads in std::list cross_roads: " << cross_roads.size()
+	     << endl;
 }
