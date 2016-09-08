@@ -17,6 +17,13 @@ typedef std::list<Wall2> Walls;
 typedef std::vector<Color> Colors;
 typedef std::list<CrossRoad> CrossRoads;
 
+template <typename T> auto get_short_addr(const T& var)
+{
+	char addr[20];
+	sprintf(addr, "%llu", &var);
+	return atoll(addr) % 10000;
+}
+
 bool tryToInsert(CrossRoad& cr, WidePoint2 point_to_insert)
 {
 	if (cr.points.size() < 1)
@@ -326,11 +333,12 @@ void build_from_paths(const Ways& paths, Walls& wallsP)
 
 	for (const auto& _p : wallsP) {
 		auto p = _p.segment;
-		cout << p.color.name << endl << p.a << "(" << p.a.crossRoad << ") : ";
+		cout << p.color.name << endl
+		     << p.a << "(" << get_short_addr(*p.a.crossRoad) << ") : ";
 		for (const auto& c : p.a.crossRoad->points) {
 			cout << c << ", ";
 		}
-		cout << endl << p.b << "(" << p.b.crossRoad << ") : ";
+		cout << endl << p.b << "(" << get_short_addr(*p.b.crossRoad) << ") : ";
 		for (const auto& c : p.b.crossRoad->points) {
 			cout << c << ", ";
 		}
