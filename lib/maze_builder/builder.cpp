@@ -109,8 +109,7 @@ void validate_walls(Walls& walls, bool force = FORCE_VALIDATE)
 
 void one_intersect_point(bool iupper, const Ways::value_type& way,
                          Point2& ipointUpper, Point2& ipointLower, Wall2& upper,
-                         Wall2& lower, Wall2& wall, bool& modifiedA,
-                         bool& modifiedB, CrossRoads& cross_roads)
+                         Wall2& lower, Wall2& wall, CrossRoads& cross_roads)
 {
 	const Point2& cross_point = iupper ? ipointUpper : ipointLower;
 	Point2 &thisCloser =
@@ -135,22 +134,10 @@ void one_intersect_point(bool iupper, const Ways::value_type& way,
 		thisCloser.moveTo(cross_point);
 		otherCloser.moveTo(cross_point);
 
-		if (!modifiedB) {
-			modifiedB = 1;
-			CrossRoad to_b{{}, {way.b}};
-			cross_roads.push_back(to_b);
-
-			cross_roads.back().lines.push_back(&lower);
-			cross_roads.back().lines.push_back(&upper);
-
-			lower.segment.b.crossRoad = upper.segment.b.crossRoad =
-			    &cross_roads.back();
-			upper.segment.a.crossRoad = lower.segment.a.crossRoad =
-			    otherCloser.crossRoad;
-		}
-
-		modifiedA = true;
-
+		lower.segment.b.crossRoad = upper.segment.b.crossRoad =
+		    &cross_roads.back();
+		upper.segment.a.crossRoad = lower.segment.a.crossRoad =
+		    otherCloser.crossRoad;
 	} else {
 		cout << "Point which we're trying to add (way.b): " << way.b << endl;
 		if (tryToInsert(*otherCloser.crossRoad, way.b)) {
@@ -159,21 +146,10 @@ void one_intersect_point(bool iupper, const Ways::value_type& way,
 			thisCloser.moveTo(cross_point);
 			otherCloser.moveTo(cross_point);
 
-			if (!modifiedA) {
-				modifiedA = 1;
-				CrossRoad to_a{{}, {way.a}};
-				cross_roads.push_back(to_a);
-
-				cross_roads.back().lines.push_back(&upper);
-				cross_roads.back().lines.push_back(&lower);
-
-				upper.segment.a.crossRoad = lower.segment.a.crossRoad =
-				    &cross_roads.back();
-				lower.segment.b.crossRoad = upper.segment.b.crossRoad =
-				    otherCloser.crossRoad;
-			}
-
-			modifiedB = true;
+			upper.segment.a.crossRoad = lower.segment.a.crossRoad =
+			    &cross_roads.back();
+			lower.segment.b.crossRoad = upper.segment.b.crossRoad =
+			    otherCloser.crossRoad;
 		}
 	}
 }
@@ -302,8 +278,6 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 	printf("\nNEXT INSERT START: %s/%s\n", upper.segment.color.name,
 	       lower.segment.color.name);
 
-	bool modifiedA{}, modifiedB{};
-
 	for (Wall2& wall : wallsP) {
 		if (&wall == &upper || &wall == &lower) continue;
 		Segment2 &segment = wall.segment, &opposite = wall.opposite->segment;
@@ -327,8 +301,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 			} else if (iupper xor ilower) {
 				puts("Just one intersect point!");
 				one_intersect_point(iupper, way, ipointUpper, ipointLower,
-				                    upper, lower, wall, modifiedA, modifiedB,
-				                    cross_roads);
+				                    upper, lower, wall, cross_roads);
 			} else {
 				puts("---");
 			}
