@@ -49,6 +49,10 @@ bool tryToInsert(CrossRoad& cr, WidePoint2 point_to_insert)
 	return false;
 }
 
+inline bool tryToInsert(CrossRoad& cr, WideRoad2 way) {
+	return tryToInsert(cr, way.a) || tryToInsert(cr, way.b);
+}
+
 void validate_cross_road(CrossRoad* crossRoad)
 {
 	if (crossRoad == nullptr) {
@@ -182,8 +186,7 @@ void two_intersect_points(Wall2& wall, WideRoad2 way, Wall2& upper,
 		Point2& otherCloser =
 		    cut_upper ? otherCloserToiUpper : otherCloserToiLower;
 
-		if (tryToInsert(*otherCloser.crossRoad, way.a) ||
-		    tryToInsert(*otherCloser.crossRoad, way.b)) {
+		if (tryToInsert(*otherCloser.crossRoad, way)) {
 			auto &cut_point = cut_upper ? ipointUpper : ipointLower,
 			     &ncut_point = !cut_upper ? ipointUpper : ipointLower;
 			auto &cut_wall = cut_upper ? upper.segment : lower.segment,
