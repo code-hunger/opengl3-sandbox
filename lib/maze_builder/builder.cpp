@@ -20,7 +20,10 @@ typedef std::list<CrossRoad> CrossRoads;
 template <typename T> auto get_short_addr(const T& var)
 {
 	char addr[20];
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat"
 	sprintf(addr, "%llu", &var);
+#pragma GCC diagnostic pop
 	return atoll(addr) % 10000;
 }
 
