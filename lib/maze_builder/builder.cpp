@@ -67,14 +67,15 @@ void validate_walls(Walls& walls, bool force = FORCE_VALIDATE)
 		} else {
 			if (wall.segment.a.crossRoad !=
 			    wall.opposite->segment.a.crossRoad) {
-				cout << "\npointA's crossRoad is not the same as opposite's "
-				        "A.crossRoad";
+				puts("\npointA's crossRoad is not the same as opposite's "
+				     "A.crossRoad");
 				valid = false;
 			}
 			if (wall.segment.b.crossRoad !=
 			    wall.opposite->segment.b.crossRoad) {
-				cout << "\npointB's crossRoad is not the same as opposite's "
-				        "B.crossRoad";
+				std::cout << "\npointB's crossRoad is not the same as "
+				             "opposite's B.crossRoad"
+				          << endl;
 				valid = false;
 			}
 		}
@@ -88,6 +89,7 @@ void validate_walls(Walls& walls, bool force = FORCE_VALIDATE)
 		}
 	}
 	if (!valid) {
+		cout << endl;
 		throw "Walls' state invalid!";
 	}
 	cout << " ready!" << endl;
@@ -164,8 +166,10 @@ void one_intersect_point(bool iupper, const Ways::value_type& way,
 	}
 }
 
-void two_intersect_points(Wall2& wall, Wall2& upper, Wall2& lower,
-                          Point2& ipointUpper, Point2& ipointLower)
+void two_intersect_points(Wall2& wall, Wall2& upper, Wall2& lower, Walls& walls,
+                          Colors& colors, Colors::size_type& color,
+                          Colors::size_type& color_count, Point2& ipointUpper,
+                          Point2& ipointLower)
 {
 	Point2 ipointUpperOpposite{}, ipointLowerOpposite{};
 
@@ -178,19 +182,45 @@ void two_intersect_points(Wall2& wall, Wall2& upper, Wall2& lower,
 	if (iupperOpposite && ilowerOpposite) {
 		cout << "The opposite is crossed too by both lower and upper!!" << endl;
 	} else {
-		// Point2 cpoint_of_A =
-		// Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.segment.a);
+		Point2 cpoint_of_A =
+		    Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.segment.a);
 		Point2 cpoint_of_B =
 		    Segment2{ipointUpper, ipointLower}.getEndCloserTo(wall.segment.b);
+		(void)cpoint_of_A;
+		(void)cpoint_of_B;
+
+		CrossRoad* crossRoad =
+		    // upper and lower should have the same crossRoad
+		    lower.segment.getEndCloserTo(ipointLower).crossRoad;
+		validate_cross_road(crossRoad);
+
+		/*if (tryToInsert(*crossRoad, wall.segment.a)) {
+		}
+
+		if (tryToInsert(*crossRoad, wall.segment.b)) {
+		}*/
+
+		Segment2 _otherUpper = {wall.segment.a, ipointLower,
+		                        colors[(color) % color_count]},
+		         _otherLower = {wall.opposite->segment.a, ipointUpperOpposite,
+		                        colors[(color + 1) % color_count]};
+		color = (color + 2) % color_count;
+
+		_otherUpper.b.crossRoad = crossRoad;
+		_otherLower.b.crossRoad = crossRoad;
+
+		walls.push_back({_otherUpper});
+		Wall2& otherUpper = walls.back();
+		walls.push_back({_otherLower});
+		Wall2& otherLower = walls.back();
+
+		otherUpper.opposite = &otherLower;
+		otherLower.opposite = &otherUpper;
 
 		// Move the A points to the point which is closer to B
 		wall.segment.a.moveTo(cpoint_of_B);
 
-		wall.opposite->segment.a.moveTo(ipointLowerOpposite);
-
-		CrossRoad* crossRoad =
-		    lower.segment.getEndCloserTo(ipointLower).crossRoad;
-		validate_cross_road(crossRoad);
+		wall.opposite->segment.a.moveTo(ipointUpperOpposite);
 
 		wall.segment.a.crossRoad = crossRoad;
 		wall.opposite->segment.a.crossRoad = crossRoad;
@@ -220,6 +250,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 	         _lower = {{line.a.x - deltaXA, line.a.y + deltaYA},
 	                   {line.b.x - deltaXB, line.b.y + deltaYB},
 	                   colors[(color + 1) % color_count]};
+	color = (color + 2) % color_count;
 
 	wallsP.push_back({_upper});
 	Wall2& upper = wallsP.back();
@@ -242,39 +273,41 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 	bool modifiedA{}, modifiedB{};
 
 	for (Wall2& wall : wallsP) {
+		if (&wall == &upper || &wall == &lower) continue;
 		Segment2& segment = wall.segment;
-		cout << "CHECK WITH " << segment.color.name << " " << segment << ":";
+		cout << "CHECK WITH " << segment << ":";
 		Point2 ipointUpper{}, ipointLower{};
 		const bool iupper = segment.intersectsWith(upper.segment, &ipointUpper),
 		           ilower = segment.intersectsWith(lower.segment, &ipointLower);
 
 		if (iupper && ilower) {
 			puts("BOTH INTERSECT!");
-			two_intersect_points(wall, upper, lower, ipointUpper, ipointLower);
+			two_intersect_points(wall, upper, lower, wallsP, colors, color,
+			                     color_count, ipointUpper, ipointLower);
 		} else if (iupper xor ilower) {
 			puts("Just one intersect point!");
 			one_intersect_point(iupper, way, ipointUpper, ipointLower, upper,
 			                    lower, wall, modifiedA, modifiedB, cross_roads);
+		} else {
+			puts("---");
 		}
 	}
 
 	validate_walls(wallsP);
-	color = (color + 2) % color_count;
 }
 
 void build_from_paths(const Ways& paths, Walls& wallsP)
 {
 	// Walls wallsP;
 	CrossRoads cross_roads;
-	Colors colors = {{1, 1, 0, "yellow"}, //- {.5f, .5f, .5f, "silver"},
+	Colors colors = {{1, 1, 0, "yellow"},          {.5f, .5f, .5f, "silver"},
 	                 {1, 1, 1, "white"},           {1, 0, 0, "red"},
 	                 {0, 1, 0, "green"},           {0, 0, 1, "blue"},
 	                 {1, 0.5f, 0, "orange"},       {0.5f, 0, 0.8f, "violet"},
-	                 {0.4f, 0.4f, 1, "lightblue"}, {0, 0.5f, 0, "darkgreen"}};
+	                 {0.4f, 0.2f, 1, "lightblue"}, {0, 0.5f, 0, "darkgreen"}};
 
 	auto color_count = colors.size(), color = 0lu;
 
-	// freopen("out.txt", "w", stdout);
 	int paths_inserted = 0;
 	for (const auto& way : paths) {
 		add_a_single_way_to_maze(wallsP, way, colors, color_count, color,
@@ -285,6 +318,7 @@ void build_from_paths(const Ways& paths, Walls& wallsP)
 			break;
 		}
 	}
+	cout << endl << "Start!" << endl;
 	validate_walls(wallsP, true);
 
 	printf("\n%lu walls generated from %lu lines\n", wallsP.size(),
