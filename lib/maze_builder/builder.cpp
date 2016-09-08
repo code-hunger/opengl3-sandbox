@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cmath>
 #include <list>
+#include <set>
 #include <unordered_set>
 
 #define PI 3.141592653589793238462643383279502884L
@@ -109,7 +110,7 @@ void validate_walls(Walls& walls, bool force = FORCE_VALIDATE)
 
 void one_intersect_point(bool iupper, const Ways::value_type& way,
                          Point2& ipointUpper, Point2& ipointLower, Wall2& upper,
-                         Wall2& lower, Wall2& wall, CrossRoads& cross_roads)
+                         Wall2& lower, Wall2& wall)
 {
 	const Point2& cross_point = iupper ? ipointUpper : ipointLower;
 	Point2 &thisCloser =
@@ -127,30 +128,20 @@ void one_intersect_point(bool iupper, const Ways::value_type& way,
 		throw "Other closer's crossRoad has no points!";
 	}
 
-	cout << "Point which we're trying to add (way.a): " << way.a << endl;
-	if (tryToInsert(*otherCloser.crossRoad, way.a)) {
-		cout << "Successfully instered this point!\n";
+	bool join_at_a = tryToInsert(*otherCloser.crossRoad, way.a),
+	     join_at_b = join_at_a || tryToInsert(*otherCloser.crossRoad, way.b);
+
+	if (join_at_a || join_at_b) {
 		// Cut these lines at the point of intersection
 		thisCloser.moveTo(cross_point);
 		otherCloser.moveTo(cross_point);
 
-		lower.segment.b.crossRoad = upper.segment.b.crossRoad =
-		    &cross_roads.back();
-		upper.segment.a.crossRoad = lower.segment.a.crossRoad =
-		    otherCloser.crossRoad;
-	} else {
-		cout << "Point which we're trying to add (way.b): " << way.b << endl;
-		if (tryToInsert(*otherCloser.crossRoad, way.b)) {
-			cout << "Successfully instered this point!\n";
-			// Cut these lines at the point of intersection
-			thisCloser.moveTo(cross_point);
-			otherCloser.moveTo(cross_point);
-
+		if (join_at_a)
 			upper.segment.a.crossRoad = lower.segment.a.crossRoad =
-			    &cross_roads.back();
-			lower.segment.b.crossRoad = upper.segment.b.crossRoad =
 			    otherCloser.crossRoad;
-		}
+		else
+			upper.segment.b.crossRoad = lower.segment.b.crossRoad =
+			    otherCloser.crossRoad;
 	}
 }
 
@@ -301,7 +292,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 			} else if (iupper xor ilower) {
 				puts("Just one intersect point!");
 				one_intersect_point(iupper, way, ipointUpper, ipointLower,
-				                    upper, lower, wall, cross_roads);
+				                    upper, lower, wall);
 			} else {
 				puts("---");
 			}
@@ -338,8 +329,13 @@ void build_from_paths(const Ways& paths, Walls& wallsP)
 	printf("\n%lu walls generated from %lu lines\n", wallsP.size(),
 	       paths.size());
 
+	std::set<CrossRoad*> count_unique;
 	for (const auto& _p : wallsP) {
 		auto p = _p.segment;
+
+		count_unique.insert(p.a.crossRoad);
+		count_unique.insert(p.b.crossRoad);
+
 		cout << p.color.name << endl
 		     << p.a << "(" << get_short_addr(*p.a.crossRoad) << ") : ";
 		for (const auto& c : p.a.crossRoad->points) {
@@ -351,4 +347,5 @@ void build_from_paths(const Ways& paths, Walls& wallsP)
 		}
 		cout << endl;
 	}
+	cout << "Unique crossRoads: " << count_unique.size() << endl;
 }
