@@ -26,7 +26,8 @@ struct Point2
 	Point2 operator=(const Point2&) = delete;
 
 	// This only moves coordinates, doesn't copy *crossRoad
-	Point2& moveTo(const Point2& other) {
+	Point2& moveTo(const Point2& other)
+	{
 		this->x = other.x;
 		this->y = other.y;
 		return *this;
@@ -77,8 +78,10 @@ struct Segment2
 		float crossX = (eOther.b - eThis.b) / (eThis.a - eOther.a),
 		      crossY = eThis.a * crossX + eThis.b;
 
-		crossPoint->x = crossX;
-		crossPoint->y = crossY;
+		if (crossPoint != nullptr) {
+			crossPoint->x = crossX;
+			crossPoint->y = crossY;
+		}
 
 		if ((crossX < b.x && crossX > a.x) || (crossX > b.x && crossX < a.x)) {
 			// this crossX yes
@@ -123,7 +126,7 @@ struct Segment2
 struct Wall2
 {
 	Segment2 segment;
-	Wall2 *opposite = nullptr;
+	Wall2* opposite = nullptr;
 };
 
 struct WidePoint2
