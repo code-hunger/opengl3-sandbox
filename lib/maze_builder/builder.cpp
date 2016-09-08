@@ -175,8 +175,9 @@ void one_intersect_point(bool iupper, const Ways::value_type& way,
 	}
 }
 
-void two_intersect_points(Wall2& wall, Wall2& upper, Wall2& lower, Walls& walls,
-                          Colors& colors, Colors::size_type& color,
+void two_intersect_points(Wall2& wall, WideRoad2 way, Wall2& upper,
+                          Wall2& lower, Walls& walls, Colors& colors,
+                          Colors::size_type& color,
                           Colors::size_type& color_count, Point2& ipointUpper,
                           Point2& ipointLower)
 {
@@ -203,11 +204,27 @@ void two_intersect_points(Wall2& wall, Wall2& upper, Wall2& lower, Walls& walls,
 		    lower.segment.getEndCloserTo(ipointLower).crossRoad;
 		validate_cross_road(crossRoad);
 
-		/*if (tryToInsert(*crossRoad, wall.segment.a)) {
-		}
+		Point2 &otherCloserToiLower = wall.segment.getEndCloserTo(ipointLower),
+		       &otherCloserToiUpper = wall.segment.getEndCloserTo(ipointUpper);
 
-		if (tryToInsert(*crossRoad, wall.segment.b)) {
-		}*/
+		bool cut_upper = calcSquaredLen(otherCloserToiLower, ipointLower) <
+		                 calcSquaredLen(otherCloserToiUpper, ipointUpper);
+		Point2& otherCloser =
+		    cut_upper ? otherCloserToiUpper : otherCloserToiLower;
+
+		if (tryToInsert(*otherCloser.crossRoad, way.a) ||
+		    tryToInsert(*otherCloser.crossRoad, way.b)) {
+			otherCloser.moveTo(cut_upper ? ipointUpper : ipointLower);
+			(cut_upper ? upper : lower)
+			    .segment.getEndCloserTo(cut_upper ? ipointUpper : ipointLower)
+			    .moveTo(cut_upper ? ipointUpper : ipointLower)
+			    .crossRoad = otherCloser.crossRoad;
+
+			(cut_upper ? lower : upper)
+			    .segment.getEndCloserTo(cut_upper ? ipointLower : ipointUpper)
+			    .crossRoad = otherCloser.crossRoad;
+			return;
+		}
 
 		Segment2 _otherUpper = {wall.segment.a, ipointLower,
 		                        colors[(color) % color_count]},
@@ -283,7 +300,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 
 	for (Wall2& wall : wallsP) {
 		if (&wall == &upper || &wall == &lower) continue;
-		Segment2& segment = wall.segment;
+		Segment2 &segment = wall.segment, &opposite = wall.opposite->segment;
 		cout << "CHECK WITH " << segment << ":";
 		Point2 ipointUpper{}, ipointLower{};
 		const bool iupper = segment.intersectsWith(upper.segment, &ipointUpper),
@@ -291,14 +308,24 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 
 		if (iupper && ilower) {
 			puts("BOTH INTERSECT!");
-			two_intersect_points(wall, upper, lower, wallsP, colors, color,
+			two_intersect_points(wall, way, upper, lower, wallsP, colors, color,
 			                     color_count, ipointUpper, ipointLower);
-		} else if (iupper xor ilower) {
-			puts("Just one intersect point!");
-			one_intersect_point(iupper, way, ipointUpper, ipointLower, upper,
-			                    lower, wall, modifiedA, modifiedB, cross_roads);
 		} else {
-			puts("---");
+			bool iupperOpposite =
+			         opposite.intersectsWith(lower.segment, nullptr),
+			     ilowerOpposite =
+			         opposite.intersectsWith(lower.segment, nullptr);
+
+			if (iupperOpposite && ilowerOpposite) {
+				puts("BOTH INTERSECT (with wall's opposite, skip it now)");
+			} else if (iupper xor ilower) {
+				puts("Just one intersect point!");
+				one_intersect_point(iupper, way, ipointUpper, ipointLower,
+				                    upper, lower, wall, modifiedA, modifiedB,
+				                    cross_roads);
+			} else {
+				puts("---");
+			}
 		}
 	}
 
@@ -327,7 +354,6 @@ void build_from_paths(const Ways& paths, Walls& wallsP)
 			break;
 		}
 	}
-	cout << endl << "Start!" << endl;
 	validate_walls(wallsP, true);
 
 	printf("\n%lu walls generated from %lu lines\n", wallsP.size(),
