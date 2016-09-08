@@ -29,14 +29,16 @@ bool tryToInsert(CrossRoad& cr, WidePoint2 point_to_insert)
 	if (cr.points.size() < 1)
 		throw "CrossRoad MUST have at least 1 point inside!";
 
+	constexpr bool DEBUG = false;
+
 	for (const auto& point : cr.points) {
 		float dist = calcSquaredLen(point.point, point_to_insert.point),
 		      max_allowed = pythagoras(point.width, point_to_insert.width);
-		cout << point << ' ' << point_to_insert << " Dist = " << dist
-		     << ", max allowed: " << max_allowed << '\n';
+		DEBUG&& cout << point << ' ' << point_to_insert << " Dist = " << dist
+		             << ", max allowed: " << max_allowed << '\n';
 		if (dist <= max_allowed) {
 			cr.points.push_back(point_to_insert);
-			puts("Push back two points that are near!");
+			DEBUG&& puts("Push back two points that are near!");
 			return true;
 		}
 	}
