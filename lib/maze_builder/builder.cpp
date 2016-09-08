@@ -214,15 +214,18 @@ void two_intersect_points(Wall2& wall, WideRoad2 way, Wall2& upper,
 
 		if (tryToInsert(*otherCloser.crossRoad, way.a) ||
 		    tryToInsert(*otherCloser.crossRoad, way.b)) {
-			otherCloser.moveTo(cut_upper ? ipointUpper : ipointLower);
-			(cut_upper ? upper : lower)
-			    .segment.getEndCloserTo(cut_upper ? ipointUpper : ipointLower)
-			    .moveTo(cut_upper ? ipointUpper : ipointLower)
-			    .crossRoad = otherCloser.crossRoad;
+			auto &cut_point = cut_upper ? ipointUpper : ipointLower,
+			     &ncut_point = !cut_upper ? ipointUpper : ipointLower;
+			auto &cut_wall = cut_upper ? upper.segment : lower.segment,
+			     &ncut_wall = cut_upper ? lower.segment : upper.segment;
 
-			(cut_upper ? lower : upper)
-			    .segment.getEndCloserTo(cut_upper ? ipointLower : ipointUpper)
-			    .crossRoad = otherCloser.crossRoad;
+			otherCloser.moveTo(cut_point);
+
+			cut_wall.getEndCloserTo(cut_point).moveTo(cut_point).crossRoad =
+			    otherCloser.crossRoad;
+
+			ncut_wall.getEndCloserTo(ncut_point).crossRoad =
+			    otherCloser.crossRoad;
 			return;
 		}
 
