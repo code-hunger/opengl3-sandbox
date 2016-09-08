@@ -196,8 +196,7 @@ void two_intersect_points(Wall2& wall, WideRoad2 way, Wall2& upper,
 			return;
 		}
 
-		Segment2 _otherUpper = {wall.segment.a, ipointLower,
-		                        colors[(color) % color_count]},
+		Segment2 _otherUpper = {wall.segment.a, ipointLower, colors[color]},
 		         _otherLower = {wall.opposite->segment.a, ipointUpperOpposite,
 		                        colors[(color + 1) % color_count]};
 		color = (color + 2) % color_count;
