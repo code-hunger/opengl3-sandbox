@@ -49,7 +49,8 @@ bool tryToInsert(CrossRoad& cr, WidePoint2 point_to_insert)
 	return false;
 }
 
-inline bool tryToInsert(CrossRoad& cr, WideRoad2 way) {
+inline bool tryToInsert(CrossRoad& cr, WideRoad2 way)
+{
 	return tryToInsert(cr, way.a) || tryToInsert(cr, way.b);
 }
 
@@ -124,13 +125,6 @@ void one_intersect_point(bool iupper, const Ways::value_type& way,
 	     << "Other closer point: " << otherCloser
 	     << " Other closer crossRoad first point: "
 	     << otherCloser.crossRoad->points[0] << endl;
-
-	if (otherCloser.crossRoad == nullptr) {
-		throw "Point doesn't have crossRoad!";
-	}
-	if (otherCloser.crossRoad->points.size() < 1) {
-		throw "Other closer's crossRoad has no points!";
-	}
 
 	bool join_at_a = tryToInsert(*otherCloser.crossRoad, way.a),
 	     join_at_b = !join_at_a && tryToInsert(*otherCloser.crossRoad, way.b);
@@ -317,16 +311,11 @@ void build_from_paths(const Ways& paths, Walls& wallsP)
 
 	auto color_count = colors.size(), color = 0lu;
 
-	int paths_inserted = 0;
 	for (const auto& way : paths) {
 		add_a_single_way_to_maze(wallsP, way, colors, color_count, color,
 		                         cross_roads);
-
-		if (++paths_inserted > 10) {
-			puts("NOT ALLOWED TO INSERT MORE THAN 10 PATHS!");
-			break;
-		}
 	}
+
 	validate_walls(wallsP, true);
 
 	printf("\n%lu walls generated from %lu lines\n", wallsP.size(),
