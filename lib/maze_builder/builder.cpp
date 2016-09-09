@@ -302,11 +302,12 @@ void build_from_paths(const Ways& paths, Walls& wallsP)
 {
 	// Walls wallsP;
 	CrossRoads cross_roads;
-	Colors colors = {{1, 1, 0, "yellow"},          {.5f, .5f, .5f, "silver"},
-	                 {1, 1, 1, "white"},           {1, 0, 0, "red"},
-	                 {0, 1, 0, "green"},           {0, 0, 1, "blue"},
-	                 {1, 0.5f, 0, "orange"},       {0.5f, 0, 0.8f, "violet"},
-	                 {0.4f, 0.2f, 1, "lightblue"}, {0, 0.5f, 0, "darkgreen"}};
+	Colors colors = {{1, 1, 0.1f, "L yellow"},    {0, 0, 0.7f, "D blue"},
+	                 {0.6f, 0.6f, 0, "D yellow"}, {0.5f, 0, 0.8f, "violet"},
+	                 {1, 0.5f, 0, "orange"},      {.5f, .5f, .5f, "silver"},
+	                 {1.f, 0, 0, "red"},          {1.f, 0.5f, 0.5f, "pink"},
+	                 {0.1f, 0.5f, 1.f, "L blue"}, {0.7f, 0.2f, 0.2f, "brown"},
+	                 {0.2f, 1, 0.2f, "L green"},  {0, 0.5f, 0, "D green"}};
 
 	auto color_count = colors.size(), color = 0lu;
 
