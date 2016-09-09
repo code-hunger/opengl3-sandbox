@@ -200,6 +200,7 @@ void two_intersect_points(Wall2& wall, WideRoad2 way, Wall2& upper,
 		         _otherLower = {wall.opposite->segment.a, ipointUpperOpposite,
 		                        colors[(color + 1) % color_count]};
 		color = (color + 2) % color_count;
+		color = color == 0 ? 1 : (color == 1 ? 0 : color);
 
 		_otherUpper.b.crossRoad = crossRoad;
 		_otherLower.b.crossRoad = crossRoad;
@@ -246,6 +247,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 	                   {line.b.x - deltaXB, line.b.y + deltaYB},
 	                   colors[(color + 1) % color_count]};
 	color = (color + 2) % color_count;
+	color = color == 0 ? 1 : (color == 1 ? 0 : color);
 
 	wallsP.push_back({_upper});
 	Wall2& upper = wallsP.back();
