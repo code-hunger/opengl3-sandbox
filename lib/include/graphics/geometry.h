@@ -127,6 +127,7 @@ struct Wall2
 {
 	Segment2 segment;
 	Wall2* opposite = nullptr;
+	bool disable_intersect_check = false;
 };
 
 struct WidePoint2

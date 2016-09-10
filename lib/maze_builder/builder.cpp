@@ -210,6 +210,9 @@ void two_intersect_points(Wall2& wall, WideRoad2 way, Wall2& upper,
 		walls.push_back({_otherLower});
 		Wall2& otherLower = walls.back();
 
+		otherUpper.disable_intersect_check = true;
+		otherLower.disable_intersect_check = true;
+
 		otherUpper.opposite = &otherLower;
 		otherLower.opposite = &otherUpper;
 
@@ -269,6 +272,10 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 
 	for (Wall2& wall : wallsP) {
 		if (&wall == &upper || &wall == &lower) continue;
+		if (wall.disable_intersect_check) {
+			wall.disable_intersect_check = 0;
+			continue;
+		};
 		Segment2 &segment = wall.segment, &opposite = wall.opposite->segment;
 		cout << "CHECK WITH " << segment << ":";
 		Point2 ipointUpper{}, ipointLower{};
