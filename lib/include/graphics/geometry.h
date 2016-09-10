@@ -155,6 +155,12 @@ struct WideRoad2
 		return (a == other.a && b == other.b) || (a == other.b && b == other.a);
 	}
 
+	// NOT const - we may want to change the refference later
+	const WidePoint2& getEndCloserTo(Point2 point) const
+	{
+		return ::calcSquaredLen(a.point, point) < ::calcSquaredLen(b.point, point) ? a : b;
+	}
+
 	constexpr Segment2 getSegmnet2() const { return {a.point, b.point}; }
 };
 
