@@ -10,16 +10,18 @@ void join_end_end(Wall2& main, Wall2& joiner, const Point2& cpoint,
 {
 	cout << "main: " << main.segment << ", joiner: " << joiner.segment << endl;
 
+	Point2& mainPointCloserToCrossPoint(main.segment.getEndCloserTo(cpoint));
+
 	// Cut these lines at the point of intersection
-	main.segment.getEndCloserTo(cpoint).moveTo(cpoint);
+	mainPointCloserToCrossPoint.moveTo(cpoint);
 	joiner.segment.getEndCloserTo(cpoint).moveTo(cpoint);
 
 	if (join_at_a)
 		joiner.segment.a.crossRoad = joiner.opposite->segment.a.crossRoad =
-		    main.segment.getEndCloserTo(cpoint).crossRoad;
+		    mainPointCloserToCrossPoint.crossRoad;
 	else
 		joiner.segment.b.crossRoad = joiner.opposite->segment.b.crossRoad =
-		    main.segment.getEndCloserTo(cpoint).crossRoad;
+		    mainPointCloserToCrossPoint.crossRoad;
 }
 
 void join_end_middle(Wall2& middle, Wall2& end, Point2 ipMiddleEnd,
