@@ -33,18 +33,16 @@ inline bool tryToInsert(CrossRoad& cr, WideRoad2 way)
 	return tryToInsert(cr, way.a) || tryToInsert(cr, way.b);
 }
 
-void one_intersect_point(bool iupper, const Ways::value_type& way,
-                         Point2& ipointUpper, Point2& ipointLower, Wall2& upper,
-                         Wall2& lower, Wall2& wall)
+void one_intersect_point(bool iupper, const WideRoad2& way, Point2& ipointUpper,
+                         Point2& ipointLower, Wall2& upper, Wall2& lower,
+                         Wall2& wall)
 {
 	const Point2& cross_point = iupper ? ipointUpper : ipointLower;
-	Point2& otherCloser = wall.segment.getEndCloserTo(cross_point);
-	cout << "CrossPoint: " << cross_point
-	     << "Other closer point: " << otherCloser << endl;
 
 	bool join_at_a = (&way.getEndCloserTo(cross_point) == &way.a);
 
-	if (tryToInsert(*otherCloser.crossRoad, join_at_a ? way.a : way.b)) {
+	if (tryToInsert(*wall.segment.getEndCloserTo(cross_point).crossRoad,
+	                join_at_a ? way.a : way.b)) {
 		join_end_end(wall, iupper ? upper : lower, cross_point, join_at_a);
 	}
 }
@@ -154,7 +152,7 @@ void two_intersect_points(Wall2& wall, WideRoad2 way, Wall2& upper,
 	}
 }
 
-void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
+void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
                               Colors& colors, Colors::size_type& color_count,
                               Colors::size_type& color, CrossRoads& cross_roads)
 {
@@ -207,6 +205,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const Ways::value_type& way,
 
 		if (iupper && ilower) {
 			puts("BOTH INTERSECT!");
+
 			two_intersect_points(wall, way, upper, lower, wallsP, colors, color,
 			                     color_count, ipointUpper, ipointLower);
 		} else {
@@ -255,7 +254,7 @@ void build_from_paths(const Ways& paths, Walls& walls)
 	printf("\n%lu walls generated from %lu lines\n", walls.size(),
 	       paths.size());
 
-	 dump(walls);
+	dump(walls);
 	cout << "\nCrossRoads in std::list cross_roads: " << cross_roads.size()
 	     << endl;
 }
