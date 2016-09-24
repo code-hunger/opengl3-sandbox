@@ -10,6 +10,7 @@ struct Color
 {
 	float r, g, b;
 	char const* name;
+	operator const char*() const { return name; }
 };
 
 struct Point2
@@ -23,7 +24,7 @@ struct Point2
 	}
 
 	// Don't allow this - *crossRoad must be preserved
-	Point2 operator=(const Point2&) = delete;
+	void operator=(const Point2&) = delete;
 
 	// This only moves coordinates, doesn't copy *crossRoad
 	Point2& moveTo(const Point2& other)
@@ -123,11 +124,18 @@ struct Segment2
 	}
 };
 
+inline constexpr Point2 middleOf(Segment2 line)
+{
+	return {line.a.x + (line.a.x - line.b.x) / 2,
+	        line.a.y + (line.a.y - line.b.y) / 2};
+}
+
 struct Wall2
 {
 	Segment2 segment;
 	Wall2* opposite = nullptr;
 	bool disable_intersect_check = false;
+	operator Segment2&() { return segment; }
 };
 
 struct WidePoint2
@@ -142,7 +150,7 @@ struct WidePoint2
 
 struct CrossRoad
 {
-	std::vector<Wall2*> lines;
+	std::vector<Segment2*> lines;
 	std::vector<WidePoint2> points;
 };
 
@@ -158,7 +166,10 @@ struct WideRoad2
 	// NOT const - we may want to change the refference later
 	const WidePoint2& getEndCloserTo(Point2 point) const
 	{
-		return ::calcSquaredLen(a.point, point) < ::calcSquaredLen(b.point, point) ? a : b;
+		return ::calcSquaredLen(a.point, point) <
+		               ::calcSquaredLen(b.point, point)
+		           ? a
+		           : b;
 	}
 
 	constexpr Segment2 getSegmnet2() const { return {a.point, b.point}; }

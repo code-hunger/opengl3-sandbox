@@ -8,7 +8,7 @@
 #include <list>
 
 typedef std::unordered_set<WideRoad2, Hash> Ways;
-typedef std::list<Wall2> Walls;
+typedef std::list<std::pair<Segment2, Segment2>> Walls;
 
 void build_from_paths(const Ways&, Walls&);
 
