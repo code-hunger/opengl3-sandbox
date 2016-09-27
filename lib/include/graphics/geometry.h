@@ -23,6 +23,8 @@ struct Point2
 		return this->x == other.x && this->y == other.y;
 	}
 
+	operator bool () = delete;
+
 	// Don't allow this - *crossRoad must be preserved
 	void operator=(const Point2&) = delete;
 

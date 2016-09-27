@@ -1,21 +1,14 @@
 #include "graphics/geometry_io.h"
 #define BOOST_LOG_DYN_LINK
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Weffc++"
-#pragma GCC diagnostic ignored "-Wconversion"
-#pragma GCC diagnostic ignored "-Wsign-conversion"
-#pragma GCC diagnostic ignored "-Wctor-dtor-privacy"
-#include "easylogging++.h"
-#pragma GCC diagnostic pop
+#define LOGURU_WITH_STREAMS 1
+#include "loguru.hpp"
 
-INITIALIZE_EASYLOGGINGPP
-#define ERR LOG(ERROR)
-#define NFO LOG(INFO)
+#define JUST_LOG LOG_S(INFO)
 
 #include <cassert>
 #include <cmath>
-#define PI 3.141592653589793238462643383279502884L
+const long double PI = 3.141592653589793238462643383279502884L;
 
 #include <list>
 #include <set>
@@ -31,15 +24,9 @@ typedef std::list<std::pair<Segment2, Segment2>> Walls;
 typedef std::vector<Color> Colors;
 typedef std::list<CrossRoad> CrossRoads;
 
-#define FORCE_VALIDATE false
+constexpr bool FORCE_VALIDATE = false;
 
-constexpr int WIDEPOINT_WIDTH = 3;
-
-el::Logger& log()
-{
-	static el::Logger* logger = el::Loggers::getLogger("default");
-	return *logger;
-}
+constexpr unsigned WIDEPOINT_WIDTH = 3;
 
 inline unsigned long get_ptr_val(void* ptr)
 {
@@ -48,7 +35,7 @@ inline unsigned long get_ptr_val(void* ptr)
 
 // It's wrong. To be removed
 // @Deprecated
-inline void dump(Walls walls)
+void dump(Walls walls)
 {
 	std::set<CrossRoad*> count_unique;
 	for (const auto& _p : walls) {
@@ -58,23 +45,19 @@ inline void dump(Walls walls)
 			count_unique.insert(p.a.crossRoad);
 			count_unique.insert(p.b.crossRoad);
 
-			NFO << p.color << " " << p.a << "(" << get_ptr_val(p.a.crossRoad)
-			    << ") : " << p.a.crossRoad->points[0];
-			NFO << p.b << "(" << get_ptr_val(p.b.crossRoad)
-			    << ") : " << p.b.crossRoad->points[0];
+			JUST_LOG << p.color << " " << get_ptr_val(p.a.crossRoad) << " "
+			         << get_ptr_val(p.b.crossRoad);
 		}
 		{
 			auto& p = _p.second;
 			count_unique.insert(p.a.crossRoad);
 			count_unique.insert(p.b.crossRoad);
 
-			NFO << p.color << " " << p.a << "(" << get_ptr_val(p.a.crossRoad)
-			    << ") : " << p.a.crossRoad->points[0];
-			NFO << p.b << "(" << get_ptr_val(p.b.crossRoad)
-			    << ") : " << p.b.crossRoad->points[0];
+			JUST_LOG << p.color << " " << get_ptr_val(p.a.crossRoad) << " "
+			         << get_ptr_val(p.b.crossRoad);
 		}
 	}
-	NFO << "Unique crossRoads: " << count_unique.size();
+	JUST_LOG << "Unique crossRoads: " << count_unique.size();
 }
 
 void validate_cross_road(CrossRoad* crossRoad)
@@ -85,56 +68,43 @@ void validate_cross_road(CrossRoad* crossRoad)
 	if (crossRoad->points.size() < 1) {
 		throw "CrossRoads should have at least one point!";
 	}
-	//if (crossRoad->lines.size() < 2) {
-		//throw "CrossRoads can't have less than 2 lines!";
+	// if (crossRoad->lines.size() < 2) {
+	// throw "CrossRoads can't have less than 2 lines!";
 	//}
 }
 
-void validate_walls(Walls& walls, bool force = FORCE_VALIDATE)
+void validate_walls(const Walls& walls, bool force = FORCE_VALIDATE)
 {
 	if (!force) return;
 
-	NFO << "Validating walls...";
 	bool valid = true;
 	for (const auto& wall : walls) {
-		// First check the opposite
-		/*if (wall.opposite == nullptr) {
-			ERR << "\nOpposite is nullptr: " << wall.segment;
+		if (wall.first.a.crossRoad != wall.second.a.crossRoad) {
+			JUST_LOG << "pointA's crossRoad is not the same as opposite's "
+			            "A.crossRoad";
 			valid = false;
-		} else if (wall.opposite->opposite != &wall) {
-			ERR << "\nThe opposite's opposite is not the current wall!";
+		}
+		if (wall.first.b.crossRoad != wall.second.b.crossRoad) {
+			JUST_LOG << "pointB's crossRoad is not the same as opposite's "
+			            "B.crossRoad";
 			valid = false;
-		} else {*/
-			if (wall.first.a.crossRoad !=
-			    wall.second.a.crossRoad) {
-				ERR << "pointA's crossRoad is not the same as opposite's "
-				       "A.crossRoad";
-				valid = false;
-			}
-			if (wall.first.b.crossRoad !=
-			    wall.second.b.crossRoad) {
-				ERR << "pointB's crossRoad is not the same as opposite's "
-				       "B.crossRoad";
-				valid = false;
-			}
-		/*}*/
+		}
 
 		try {
-			// first or not - doesn't matter, they're equal
+			// first or second - doesn't matter, they're equal
 			validate_cross_road(wall.first.a.crossRoad);
 			validate_cross_road(wall.first.b.crossRoad);
 		} catch (const char* err) {
-			ERR << endl << err << endl;
+			LOG_S(ERROR) << err;
 			valid = false;
 		}
 	}
 	if (!valid) {
 		throw "Walls' state invalid!";
 	}
-	NFO << " ready!";
 }
 
-bool tryToInsert(CrossRoad& cr, WidePoint2 point_to_insert)
+bool tryToInsert(CrossRoad& cr, const WidePoint2& point_to_insert)
 {
 	if (cr.points.size() < 1)
 		throw "CrossRoad MUST have at least 1 point inside!";
@@ -142,11 +112,9 @@ bool tryToInsert(CrossRoad& cr, WidePoint2 point_to_insert)
 	for (const auto& point : cr.points) {
 		float dist = calcSquaredLen(point.point, point_to_insert.point),
 		      max_allowed = pythagoras(point.width, point_to_insert.width);
-		// NFO << point << ' ' << point_to_insert << " Dist = " << dist << ",
-		// max allowed: " << max_allowed << '\n';
+
 		if (dist <= max_allowed) {
 			cr.points.push_back(point_to_insert);
-			// NFO << "Push back two points that are near!";
 			return true;
 		}
 	}
@@ -157,8 +125,6 @@ void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
                               Colors& colors, Colors::size_type& color_count,
                               Colors::size_type& color, CrossRoads& cross_roads)
 {
-	validate_walls(wallsP);
-
 	const Segment2 line = way.getSegmnet2();
 	double line_angle = atan((line.b.y - line.a.y) / (line.b.x - line.a.x));
 	float angle_sin = static_cast<float>(sin(line_angle)),
@@ -185,34 +151,31 @@ void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
 	cross_roads.push_back({{&lower, &upper}, {way.b}});
 	lower.b.crossRoad = upper.b.crossRoad = &cross_roads.back();
 
-	log().info("NEXT INSERT START: %v/%v", upper.color.name,
-	           lower.color.name);
+	LOG_F(INFO, "NEXT INSERT START: %s/%s", upper.color.name, lower.color.name);
 
-	// unsigned counter=0;
 	for (auto& wall : wallsP) {
 		if (&wall.first == &upper) continue;
-		// if(counter++ % 2) continue;
 
-		//if (wall.disable_intersect_check) {
-			//wall.disable_intersect_check = 0;
-			//continue;
-		//};
-		Segment2 &segment = wall.first, &opposite = wall.second;
-		NFO << "CHECK WITH " << segment.color << "/" << opposite.color << ":";
+		JUST_LOG << "\tCHECK WITH " << wall.first.color << "/"
+		         << wall.second.color << ":";
 		Point2 ipUpper{}, ipLower{}, ipUpperOpposite{}, ipLowerOpposite{};
-		const bool iupper = segment.intersectsWith(upper, &ipUpper),
-		           ilower = segment.intersectsWith(lower, &ipLower),
+		const bool iupper = wall.first.intersectsWith(upper, &ipUpper),
+		           ilower = wall.first.intersectsWith(lower, &ipLower),
 		           ilowerOpposite =
-		               opposite.intersectsWith(lower, &ipLowerOpposite),
+		               wall.second.intersectsWith(lower, &ipLowerOpposite),
 		           iupperOpposite =
-		               opposite.intersectsWith(upper, &ipUpperOpposite);
+		               wall.second.intersectsWith(upper, &ipUpperOpposite);
 
 		// nothing intersecting here...
 		if (!(iupper || ilower || iupperOpposite || ilowerOpposite)) {
+			continue;
 		}
+
+		LOG_S(INFO) << iupper << ilower << iupperOpposite << ilowerOpposite;
 
 		// middle-middle intersection
 		if (iupper && ilower && iupperOpposite && ilowerOpposite) {
+			LOG_F(INFO, "\tmiddle-middle");
 			{
 				CrossRoad _croad{};
 #pragma message("Calculate WidePoint2 width properly")
@@ -231,12 +194,10 @@ void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
 			CrossRoad& croad = cross_roads.back();
 
 			Segment2 new_lower = {
-			    Segment2{ipLower, ipLowerOpposite}.getEndCloserTo(
-			        lower.b),
+			    Segment2{ipLower, ipLowerOpposite}.getEndCloserTo(lower.b),
 			    lower.b};
 			Segment2 new_upper = {
-			    Segment2{ipUpper, ipUpperOpposite}.getEndCloserTo(
-			        upper.b),
+			    Segment2{ipUpper, ipUpperOpposite}.getEndCloserTo(upper.b),
 			    upper.b};
 
 			new_upper.a.crossRoad = &croad;
@@ -249,7 +210,8 @@ void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
 			new_upper.color = colors[(color + 1) % color_count];
 			color = (color + 2) % color_count;
 
-			wallsP.push_back({new_upper, new_lower});
+			// note - push front, we don't want them to be indexed again
+			wallsP.push_front({new_upper, new_lower});
 
 			// OTHER COMPLEMENTING WALLS
 			Segment2 new_lower_other = {
@@ -270,15 +232,13 @@ void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
 			new_upper_other.color = colors[(color + 1) % color_count];
 			color = (color + 2) % color_count;
 
-			wallsP.push_back({new_upper_other, new_lower_other});
+			wallsP.push_front({new_upper_other, new_lower_other});
 
 			// CUT THIS AND OTHER
 			upper.b.moveTo(
-			    Segment2{ipUpper, ipUpperOpposite}.getEndCloserTo(
-			        upper.a));
+			    Segment2{ipUpper, ipUpperOpposite}.getEndCloserTo(upper.a));
 			lower.b.moveTo(
-			    Segment2{ipLower, ipLowerOpposite}.getEndCloserTo(
-			        lower.a));
+			    Segment2{ipLower, ipLowerOpposite}.getEndCloserTo(lower.a));
 
 			upper.b.crossRoad = &croad;
 			lower.b.crossRoad = &croad;
@@ -291,7 +251,6 @@ void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
 
 			wall.first.b.crossRoad = &croad;
 			wall.second.b.crossRoad = &croad;
-			// break;
 		} else { // try to insert that point of lower/upper which is closer to
 			     // the crossPoint to the crossRoad of that point of
 			     // wall/opposite which is closer to the crossPoint. If yes, we
@@ -302,61 +261,192 @@ void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
 			        *wall.first.getEndCloserTo(ilower ? ipLower : ipUpper)
 			             .crossRoad,
 			        this_join_a ? way.a : way.b)) {
-
+				LOG_F(INFO, "\tend-end");
+				
 				if (!iupperOpposite && !ilowerOpposite) {
 					if (iupper) {
 						// cut at iupper
-						LOG(WARNING) << "iU: " << upper.color << " " << wall.first.color;;
 						upper.getEndCloserTo(ipUpper).moveTo(ipUpper);
 						wall.first.getEndCloserTo(ipUpper).moveTo(ipUpper);
 					} else {
 						// cut at ilower
-						LOG(WARNING) << "iL: "<< lower.color << " " << wall.first.color;;
 						lower.getEndCloserTo(ipLower).moveTo(ipLower);
 						wall.first.getEndCloserTo(ipLower).moveTo(ipLower);
 					}
 				} else if (!iupper && !ilower) {
-					if (iupperOpposite) {
-						// cut at iupperOpposite
-						LOG(WARNING) << "iUO: " << upper.color << " " << wall.second.color;
-						upper.getEndCloserTo(ipUpperOpposite)
-						    .moveTo(ipUpperOpposite);
-						wall.second.getEndCloserTo(ipUpperOpposite)
-						    .moveTo(ipUpperOpposite);
-						NFO << ipUpper << " : " << ipUpperOpposite << endl;
-					} else {
-						 //cut at ilowerOpposite
-						LOG(WARNING) << "iLO: "<< lower.color << " " << wall.second.color;;
-						lower.getEndCloserTo(ipLowerOpposite)
-							.moveTo(ipLowerOpposite);
-						wall.second.getEndCloserTo(ipLowerOpposite)
-							.moveTo(ipLowerOpposite);
-						NFO << ipLower << " : " << ipLowerOpposite << endl;
-					}
+					Point2 cut_point =
+					    iupperOpposite ? ipUpperOpposite : ipLowerOpposite;
+
+					(iupperOpposite ? upper : lower)
+					    .getEndCloserTo(cut_point)
+					    .moveTo(cut_point);
+					wall.second.getEndCloserTo(cut_point).moveTo(cut_point);
+
 				} else {
-					throw "This couldn't be!!! More than one point does not "
-					      "intersect! (It's supposed that exactly one point is "
-					      "not intersecting)";
+					LOG_S(ERROR) << "Don't know what to do";
+					throw "No idea.";
 				}
 			} else { // otherwise, we have a middle-to-end join
-				bool i_this = iupper || ilower,
-					 i_other = iupperOpposite || ilowerOpposite;
+				const bool iu = iupper, il = ilower, iuo = iupperOpposite,
+				           ilo = ilowerOpposite;
 
-				NFO << "i this: " << i_this << ", i other: " << i_other;
+				LOG_F(INFO, "\tMiddle-end");
 
-				if(!i_this && i_other) {
-					// end of other joining middle of this
-					LOG(WARNING) << "Other's end joins this's middle";
-					//wall.first.getEndCloserTo(ipLower).moveTo(ipLower);
-					//wall.second.getEndCloserTo(ipLowerOpposite).moveTo(ipLowerOpposite);
-				} else if (i_this && !i_other){
-					// end of this joining middle of other
-					LOG(WARNING) << "This's end joins other's middle";
-				} else if((iupper && iupperOpposite) or (ilower && ilowerOpposite)) {
-					LOG(WARNING) << "Other's end joins this's middle";
-				} else {
-					ERR << ":///";
+				bool this_end_joins_2_fixed_points_intersect =
+				         (iu && il && !iuo && !ilo) ||
+				         (iuo && ilo && !iu && !il),
+				     this_end_joins_2_fixed_points_on_the_one_side =
+				         (iu && iuo && !il && !ilo) ||
+				         (il && ilo && !iu && !iuo),
+				     only_one_point_is_not_part_of_intersection =
+				         (!iu && iuo && il && ilo) ||
+				         (iu && !iuo && il && ilo) ||
+				         (iu && iuo && !il && ilo) || (iu && iuo && il && !ilo);
+
+				bool this_joins_other =
+				    this_end_joins_2_fixed_points_intersect ||
+				    this_end_joins_2_fixed_points_on_the_one_side;
+
+				if (only_one_point_is_not_part_of_intersection) {
+					LOG_F(INFO, "5");
+					bool qq = only_one_point_is_not_part_of_intersection;
+					bool try_opposite = false, try_lower = false;
+					Point2* point_to_check = nullptr;
+
+					if (qq == iu) {
+						point_to_check = &ipUpper;
+					}
+					if (qq == il) {
+						try_lower = true;
+						point_to_check = &ipLower;
+					}
+					if (qq == iuo) {
+						try_opposite = true;
+						point_to_check = &ipUpperOpposite;
+					}
+					if (qq == ilo) {
+						try_lower = true;
+						try_opposite = true;
+						point_to_check = &ipLowerOpposite;
+					}
+
+					auto point_inside_segment = [](Segment2 line,
+					                               Point2 point) {
+						double x = point.x, x1 = line.a.x, x2 = line.b.x,
+						       y = point.y, y1 = line.a.y, y2 = line.b.y;
+						// http://stackoverflow.com/a/17590923
+						double AB =
+						    sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+						double AP =
+						    sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1));
+						double PB =
+						    sqrt((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y));
+						if (AB == AP + PB) return true;
+						return false;
+					};
+
+					if (point_inside_segment(try_lower ? lower : upper,
+					                         *point_to_check)) {
+						// other joins this
+						LOG_F(INFO, "6");
+					} else {
+						// this joins other
+						this_joins_other = true;
+						LOG_F(INFO, "7");
+					}
 				}
+
+				// other end -> this middle
+				if (!this_joins_other) {
+					VLOG_F(2, "Other's end joins this's middle");
+
+					bool other_cut_a =
+					    (&wall.first.getEndCloserTo(ipUpper) == &wall.first.a);
+					bool joins_from_upper = (iupper && iupperOpposite) ||
+					                        ((iupper || iupperOpposite) &&
+					                         (!ilower || !ilowerOpposite));
+
+					Segment2
+					    new_upper =
+					        {Segment2{ipUpper, ipUpperOpposite}.getEndCloserTo(
+					             joins_from_upper ? upper.b : upper.a),
+					         upper.b, colors[color]},
+					    new_lower = {
+					        Segment2{ipLower, ipLowerOpposite}.getEndCloserTo(
+					            joins_from_upper ? lower.a : lower.b),
+					        lower.b, colors[(color + 1) % color_count]};
+
+					color = (color + 2) % color_count;
+
+					wallsP.push_front({new_upper, new_lower});
+
+					wallsP.front().first.a.crossRoad =
+					    other_cut_a ? wall.first.a.crossRoad
+					                : wall.first.b.crossRoad;
+					wallsP.front().second.a.crossRoad =
+					    other_cut_a ? wall.first.a.crossRoad
+					                : wall.first.b.crossRoad;
+
+					upper.b.moveTo(
+					    Segment2{ipUpper, ipUpperOpposite}.getEndCloserTo(
+					        upper.a));
+					lower.b.moveTo(
+					    Segment2{ipLower, ipLowerOpposite}.getEndCloserTo(
+					        lower.a));
+
+					lower.b.crossRoad = upper.b.crossRoad =
+					    (other_cut_a ? wall.first.a : wall.first.b).crossRoad;
+
+					(other_cut_a ? wall.first.a : wall.first.b)
+					    .moveTo(joins_from_upper ? ipUpper : ipLower);
+					(other_cut_a ? wall.second.a : wall.second.b)
+					    .moveTo(joins_from_upper ? ipUpperOpposite
+					                             : ipLowerOpposite);
+
+				} else {
+					// end of this joining middle of other
+					LOG_F(2, "This's end joins other's middle");
+					bool this_cut_a =
+					    (&upper.getEndCloserTo(ipUpper) == &upper.a);
+					bool joins_from_opposite =
+					    (iupperOpposite && ilowerOpposite) ||
+					    ((iupperOpposite || ilowerOpposite) &&
+					     (!iupper || !ilower));
+
+					Segment2
+					    new_first = {Segment2{ipUpper, ipLower}.getEndCloserTo(
+					                     joins_from_opposite ? wall.first.a
+					                                         : wall.first.b),
+					                 wall.first.b, colors[color]},
+					    new_second = {Segment2{ipUpperOpposite, ipLowerOpposite}
+					                      .getEndCloserTo(joins_from_opposite
+					                                          ? wall.second.b
+					                                          : wall.second.a),
+					                  wall.second.b,
+					                  colors[(color + 1) % color_count]};
+					color = (color + 2) % color_count;
+
+					wallsP.push_front({new_first, new_second});
+					wallsP.front().first.a.crossRoad =
+					    this_cut_a ? upper.a.crossRoad : upper.b.crossRoad;
+					wallsP.front().second.a.crossRoad =
+					    this_cut_a ? lower.a.crossRoad : lower.b.crossRoad;
+
+					wall.first.b.moveTo(Segment2{
+					    ipUpper, ipLower}.getEndCloserTo(wall.first.a));
+					wall.second.b.moveTo(Segment2{
+					    ipUpperOpposite,
+					    ipLowerOpposite}.getEndCloserTo(wall.second.a));
+
+					(this_cut_a ? upper.a : upper.b)
+					    .moveTo(joins_from_opposite ? ipUpperOpposite
+					                                : ipUpper);
+
+					(this_cut_a ? lower.a : lower.b)
+					    .moveTo(joins_from_opposite ? ipLowerOpposite
+					                                : ipLower);
+				}
+			end_of_if:;
 			}
 		}
 	}
@@ -366,7 +456,10 @@ void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
 
 void build_from_paths(const Ways& paths, Walls& maze)
 {
-	el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
+	loguru::g_stderr_verbosity = 3;
+	loguru::g_colorlogtostderr = true;
+
+	LOG_F(WARNING, "BEGIN");
 
 	CrossRoads cross_roads;
 	Colors colors = {{1, 1, 0.1f, "L yellow"},    {0, 0.3f, 1.f, "D blue"},
@@ -380,8 +473,9 @@ void build_from_paths(const Ways& paths, Walls& maze)
 
 	for (const auto& way : paths) {
 		if (way.a.width != WIDEPOINT_WIDTH || way.b.width != WIDEPOINT_WIDTH) {
-			ERR << way.a.point << " - " << way.b.point
-			    << "; a.width: " << way.a.width << ", b.width: " << way.b.width;
+			JUST_LOG << way.a.point << " - " << way.b.point
+			         << "; a.width: " << way.a.width
+			         << ", b.width: " << way.b.width;
 			throw "WidePoint's width must be 3(or another fixed value "
 			      "specified by WIDEPOINT_WIDTH) until other problems are "
 			      "resolved";
@@ -392,8 +486,10 @@ void build_from_paths(const Ways& paths, Walls& maze)
 
 	validate_walls(maze, true);
 
-	log().info("%v walls generated from %v lines\n", maze.size(), paths.size());
+	LOG_F(INFO, "%lu walls generated from %lu lines\n", maze.size(),
+	      paths.size());
 
 	dump(maze);
-	log().info("CrossRoads in std::list cross_roads: %v\n", cross_roads.size());
+	LOG_F(INFO, "CrossRoads in std::list cross_roads: %lu\n",
+	      cross_roads.size());
 }
