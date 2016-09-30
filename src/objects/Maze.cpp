@@ -1,6 +1,6 @@
 #include "Maze.h"
 
-#define MAX_LINES 30
+#define MAX_LINES 60
 
 Maze Maze::build(const Ways& ways, void (*builder)(const Ways&, Walls& walls))
 {
@@ -21,8 +21,7 @@ VertexArray Maze::wallsToVertArr(const Walls& walls)
 
 	int i = 0;
 	for (const auto& _wall : walls) { // Copy wallsP into points[]
-		auto *wall = &_wall.first;
-	first_pair:
+		auto wall = &_wall;
 		points[i++] = wall->a.x;
 		points[i++] = wall->a.y;
 		points[i++] = 0;
@@ -36,10 +35,6 @@ VertexArray Maze::wallsToVertArr(const Walls& walls)
 		points[i++] = wall->color.r;
 		points[i++] = wall->color.g;
 		points[i++] = wall->color.b;
-		if (wall == &_wall.first) {
-			wall = &_wall.second;
-			goto first_pair;
-		}
 	}
 
 	return {{points, points + i}};

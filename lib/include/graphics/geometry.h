@@ -152,8 +152,11 @@ struct WidePoint2
 
 struct CrossRoad
 {
-	std::vector<Segment2*> lines;
 	std::vector<WidePoint2> points;
+
+	bool operator== (CrossRoad other) {
+		return (other.points == this->points);
+	}
 };
 
 struct WideRoad2

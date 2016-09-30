@@ -1,6 +1,8 @@
 #include "graphics/geometry_io.h"
 #define BOOST_LOG_DYN_LINK
 
+#include "maze_builder/builder.h"
+
 #define LOGURU_WITH_STREAMS 1
 #include "loguru.hpp"
 
@@ -19,12 +21,11 @@ const long double PI = 3.141592653589793238462643383279502884L;
 using std::cout;
 using std::endl;
 
-typedef std::unordered_set<WideRoad2, Hash> Ways;
-typedef std::list<std::pair<Segment2, Segment2>> Walls;
 typedef std::vector<Color> Colors;
 typedef std::list<CrossRoad> CrossRoads;
+typedef std::list<std::pair<Segment2, Segment2>> PWalls;
 
-constexpr bool FORCE_VALIDATE = 1;
+constexpr bool FORCE_VALIDATE = 0;
 
 constexpr unsigned WIDEPOINT_WIDTH = 3;
 
@@ -35,7 +36,7 @@ inline unsigned long get_ptr_val(void* ptr)
 
 // It's wrong. To be removed
 // @Deprecated
-void dump(Walls walls)
+void dump(PWalls walls)
 {
 	std::set<CrossRoad*> count_unique;
 	for (const auto& _p : walls) {
@@ -73,7 +74,7 @@ void validate_cross_road(CrossRoad* crossRoad)
 	//}
 }
 
-void validate_walls(const Walls& walls, bool force = FORCE_VALIDATE)
+void validate_walls(const PWalls& walls, bool force = FORCE_VALIDATE)
 {
 	if (!force) return;
 
@@ -121,7 +122,7 @@ bool tryToInsert(CrossRoad& cr, const WidePoint2& point_to_insert)
 	return false;
 }
 
-void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
+void add_a_single_way_to_maze(PWalls& wallsP, const WideRoad2& way,
                               Colors& colors, Colors::size_type& color_count,
                               Colors::size_type& color, CrossRoads& cross_roads)
 {
@@ -145,10 +146,10 @@ void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
 
 	Segment2& lower = wallsP.back().second;
 
-	cross_roads.push_back({{&lower, &upper}, {way.a}});
+	cross_roads.push_back({{way.a}});
 	lower.a.crossRoad = upper.a.crossRoad = &cross_roads.back();
 
-	cross_roads.push_back({{&lower, &upper}, {way.b}});
+	cross_roads.push_back({{way.b}});
 	lower.b.crossRoad = upper.b.crossRoad = &cross_roads.back();
 
 	LOG_F(INFO, "NEXT INSERT START: %s/%s", upper.color.name, lower.color.name);
@@ -265,11 +266,20 @@ void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
 			     other_join_a =
 			         (&wall.first.getEndCloserTo(ipLower) == &wall.first.a);
 
-			if (tryToInsert(
-			        *wall.first.getEndCloserTo(ilower ? ipLower : ipUpper)
-			             .crossRoad,
-			        this_join_a ? way.a : way.b)) {
-				LOG_F(INFO, "\tend-end");
+			CrossRoad* other_closer_croad =
+			    wall.first.getEndCloserTo(ilower ? ipLower : ipUpper).crossRoad;
+			if (tryToInsert(*other_closer_croad, this_join_a ? way.a : way.b)) {
+				LOG_F(3, "\tend-end");
+
+				if ((this_join_a ? upper.a : upper.b).crossRoad->points.size() <
+				    2) {
+					cross_roads.remove(
+					    *(this_join_a ? upper.a : upper.b).crossRoad);
+				}
+
+				(this_join_a ? upper.a : upper.b).crossRoad =
+				    (this_join_a ? lower.a : lower.b).crossRoad =
+				        other_closer_croad;
 
 				if (!iupperOpposite && !ilowerOpposite) {
 					if (iupper && !ilower) {
@@ -281,7 +291,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
 						lower.getEndCloserTo(ipLower).moveTo(ipLower);
 						wall.first.getEndCloserTo(ipLower).moveTo(ipLower);
 					} else {
-						LOG_F(WARNING, "YEP!");
+						LOG_F(WARNING, "YEP TO DO!");
 					}
 				} else if (!iupper && !ilower) {
 					if (iupperOpposite && !ilowerOpposite) {
@@ -392,11 +402,11 @@ void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
 						if (!point_inside_segment(upper, ipUpper)) {
 							this_joins_other = true;
 						}
-					} else if(iuo) {
+					} else if (iuo) {
 						if (!point_inside_segment(lower, ipLowerOpposite)) {
 							this_joins_other = true;
 						}
-					}else{
+					} else {
 						LOG_F(WARNING, "unimplemented!");
 						// too lazy now
 						throw "Unimplemented.";
@@ -501,7 +511,7 @@ void add_a_single_way_to_maze(Walls& wallsP, const WideRoad2& way,
 	validate_walls(wallsP);
 }
 
-void build_from_paths(const Ways& paths, Walls& maze)
+void build_from_paths(const Ways& paths, std::list<Segment2>& maze)
 {
 	loguru::g_stderr_verbosity = 3;
 	loguru::g_colorlogtostderr = true;
@@ -518,6 +528,8 @@ void build_from_paths(const Ways& paths, Walls& maze)
 
 	auto color_count = colors.size(), color = 0lu;
 
+    PWalls wallsP;
+
 	for (const auto& way : paths) {
 		if (way.a.width != WIDEPOINT_WIDTH || way.b.width != WIDEPOINT_WIDTH) {
 			JUST_LOG << way.a.point << " - " << way.b.point
@@ -527,17 +539,34 @@ void build_from_paths(const Ways& paths, Walls& maze)
 			      "specified by WIDEPOINT_WIDTH) until other problems are "
 			      "resolved";
 		}
-		add_a_single_way_to_maze(maze, way, colors, color_count, color,
+		add_a_single_way_to_maze(wallsP, way, colors, color_count, color,
 		                         cross_roads);
 	}
+
+    //auto crsize = cross_roads.size();
+    //std::vector<Segment2> cross_points_segments;
+    //cross_points_segments.reserve(crsize*(crsize-1)/2);
+    //for (auto c : cross_roads) {
+        //for(auto i=c.points.cbegin(); i != c.points.cend(); ++i) {
+            //for(auto p=i; p!= c.points.cend(); ++p) {
+               //maze.push_back({i->point, p->point, colors[0]});
+            //}
+        //}
+    //}
+
+    for (auto i : wallsP) {
+        maze.push_back(i.first);
+        maze.push_back(i.second);
+    }
+
 	LOG_F(INFO, "Ways added to maze. Will validate.");
 
-	validate_walls(maze, true);
+	validate_walls(wallsP, true);
 
-	LOG_F(INFO, "%lu walls generated from %lu lines\n", maze.size(),
-	      paths.size());
+    LOG_F(INFO, "%lu walls generated from %lu lines\n", maze.size(),
+          paths.size());
 
-	dump(maze);
+	dump(wallsP);
 	LOG_F(INFO, "CrossRoads in std::list cross_roads: %lu\n",
 	      cross_roads.size());
 }
