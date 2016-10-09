@@ -29,6 +29,20 @@ constexpr bool FORCE_VALIDATE = 0;
 
 constexpr unsigned WIDEPOINT_WIDTH = 3;
 
+Color getColor()
+{
+	static Colors colors = {
+	    {1, 1, 0.1f, "L yellow"},    {0, 0.3f, 1.f, "D blue"},
+	    {0.5f, 0, 0.8f, "violet"},   {1, 0.5f, 0, "orange"},
+	    {.5f, .5f, .5f, "silver"},   {1.f, 0, 0, "red"},
+	    {1.f, 0.5f, 0.5f, "pink"},   {0, .7f, 1.f, "L blue"},
+	    {0.7f, 0.2f, 0.3f, "brown"}, {0.2f, 1, 0.2f, "L green"},
+	    {0, 0.5f, 0, "D green"}};
+	static auto color_count = colors.size(), color = 0lu;
+
+	return colors[(color++) % color_count];
+}
+
 inline unsigned long get_ptr_val(void* ptr)
 {
 	return reinterpret_cast<unsigned long>(ptr) % 10000l;
@@ -123,8 +137,7 @@ bool tryToInsert(CrossRoad& cr, const WidePoint2& point_to_insert)
 }
 
 void add_a_single_way_to_maze(PWalls& wallsP, const WideRoad2& way,
-                              Colors& colors, Colors::size_type& color_count,
-                              Colors::size_type& color, CrossRoads& cross_roads)
+                              CrossRoads& cross_roads)
 {
 	const Segment2 line = way.getSegmnet2();
 	double line_angle = atan((line.b.y - line.a.y) / (line.b.x - line.a.x));
@@ -135,11 +148,10 @@ void add_a_single_way_to_maze(PWalls& wallsP, const WideRoad2& way,
 
 	Segment2 _upper = {{line.a.x + deltaXA, line.a.y - deltaYA},
 	                   {line.b.x + deltaXB, line.b.y - deltaYB},
-	                   colors[color]},
+	                   getColor()},
 	         _lower = {{line.a.x - deltaXA, line.a.y + deltaYA},
 	                   {line.b.x - deltaXB, line.b.y + deltaYB},
-	                   colors[(color + 1) % color_count]};
-	color = (color + 2) % color_count;
+	                   getColor()};
 
 	wallsP.push_back({_upper, _lower});
 	Segment2& upper = wallsP.back().first;
@@ -196,10 +208,10 @@ void add_a_single_way_to_maze(PWalls& wallsP, const WideRoad2& way,
 
 			Segment2 new_lower = {
 			    Segment2{ipLower, ipLowerOpposite}.getEndCloserTo(lower.b),
-			    lower.b};
+			    lower.b, getColor()};
 			Segment2 new_upper = {
 			    Segment2{ipUpper, ipUpperOpposite}.getEndCloserTo(upper.b),
-			    upper.b};
+			    upper.b, getColor()};
 
 			new_upper.a.crossRoad = &croad;
 			new_upper.b.crossRoad = upper.b.crossRoad;
@@ -207,9 +219,6 @@ void add_a_single_way_to_maze(PWalls& wallsP, const WideRoad2& way,
 			new_lower.a.crossRoad = &croad;
 			new_lower.b.crossRoad = lower.b.crossRoad;
 
-			new_lower.color = colors[color];
-			new_upper.color = colors[(color + 1) % color_count];
-			color = (color + 2) % color_count;
 
 			// note - push front, we don't want them to be indexed again
 			wallsP.push_back({new_upper, new_lower});
@@ -217,21 +226,17 @@ void add_a_single_way_to_maze(PWalls& wallsP, const WideRoad2& way,
 			// OTHER COMPLEMENTING WALLS
 			Segment2 new_lower_other = {
 			    Segment2{ipUpper, ipLower}.getEndCloserTo(wall.first.b),
-			    wall.first.b};
+			    wall.first.b, getColor()};
 			Segment2 new_upper_other = {
 			    Segment2{ipUpperOpposite, ipLowerOpposite}.getEndCloserTo(
 			        wall.second.b),
-			    wall.second.b};
+			    wall.second.b, getColor()};
 
 			new_upper_other.a.crossRoad = &croad;
 			new_upper_other.b.crossRoad = wall.first.b.crossRoad;
 
 			new_lower_other.a.crossRoad = &croad;
 			new_lower_other.b.crossRoad = wall.second.b.crossRoad;
-
-			new_lower_other.color = colors[color];
-			new_upper_other.color = colors[(color + 1) % color_count];
-			color = (color + 2) % color_count;
 
 			wallsP.push_back({new_upper_other, new_lower_other});
 
@@ -268,6 +273,7 @@ void add_a_single_way_to_maze(PWalls& wallsP, const WideRoad2& way,
 
 			CrossRoad* other_closer_croad =
 			    wall.first.getEndCloserTo(ilower ? ipLower : ipUpper).crossRoad;
+
 			if (tryToInsert(*other_closer_croad, this_join_a ? way.a : way.b)) {
 				LOG_F(3, "\tend-end");
 
@@ -360,9 +366,8 @@ void add_a_single_way_to_maze(PWalls& wallsP, const WideRoad2& way,
 				};
 
 				if (only_one_point_is_not_part_of_intersection) {
-					LOG_F(INFO, "5");
 					bool qq = only_one_point_is_not_part_of_intersection;
-					bool try_opposite = false, try_lower = false;
+					bool try_lower = false;
 					Point2* point_to_check = nullptr;
 
 					if (qq == iu) {
@@ -373,23 +378,19 @@ void add_a_single_way_to_maze(PWalls& wallsP, const WideRoad2& way,
 						point_to_check = &ipLower;
 					}
 					if (qq == iuo) {
-						try_opposite = true;
+						// try_opposite = true;
 						point_to_check = &ipUpperOpposite;
 					}
 					if (qq == ilo) {
 						try_lower = true;
-						try_opposite = true;
+						// try_opposite = true;
 						point_to_check = &ipLowerOpposite;
 					}
 
-					if (point_inside_segment(try_lower ? lower : upper,
-					                         *point_to_check)) {
-						// other joins this
-						LOG_F(INFO, "6");
-					} else {
+					if (!point_inside_segment(try_lower ? lower : upper,
+					                          *point_to_check)) {
 						// this joins other
 						this_joins_other = true;
-						LOG_F(WARNING, "7 the hard way");
 					}
 				}
 
@@ -416,7 +417,6 @@ void add_a_single_way_to_maze(PWalls& wallsP, const WideRoad2& way,
 				// other end -> this middle
 				if (!this_joins_other) {
 					VLOG_F(2, "\tOther's end joins this's middle");
-					;
 					bool other_cut_a =
 					    (&wall.first.getEndCloserTo(ipUpper) == &wall.first.a);
 					bool joins_from_upper = (iupper && iupperOpposite) ||
@@ -427,13 +427,11 @@ void add_a_single_way_to_maze(PWalls& wallsP, const WideRoad2& way,
 					    new_upper =
 					        {Segment2{ipUpper, ipUpperOpposite}.getEndCloserTo(
 					             joins_from_upper ? upper.b : upper.a),
-					         upper.b, colors[color]},
+					         upper.b, getColor()},
 					    new_lower = {
 					        Segment2{ipLower, ipLowerOpposite}.getEndCloserTo(
 					            joins_from_upper ? lower.a : lower.b),
-					        lower.b, colors[(color + 1) % color_count]};
-
-					color = (color + 2) % color_count;
+					        lower.b, getColor()};
 
 					wallsP.push_back({new_upper, new_lower});
 
@@ -474,14 +472,12 @@ void add_a_single_way_to_maze(PWalls& wallsP, const WideRoad2& way,
 					    new_first = {Segment2{ipUpper, ipLower}.getEndCloserTo(
 					                     joins_from_opposite ? wall.first.a
 					                                         : wall.first.b),
-					                 wall.first.b, colors[color]},
+					                 wall.first.b, getColor()},
 					    new_second = {Segment2{ipUpperOpposite, ipLowerOpposite}
 					                      .getEndCloserTo(joins_from_opposite
 					                                          ? wall.second.b
 					                                          : wall.second.a),
-					                  wall.second.b,
-					                  colors[(color + 1) % color_count]};
-					color = (color + 2) % color_count;
+					                  wall.second.b, getColor()};
 
 					wallsP.push_back({new_first, new_second});
 					wallsP.back().first.a.crossRoad =
@@ -516,19 +512,10 @@ void build_from_paths(const Ways& paths, std::list<Segment2>& maze)
 	loguru::g_stderr_verbosity = 3;
 	loguru::g_colorlogtostderr = true;
 
-	LOG_F(WARNING, "BEGIN");
 
 	CrossRoads cross_roads;
-	Colors colors = {{1, 1, 0.1f, "L yellow"},    {0, 0.3f, 1.f, "D blue"},
-	                 {0.5f, 0, 0.8f, "violet"},   {1, 0.5f, 0, "orange"},
-	                 {.5f, .5f, .5f, "silver"},   {1.f, 0, 0, "red"},
-	                 {1.f, 0.5f, 0.5f, "pink"},   {0, .7f, 1.f, "L blue"},
-	                 {0.7f, 0.2f, 0.3f, "brown"}, {0.2f, 1, 0.2f, "L green"},
-	                 {0, 0.5f, 0, "D green"}};
 
-	auto color_count = colors.size(), color = 0lu;
-
-    PWalls wallsP;
+	PWalls wallsP;
 
 	for (const auto& way : paths) {
 		if (way.a.width != WIDEPOINT_WIDTH || way.b.width != WIDEPOINT_WIDTH) {
@@ -539,8 +526,7 @@ void build_from_paths(const Ways& paths, std::list<Segment2>& maze)
 			      "specified by WIDEPOINT_WIDTH) until other problems are "
 			      "resolved";
 		}
-		add_a_single_way_to_maze(wallsP, way, colors, color_count, color,
-		                         cross_roads);
+		add_a_single_way_to_maze(wallsP, way, cross_roads);
 	}
 
     //auto crsize = cross_roads.size();
@@ -554,17 +540,17 @@ void build_from_paths(const Ways& paths, std::list<Segment2>& maze)
         //}
     //}
 
-    for (auto i : wallsP) {
-        maze.push_back(i.first);
-        maze.push_back(i.second);
-    }
+	for (auto i : wallsP) {
+		maze.push_back(i.first);
+		maze.push_back(i.second);
+	}
 
 	LOG_F(INFO, "Ways added to maze. Will validate.");
 
 	validate_walls(wallsP, true);
 
-    LOG_F(INFO, "%lu walls generated from %lu lines\n", maze.size(),
-          paths.size());
+	LOG_F(INFO, "%lu walls generated from %lu lines\n", maze.size(),
+	      paths.size());
 
 	dump(wallsP);
 	LOG_F(INFO, "CrossRoads in std::list cross_roads: %lu\n",
