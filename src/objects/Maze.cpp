@@ -2,10 +2,10 @@
 
 #define MAX_LINES 60
 
-Maze Maze::build(const Ways& ways, void (*builder)(const Ways&, Walls& walls))
+Maze Maze::build(const Ways& ways, Builder&& builder)
 {
 	Walls walls;
-	builder(ways, walls);
+	builder.build_from_paths(ways, walls);
 
 	if (walls.size() > MAX_LINES) {
 		throw "Maximum allowed line number exceeded";

@@ -3,13 +3,15 @@
 
 #include "Maze.h"
 #include "Screen.h"
-#include "graphics/ShaderProgram.h"
-#include "graphics/VertexArray.h"
+#include "graphics/include/ShaderProgram.h"
+#include "graphics/include/VertexArray.h"
+
+typedef unsigned short ushort;
 
 class HomeScreen : public Screen
 {
 public:
-	HomeScreen(unsigned short maze_id);
+	HomeScreen(ushort maze_id, bool join_it, ushort max_lines);
 	virtual ~HomeScreen();
 
 	void update(double deltaTime, State& state);

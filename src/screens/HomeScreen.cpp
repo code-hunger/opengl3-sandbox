@@ -1,43 +1,56 @@
 #include "HomeScreen.h"
-#include "graphics/Shader.h"
-#include "graphics/config.h"
-#include "graphics/geometry_io.h"
-#include "graphics/utils.h"
-#include "maze_builder/builder.h"
-#include <Maze.h>
+#include "graphics/include/Shader.h"
+#include "graphics/include/config.h"
+#include "graphics/include/utils.h"
+#include "math/include/geometry_io.h"
+#include "maze_builder/include/builder.h"
 #include <GLFW/glfw3.h>
+#include <Maze.h>
 #include <cstdio>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-typedef std::unordered_set<WideRoad2, Hash> Ways;
-Maze getMazeFromFile(unsigned short maze_id)
+Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
 {
 	std::string fileName(MAZE_DIRECTORY "/maze");
 	fileName += std::to_string(static_cast<unsigned>(maze_id));
 	fileName += ".txt";
 	std::ifstream input(fileName);
-	WideRoad2 line{};
+
+	if (input.fail()) {
+		throw "File does not exist!";
+	}
+
+	WideRoad2 line{{}, {}};
 	Ways lines;
 	while (input >> line) {
-		lines.insert(line);
+		lines.push_back(line);
 	}
 	printf("Fetched %lu lines in maze!\n", lines.size());
 
-	return Maze::build(lines, build_from_paths);
+	return Maze::build(lines, {join_it, max_lines});
 }
 
-HomeScreen::HomeScreen(unsigned short maze_id) : maze(getMazeFromFile(maze_id))
+HomeScreen::HomeScreen(ushort maze_id, bool join_it,
+                       ushort max_lines)
+    : maze(getMazeFromFile(maze_id, join_it, max_lines))
 {
-	Shader frag_sh(readFile(SHADER_DIRECTORY "/fragment_shader.glsl"),
+	Shader frag_sh(readFile(SHADER_DIRECTORY "/fragment_shader.glsl").c_str(),
 	               GL_FRAGMENT_SHADER),
-	    vert_sh(readFile(SHADER_DIRECTORY "/vertex_shader.glsl"),
+	    vert_sh(readFile(SHADER_DIRECTORY "/vertex_shader.glsl").c_str(),
 	            GL_VERTEX_SHADER);
 
-	frag_sh.compile();
-	vert_sh.compile();
+	if (!frag_sh.tryToCompile()) {
+		printf("Frag Shader compilation failed: %s", frag_sh.infoLog);
+		throw;
+	}
+
+	if (!vert_sh.tryToCompile()) {
+		printf("Vert Shader compilation failed: %s", vert_sh.infoLog);
+		throw;
+	}
 
 	shaderProgram.attachShader(vert_sh.id);
 	shaderProgram.attachShader(frag_sh.id);

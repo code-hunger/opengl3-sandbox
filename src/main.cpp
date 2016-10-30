@@ -1,8 +1,10 @@
 #include "Game.h"
-#include "graphics/Window.h"
+#include "graphics/include/Window.h"
 #include <GL/glew.h>
 
 #include <cstdio>
+
+#include <iostream>
 
 int main(int argc, char** argv)
 {
@@ -10,7 +12,9 @@ int main(int argc, char** argv)
 		Window::prepareOpenGL();
 		Window window;
 
-		Game game(argc >= 2 ? static_cast<short unsigned>(atoi(argv[1])) : 1);
+		// a Window is needed to construct a game
+		Game game = Game::fromCmd(argc, argv);
+
 		window.run(game);
 	} catch (int e) {
 		printf("Something bad happened. Code %d\n", e);
@@ -19,8 +23,6 @@ int main(int argc, char** argv)
 		printf("Something bad happened. Error text: %s\n", e);
 		return EXIT_FAILURE;
 	}
-
-	/* printf("Successfully exiting!!!\n"); */
 
 	return EXIT_SUCCESS;
 }

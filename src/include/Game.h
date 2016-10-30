@@ -3,22 +3,23 @@
 
 #include <memory>
 
-#include "graphics/Renderer.h"
 #include "Screen.h"
-#include "graphics/ShaderProgram.h"
-#include "graphics/State.h"
-#include "graphics/VertexArray.h"
-#include "graphics/Window.h"
+#include "graphics/include/Renderer.h"
+
+typedef unsigned short ushort;
 
 class Game : public Renderer
 {
 public:
-	Game(unsigned short maze_id);
-	virtual ~Game();
+	Game(ushort maze_id, bool dont_join_lines, ushort max_lines);
 	void render(double deltaTime, State& state) const;
+
+	static Game fromCmd(int, char**);
 
 	Game(const Game&) = delete;
 	Game operator=(const Game&) = delete;
+
+	Game(Game&&) = default;
 
 private:
 	std::unique_ptr<Screen> screen;

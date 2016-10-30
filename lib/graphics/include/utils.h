@@ -12,4 +12,9 @@ std::string readFile(const char* fileName)
 	return s;
 }
 
+inline std::string readFile(const char* path, const char* fileName)
+{
+	return readFile((std::string(path) + '/' + fileName).c_str());
+}
+
 #endif

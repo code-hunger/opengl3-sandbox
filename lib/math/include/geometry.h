@@ -23,7 +23,7 @@ struct Point2
 		return this->x == other.x && this->y == other.y;
 	}
 
-	operator bool () = delete;
+	operator bool() = delete;
 
 	// Don't allow this - *crossRoad must be preserved
 	void operator=(const Point2&) = delete;
@@ -63,6 +63,9 @@ inline constexpr float calcSquaredLen(const Point2& a, const Point2& b)
 {
 	return pythagoras(a.x - b.x, a.y - b.y);
 }
+
+struct Segment2;
+double distanceToLine(Point2, Segment2);
 
 struct Segment2
 {
@@ -111,7 +114,7 @@ struct Segment2
 		return true;
 	}
 
-	constexpr float calcSquaredLen() const { return ::calcSquaredLen(a, b); }
+	float calcSquaredLen() const { return ::calcSquaredLen(a, b); }
 
 	LineEquation getEquation() const
 	{
@@ -120,16 +123,38 @@ struct Segment2
 	}
 
 	// NOT const - we may want to change the refference later
-	Point2& getEndCloserTo(Point2 point)
+	Point2& getEndCloserTo(const Point2& point)
 	{
 		return ::calcSquaredLen(a, point) < ::calcSquaredLen(b, point) ? a : b;
 	}
+
+	Point2& getEndCloserTo(const Segment2& segment)
+	{
+		double distA = distanceToLine(segment.a, *this),
+		       distB = distanceToLine(segment.b, *this);
+		return distA > distB ? a : b;
+	}
 };
+
+#include <cmath>
+
+// The distance from a point to a line defined by 2 points (i.e. a segment)
+inline double distanceToLine(Point2 point, Segment2 line)
+{
+	return fabs((line.b.y - line.a.y) * point.x -
+	            (line.b.x - line.a.x) * point.y + line.b.x * line.a.y -
+	            line.b.y * line.a.x) /
+	       sqrt(pow(line.b.y - line.a.y, 2) + pow(line.b.x - line.a.x, 2));
+}
+
+inline constexpr Point2 middleOf(Point2 a, Point2 b)
+{
+	return {a.x + (b.x - a.x) / 2, a.y + (b.y - a.y) / 2};
+}
 
 inline constexpr Point2 middleOf(Segment2 line)
 {
-	return {line.a.x + (line.a.x - line.b.x) / 2,
-	        line.a.y + (line.a.y - line.b.y) / 2};
+	return middleOf(line.a, line.b);
 }
 
 struct Wall2
@@ -143,7 +168,7 @@ struct Wall2
 struct WidePoint2
 {
 	Point2 point;
-	short unsigned width;
+	float width;
 	bool operator==(const WidePoint2& other) const
 	{
 		return point == other.point && width == other.width;
@@ -154,14 +179,26 @@ struct CrossRoad
 {
 	std::vector<WidePoint2> points;
 
-	bool operator== (CrossRoad other) {
-		return (other.points == this->points);
-	}
+	bool operator==(CrossRoad other) { return (other.points == this->points); }
 };
+
+inline WidePoint2 widePointFromSimplePoints(Point2 a, Point2 b)
+{
+	Point2 mid = middleOf(a, b);
+	float WIDEPOINT_WIDTH = 3;
+	return {mid, WIDEPOINT_WIDTH};
+}
 
 struct WideRoad2
 {
 	WidePoint2 a, b;
+
+	WideRoad2() = default;
+	WideRoad2(Segment2 upper, Segment2 lower)
+	    : a(widePointFromSimplePoints(upper.a, lower.a)),
+	      b(widePointFromSimplePoints(upper.b, lower.b))
+	{
+	}
 
 	inline bool operator==(const WideRoad2& other) const
 	{
@@ -177,23 +214,33 @@ struct WideRoad2
 		           : b;
 	}
 
-	constexpr Segment2 getSegmnet2() const { return {a.point, b.point}; }
-};
-
-struct Hash
-{
-	size_t operator()(const WideRoad2& way) const
+	const WidePoint2& getEndCloserTo(const Segment2& segment) const
 	{
-		return static_cast<size_t>(
-		    static_cast<float>(way.a.width * way.b.width) +
-		    way.getSegmnet2().calcSquaredLen());
+		double distA = distanceToLine(a.point, segment),
+		       distB = distanceToLine(b.point, segment);
+		return distA < distB ? a : b;
 	}
 
-	size_t operator()(const Segment2& line) const
+	Segment2 getSegmnet2() const
 	{
-		return static_cast<size_t>(10000 * line.a.x * line.a.y +
-		                           line.calcSquaredLen());
+		return {a.point, b.point, {0.7f, 0.7f, 0.7f, "white"}};
 	}
 };
+
+// struct Hash
+//{
+// size_t operator()(const WideRoad2& way) const
+//{
+// return static_cast<size_t>(
+// static_cast<float>(way.a.width * way.b.width) +
+// way.getSegmnet2().calcSquaredLen());
+//}
+
+// size_t operator()(const Segment2& line) const
+//{
+// return static_cast<size_t>(10000 * line.a.x * line.a.y +
+// line.calcSquaredLen());
+//}
+//};
 
 #endif /* end of include guard: GEOMETRY_H_NTEYZYI7 */

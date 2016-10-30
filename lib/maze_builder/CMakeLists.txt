@@ -1,9 +1,5 @@
-file(GLOB SOURCES "*.cpp")
+include_directories(include)
 
-include_directories(${PROJECT_SOURCE_DIR}/lib/include/maze_builder)
-
-add_library(maze_builder ${SOURCES})
-
-target_link_libraries(maze_builder logging)
+add_library(maze_builder builder.cpp)
 
 #target_link_libraries(maze_builder graphics)
