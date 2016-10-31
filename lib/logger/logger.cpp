@@ -17,6 +17,22 @@ const Logger& Logger::operator()(Color color)
 	return *this;
 }
 
+const Logger& Logger::operator()(Color color) const
+{
+	printf("\033[%d;%dm", color != Color::Default, color);
+	return *this;
+}
+
+const Logger& Logger::operator<<(Color color)
+{
+	return this->operator()(color);
+}
+
+const Logger& Logger::operator<<(Color color) const
+{
+	return this->operator()(color);
+}
+
 const Logger& Logger::operator()(const char* msg, ...) const
 {
 	va_list args;

@@ -7,6 +7,13 @@
 
 #define LOG Logger::get()
 
+/*
+ * NON-const state means indent MUST be printed
+ * Const state means indent MUST NOT be printed
+ *
+ * Result of both states is CONST state
+ * Non-const state cat be accuired only by calling Logger::get()
+ */
 class Logger
 {
 	char unsigned level;
@@ -27,37 +34,34 @@ public:
 		Default = 39,
 	};
 
-	const Logger& operator()(const char* msg, ...) const
+	// printf-like logging; either const or non-const
+	const Logger& operator()(const char*, ...)
+	    __attribute__((format(printf, 2, 3)));
+	const Logger& operator()(const char*, ...) const
 	    __attribute__((format(printf, 2, 3)));
 
-	const Logger& operator()(const char* msg, ...)
-	    __attribute__((format(printf, 2, 3)));
-
+	// Color specifiers using (); either const or non-const
 	const Logger& operator()(Color);
+	const Logger& operator()(Color) const;
 
-	template <typename T> const Logger& operator<<(T x) const
-	{
-		std::cout << x;
-		return *this;
-	}
+	// Color specifiers using <<; either const or non-const
+	const Logger& operator<<(Color);
+	const Logger& operator<<(Color) const;
 
-	template <typename T> const Logger& operator<<(T x)
-	{
-		refresh();
-		std::cout << x;
-		return *this;
-	}
+	// cout-like logging
+	template <typename T> const Logger& operator<<(T);
+	template <typename T> const Logger& operator<<(T) const;
 
 	// Increase/decrease indentation
 	Logger& operator++();
 	Logger& operator--();
 
+	Logger(const Logger&) = delete;
+	void operator=(const Logger&) = delete;
+
 	// To be easily used in boolean expressions,
 	// e.g. CONDITION && LOG("msg")
 	operator bool() const { return 1; };
-
-	Logger(const Logger&) = delete;
-	void operator=(const Logger&) = delete;
 
 	static Logger& get()
 	{
@@ -65,5 +69,18 @@ public:
 		return logger;
 	}
 };
+
+template <typename T> const Logger& Logger::operator<<(T x)
+{
+	refresh();
+	std::cout << x;
+	return *this;
+}
+
+template <typename T> const Logger& Logger::operator<<(T x) const
+{
+	std::cout << x;
+	return *this;
+}
 
 #endif /* end of include guard: LOGGER_H_F36PNJYA */
