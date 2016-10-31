@@ -1,5 +1,6 @@
 #include "builder.h"
 
+#include "logger/include/logger.h"
 #include "math/include/geometry_io.h"
 
 #include <cassert>
@@ -13,8 +14,6 @@
 typedef std::vector<Color> Colors;
 typedef std::list<CrossRoad> CrossRoads;
 typedef std::list<std::pair<std::pair<Segment2, Segment2>, WideRoad2>> PWalls;
-
-using std::cout;
 
 constexpr long double PI = 3.141592653589793238462643383279502884L;
 
@@ -103,7 +102,7 @@ void validate_walls(const PWalls& walls, bool force = FORCE_VALIDATE)
 			validate_cross_road(wall.first.a.crossRoad);
 			validate_cross_road(wall.first.b.crossRoad);
 		} catch (const char* err) {
-			// LOG_S(ERROR) << err;
+			LOG << err;
 			valid = false;
 		}
 	}
@@ -141,7 +140,7 @@ bool point_inside_segment(Segment2 line, Point2 point)
 	double PB = sqrt((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y));
 	double res = AP + PB - AB;
 	double const deviation = 1e-6;
-	printf("%2.7f %s", res, fabs(res) < deviation ? "yes!" : "no");
+	LOG("%2.7f %s", res, fabs(res) < deviation ? "yes!" : "no");
 	return fabs(res) < deviation;
 }
 
@@ -173,16 +172,16 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 	cross_roads.push_back({{way.b}});
 	lower.b.crossRoad = upper.b.crossRoad = &cross_roads.back();
 
-	// LOG_F(INFO, "NEXT INSERT START: %s/%s", upper.color.name,
-	// lower.color.name);
+	LOG(Logger::Green, "INSERT START: %s/%s", upper.color.name, lower.color.name);
+	++LOG;
 
 	for (auto& _wall : wallsP) {
 		if (!join) break;
 		auto& wall = _wall.first;
 		if (&wall.first == &upper) continue;
 
-		// JUST_LOG << "\tCHECK WITH " << wall.first.color << "/"
-		//<< wall.second.color << ":";
+		LOG << Logger::Blue << "CHECK WITH " << wall.first.color << "/"
+		    << wall.second.color << ":" << Logger::Default << '\n' ;
 		Point2 ipUpper{}, ipLower{}, ipUpperOpposite{}, ipLowerOpposite{};
 		const bool iupper = wall.first.intersectsWith(upper, &ipUpper),
 		           ilower = wall.first.intersectsWith(lower, &ipLower),
@@ -196,9 +195,11 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 			continue;
 		}
 
+		++LOG;
+
 		// middle-middle intersection
 		if (iupper && ilower && iupperOpposite && ilowerOpposite) {
-			// LOG_F(INFO, "\tmiddle-middle");
+			LOG("middle-middle");
 			{
 				CrossRoad croad{};
 #pragma message("Calculate WidePoint2 width properly")
@@ -280,12 +281,13 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 			CrossRoad* other_closer_croad =
 			    (other_join_a ? wall.first.a : wall.first.b).crossRoad;
 
-			// JUST_LOG << way.getSegmnet2() << " " << (int)this_join_a;
-			// JUST_LOG << _wall.second.getSegmnet2() << " " <<
-			// (int)other_join_a;
+			LOG << way.getSegmnet2() << " " << static_cast<int>(this_join_a)
+			    << '\n';
+			LOG << _wall.second.getSegmnet2() << " "
+			    << static_cast<int>(other_join_a) << '\n';
 
 			if (tryToInsert(*other_closer_croad, this_join_a ? way.a : way.b)) {
-				// LOG_F(3, "\tend-end");
+				LOG("end-end");
 
 				if ((this_join_a ? upper.a : upper.b).crossRoad->points.size() <
 				    2) {
@@ -297,27 +299,27 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 				    (this_join_a ? lower.a : lower.b).crossRoad =
 				        other_closer_croad;
 
-				Point2* common_point{};
-				Segment2 *my_segm_to_cut{}, *other_segm_to_cut{};
+				// Point2* common_point;
+				// Segment2 *my_segm_to_cut, *other_segm_to_cut;
 
 				if (!iupperOpposite && !ilowerOpposite) {
 					if (iupper) {
 						// cut at iupper
-						other_segm_to_cut = &wall.first;
-						my_segm_to_cut = &upper;
-						common_point = &ipUpper;
+						// other_segm_to_cut = &wall.first;
+						// my_segm_to_cut = &upper;
+						// common_point = &ipUpper;
 					} else if (ilower) {
 						// cut at ilower
-						common_point = &ipLower;
-						my_segm_to_cut = &lower;
-						other_segm_to_cut = &wall.first;
+						// common_point = &ipLower;
+						// my_segm_to_cut = &lower;
+						// other_segm_to_cut = &wall.first;
 					}
 				} else if (!iupper && !ilower) {
 					if (iupperOpposite && !ilowerOpposite) {
 						// cut at iupperOpposite
-						my_segm_to_cut = &upper;
-						common_point = &ipUpperOpposite;
-						other_segm_to_cut = &wall.second;
+						// my_segm_to_cut = &upper;
+						// common_point = &ipUpperOpposite;
+						// other_segm_to_cut = &wall.second;
 					} else if (ilowerOpposite && !iupperOpposite) {
 						// cut at ilowerOpposite
 						lower.getEndCloserTo(ipLowerOpposite)
@@ -337,8 +339,9 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 						    .moveTo(cross_point);
 					}
 				} else {
-					const bool iu = iupper, il = ilower, iuo = iupperOpposite,
-					           ilo = ilowerOpposite;
+					// const bool iu = iupper, il = ilower, iuo =
+					// iupperOpposite,
+					// ilo = ilowerOpposite;
 
 					// JUST_LOG << iu << il << iuo << ilo;
 
@@ -348,7 +351,7 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 				const bool iu = iupper, il = ilower, iuo = iupperOpposite,
 				           ilo = ilowerOpposite;
 
-				// LOG_F(INFO, "\tMiddle-end");
+				LOG("Middle-end");
 
 				bool this_end_joins_2_fixed_points_intersect =
 				         (iu && il && !iuo && !ilo) ||
@@ -412,7 +415,7 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 							this_joins_other = true;
 						}
 					} else {
-						// LOG_F(WARNING, "unimplemented!");
+						LOG(Logger::Red, "unimplemented!");
 						this_joins_other = true;
 						// too lazy now
 						// throw "Unimplemented.";
@@ -421,7 +424,7 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 
 				// other end -> this middle
 				if (!this_joins_other) {
-					// VLOG_F(2, "\tOther's end joins this's middle");
+					LOG("Other's end joins this's middle");
 					bool other_cut_a =
 					    (&wall.first.getEndCloserTo(ipUpper) == &wall.first.a);
 					bool joins_from_upper = (iupper && iupperOpposite) ||
@@ -476,7 +479,7 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 					        : middleOf(ipUpper, ipLower));
 				} else {
 					// end of this joining middle of other
-					// LOG_F(2, "This end joins other's middle");
+					LOG("This end joins other's middle");
 					bool this_cut_a =
 					    (&upper.getEndCloserTo(ipUpper) == &upper.a);
 					bool joins_from_opposite =
@@ -531,9 +534,12 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 				}
 			}
 		}
+		--LOG;
 	}
 
-	// FORCE_VALIDATE&& LOG_F(INFO, "Will validate.");
+	--LOG;
+
+	FORCE_VALIDATE&& LOG("Will validate.");
 	validate_walls(wallsP);
 }
 
@@ -552,9 +558,9 @@ void Builder::build_from_paths(const Ways& paths, std::list<Segment2>& maze)
 	unsigned way_count = 0;
 	for (const auto& way : paths) {
 		if (way.a.width != WIDEPOINT_WIDTH || way.b.width != WIDEPOINT_WIDTH) {
-			// JUST_LOG << way.a.point << " - " << way.b.point
-			//<< "; a.width: " << way.a.width
-			//<< ", b.width: " << way.b.width;
+			LOG << way.a.point << " - " << way.b.point
+			    << "; a.width: " << way.a.width << ", b.width: " << way.b.width
+			    << '\n';
 			throw "WidePoint's width must be 3(or another fixed value "
 			      "specified by WIDEPOINT_WIDTH) until other problems are "
 			      "resolved";
@@ -562,17 +568,6 @@ void Builder::build_from_paths(const Ways& paths, std::list<Segment2>& maze)
 		add_a_single_way_to_maze(join, wallsP, way, cross_roads);
 		if (++way_count == max_count) break;
 	}
-
-	// auto crsize = cross_roads.size();
-	// std::vector<Segment2> cross_points_segments;
-	// cross_points_segments.reserve(crsize*(crsize-1)/2);
-	// for (auto c : cross_roads) {
-	// for(auto i=c.points.cbegin(); i != c.points.cend(); ++i) {
-	// for(auto p=i; p!= c.points.cend(); ++p) {
-	// maze.push_back({i->point, p->point, colors[0]});
-	//}
-	//}
-	//}
 
 	for (auto i : wallsP) {
 		maze.push_back(i.first.first);
@@ -582,14 +577,12 @@ void Builder::build_from_paths(const Ways& paths, std::list<Segment2>& maze)
 		maze.push_back(middle);
 	}
 
-	// LOG_F(INFO, "Ways added to maze. Will validate.");
+	LOG("Ways added to maze. Will validate.");
 
 	validate_walls(wallsP, true);
 
-	// LOG_F(INFO, "%lu walls generated from %lu lines\n", maze.size(),
-	// paths.size());
+	LOG("%lu walls generated from %lu lines\n", maze.size(), paths.size());
 
 	dump(wallsP);
-	// LOG_F(INFO, "CrossRoads in std::list cross_roads: %lu\n",
-	// cross_roads.size());
+	LOG("CrossRoads in std::list cross_roads: %lu\n", cross_roads.size());
 }

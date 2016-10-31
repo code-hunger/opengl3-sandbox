@@ -24,4 +24,5 @@ target_link_libraries (game graphics maze_builder)
 
 add_subdirectory(lib/graphics)
 add_subdirectory(lib/maze_builder)
+add_subdirectory(lib/logger)
 
