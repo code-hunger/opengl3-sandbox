@@ -172,7 +172,8 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 	cross_roads.push_back({{way.b}});
 	lower.b.crossRoad = upper.b.crossRoad = &cross_roads.back();
 
-	LOG(Logger::Green, "INSERT START: %s/%s", upper.color.name, lower.color.name);
+	LOG(Logger::Green)("INSERT: %s/%s", upper.color.name, lower.color.name);
+
 	++LOG;
 
 	for (auto& _wall : wallsP) {
@@ -180,8 +181,8 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 		auto& wall = _wall.first;
 		if (&wall.first == &upper) continue;
 
-		LOG << Logger::Blue << "CHECK WITH " << wall.first.color << "/"
-		    << wall.second.color << ":" << Logger::Default << '\n' ;
+		LOG(Logger::White) << "CHECK WITH " << wall.first.color << "/"
+		                   << wall.second.color << ":" << Logger::Default;
 		Point2 ipUpper{}, ipLower{}, ipUpperOpposite{}, ipLowerOpposite{};
 		const bool iupper = wall.first.intersectsWith(upper, &ipUpper),
 		           ilower = wall.first.intersectsWith(lower, &ipLower),
@@ -281,10 +282,10 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 			CrossRoad* other_closer_croad =
 			    (other_join_a ? wall.first.a : wall.first.b).crossRoad;
 
-			LOG << way.getSegmnet2() << " " << static_cast<int>(this_join_a)
-			    << '\n';
-			LOG << _wall.second.getSegmnet2() << " "
-			    << static_cast<int>(other_join_a) << '\n';
+			// LOG << way.getSegmnet2() << " " << static_cast<int>(this_join_a)
+			//<< '\n';
+			// LOG << _wall.second.getSegmnet2() << " "
+			//<< static_cast<int>(other_join_a) << '\n';
 
 			if (tryToInsert(*other_closer_croad, this_join_a ? way.a : way.b)) {
 				LOG("end-end");
@@ -415,7 +416,7 @@ void add_a_single_way_to_maze(bool join, PWalls& wallsP, const WideRoad2& way,
 							this_joins_other = true;
 						}
 					} else {
-						LOG(Logger::Red, "unimplemented!");
+						LOG(Logger::Red)("unimplemented!");
 						this_joins_other = true;
 						// too lazy now
 						// throw "Unimplemented.";
@@ -559,8 +560,7 @@ void Builder::build_from_paths(const Ways& paths, std::list<Segment2>& maze)
 	for (const auto& way : paths) {
 		if (way.a.width != WIDEPOINT_WIDTH || way.b.width != WIDEPOINT_WIDTH) {
 			LOG << way.a.point << " - " << way.b.point
-			    << "; a.width: " << way.a.width << ", b.width: " << way.b.width
-			    << '\n';
+			    << "; a.width: " << way.a.width << ", b.width: " << way.b.width;
 			throw "WidePoint's width must be 3(or another fixed value "
 			      "specified by WIDEPOINT_WIDTH) until other problems are "
 			      "resolved";

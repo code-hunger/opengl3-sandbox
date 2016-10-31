@@ -9,30 +9,41 @@
 
 class Logger
 {
-	char unsigned level = 0;
-	Logger() = default;
+	char unsigned level;
+	bool should_indent;
 
-	void indent();
+	void refresh() const;
 
-	bool should_indent = true;
+	Logger(char unsigned level = 0, bool should_indent = true);
 
 public:
-	enum Color { Red = 31, Green = 32, Blue = 34, Default = 39 };
+	enum Color {
+		Black = 30,
+		Red = 31,
+		Green = 32,
+		Yellow = 33,
+		Blue = 34,
+		White = 37,
+		Default = 39,
+	};
 
-	Logger& operator()(const char* msg, ...)
+	const Logger& operator()(const char* msg, ...) const
 	    __attribute__((format(printf, 2, 3)));
 
-	Logger& operator()(Color, const char* msg, ...)
-	    __attribute__((format(printf, 3, 4)));
+	const Logger& operator()(const char* msg, ...)
+	    __attribute__((format(printf, 2, 3)));
 
-	void operator<<(char x);
+	const Logger& operator()(Color);
 
-	Logger& operator<<(Color);
-
-	template <typename T> Logger& operator<<(T x)
+	template <typename T> const Logger& operator<<(T x) const
 	{
-		if (should_indent == 1) indent();
-		should_indent = 0;
+		std::cout << x;
+		return *this;
+	}
+
+	template <typename T> const Logger& operator<<(T x)
+	{
+		refresh();
 		std::cout << x;
 		return *this;
 	}
@@ -43,7 +54,7 @@ public:
 
 	// To be easily used in boolean expressions,
 	// e.g. CONDITION && LOG("msg")
-	operator bool() { return 1; };
+	operator bool() const { return 1; };
 
 	Logger(const Logger&) = delete;
 	void operator=(const Logger&) = delete;

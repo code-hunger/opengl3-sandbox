@@ -5,49 +5,40 @@
 
 #include <iostream>
 
-void Logger::operator<<(char x)
+Logger::Logger(char unsigned level, bool should_indent)
+    : level(level), should_indent(should_indent)
 {
-	if (x == '\n') {
-		should_indent = 1;
-	}
-	putchar(x);
 }
 
-Logger& Logger::operator<<(Color color)
+const Logger& Logger::operator()(Color color)
 {
+	refresh();
 	printf("\033[%d;%dm", color != Color::Default, color);
 	return *this;
 }
 
-Logger& Logger::operator()(Color color, const char* msg, ...)
+const Logger& Logger::operator()(const char* msg, ...) const
 {
-	indent();
-
-	printf("\033[1;%dm", color);
-
 	va_list args;
 	va_start(args, msg);
 	vprintf(msg, args);
 	va_end(args);
+	return *this;
+}
 
-	// reset colors and fonts
+const Logger& Logger::operator()(const char* msg, ...)
+{
+	refresh();
+	va_list args;
+	va_start(args, msg);
+	vprintf(msg, args);
+	va_end(args);
+	return *this;
+}
+
+void Logger::refresh() const
+{
 	puts("\033[0m");
-	return *this;
-}
-
-Logger& Logger::operator()(const char* msg, ...)
-{
-	indent();
-	va_list args;
-	va_start(args, msg);
-	vprintf(msg, args);
-	va_end(args);
-	putchar('\n');
-	return *this;
-}
-
-void Logger::indent()
-{
 	for (int i = 0; i < level; ++i) {
 		putchar('\t');
 	}
@@ -64,4 +55,3 @@ Logger& Logger::operator++()
 	if (level < 10) ++level;
 	return *this;
 }
-
