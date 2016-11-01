@@ -5,36 +5,34 @@
 
 #include <iostream>
 
-Logger::Logger(char unsigned level, bool should_indent)
-    : level(level), should_indent(should_indent)
+const Logger& Logger::operator()(bool val)
 {
+	refresh();
+	printf("%s", val ? "true" : "false");
+	return *this;
+}
+
+const Logger& Logger::operator()(bool val) const
+{
+	printf("%s", val ? "true" : "false");
+	return *this;
 }
 
 const Logger& Logger::operator()(Color color)
 {
 	refresh();
-	printf("\033[%d;%dm", color != Color::Default, color);
-	return *this;
+	return (const_cast<const Logger*>(this))->operator()(color);
 }
 
 const Logger& Logger::operator()(Color color) const
 {
-	printf("\033[%d;%dm", color != Color::Default, color);
+	printf("\033[%d;38;5;%dm", color != Color::Default, color);
 	return *this;
 }
 
-const Logger& Logger::operator<<(Color color)
+const Logger& Logger::operator()(const char* msg, ...)
 {
-	return this->operator()(color);
-}
-
-const Logger& Logger::operator<<(Color color) const
-{
-	return this->operator()(color);
-}
-
-const Logger& Logger::operator()(const char* msg, ...) const
-{
+	refresh();
 	va_list args;
 	va_start(args, msg);
 	vprintf(msg, args);
@@ -42,9 +40,8 @@ const Logger& Logger::operator()(const char* msg, ...) const
 	return *this;
 }
 
-const Logger& Logger::operator()(const char* msg, ...)
+const Logger& Logger::operator()(const char* msg, ...) const
 {
-	refresh();
 	va_list args;
 	va_start(args, msg);
 	vprintf(msg, args);

@@ -6,6 +6,8 @@
 #include <iostream>
 
 #define LOG Logger::get()
+#define WARN Logger::get()(Logger::Orange)
+#define ERR Logger::get()(Logger::Red)
 
 /*
  * NON-const state means indent MUST be printed
@@ -17,21 +19,21 @@
 class Logger
 {
 	char unsigned level;
-	bool should_indent;
 
 	void refresh() const;
 
-	Logger(char unsigned level = 0, bool should_indent = true);
+	Logger(char unsigned level = 0): level(level) {};
 
 public:
 	enum Color {
-		Black = 30,
-		Red = 31,
-		Green = 32,
-		Yellow = 33,
-		Blue = 34,
-		White = 37,
-		Default = 39,
+		Black = 0,
+		Red = 1,
+		Green = 10,
+		Yellow = 3,
+		Orange = 202,
+		Blue = 45, // 
+		White = 15, //
+		Default = -1,
 	};
 
 	// printf-like logging; either const or non-const
@@ -40,17 +42,25 @@ public:
 	const Logger& operator()(const char*, ...) const
 	    __attribute__((format(printf, 2, 3)));
 
+	// cout-like logging
+	template <typename T> const Logger& operator<<(T);
+	template <typename T> const Logger& operator<<(T) const;
+
 	// Color specifiers using (); either const or non-const
 	const Logger& operator()(Color);
 	const Logger& operator()(Color) const;
 
 	// Color specifiers using <<; either const or non-const
-	const Logger& operator<<(Color);
-	const Logger& operator<<(Color) const;
+	inline const Logger& operator<<(Color c) { return (*this)(c); };
+	inline const Logger& operator<<(Color c) const { return (*this)(c); };
 
-	// cout-like logging
-	template <typename T> const Logger& operator<<(T);
-	template <typename T> const Logger& operator<<(T) const;
+	// Bool overloads; either const or non-const
+	const Logger& operator()(bool);
+	const Logger& operator()(bool) const;
+
+	// Bool overloads; either const or non-const
+	inline const Logger& operator<<(bool b) { return (*this)(b); };
+	inline const Logger& operator<<(bool b) const { return (*this)(b); };
 
 	// Increase/decrease indentation
 	Logger& operator++();
