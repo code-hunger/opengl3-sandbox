@@ -11,7 +11,23 @@ struct Color
 	float r, g, b;
 	char const* name;
 	operator const char*() const { return name; }
+
+	static Color next()
+	{
+		static std::vector<Color> colors = {
+		    {1, 1, 0.1f, "L yellow"},    {0, 0.3f, 1.f, "D blue"},
+		    {0.5f, 0, 0.8f, "violet"},   {1, 0.5f, 0, "orange"},
+		    {.5f, .5f, .5f, "silver"},   {1.f, 0, 0, "red"},
+		    {1.f, 0.5f, 0.5f, "pink"},   {0, .7f, 1.f, "L blue"},
+		    {0.7f, 0.2f, 0.3f, "brown"}, {0.2f, 1, 0.2f, "L green"},
+		    {0, 0.5f, 0, "D green"}};
+		static auto color_count = colors.size(), color = 0lu;
+
+		return colors[(color++) % color_count];
+	}
 };
+
+struct Segment2;
 
 struct Point2
 {
@@ -35,6 +51,8 @@ struct Point2
 		this->y = other.y;
 		return *this;
 	}
+
+	bool insideSegment(Segment2 const& line) const;
 };
 
 struct Vector2
@@ -64,7 +82,6 @@ inline constexpr float calcSquaredLen(const Point2& a, const Point2& b)
 	return pythagoras(a.x - b.x, a.y - b.y);
 }
 
-struct Segment2;
 double distanceToLine(Point2, Segment2);
 
 struct Segment2
@@ -77,41 +94,38 @@ struct Segment2
 		return (a == other.a && b == other.b) || (a == other.b && b == other.a);
 	}
 
-	bool intersectsWith(Segment2 other, Point2* crossPoint) const
+	std::pair<bool, Point2> intersectsWith(Segment2 const& other) const
 	{
 		LineEquation eThis = getEquation(), eOther = other.getEquation();
 
 		float crossX = (eOther.b - eThis.b) / (eThis.a - eOther.a),
 		      crossY = eThis.a * crossX + eThis.b;
 
-		if (crossPoint != nullptr) {
-			crossPoint->x = crossX;
-			crossPoint->y = crossY;
-		}
+		bool intersects = true;
 
 		if ((crossX < b.x && crossX > a.x) || (crossX > b.x && crossX < a.x)) {
 			// this crossX yes
 		} else {
-			return false;
+			intersects = false;
 		}
 		if ((crossX < other.b.x && crossX > other.a.x) ||
 		    (crossX > other.b.x && crossX < other.a.x)) {
 			// other crossX yes
 		} else {
-			return false;
+			intersects = false;
 		}
 		if ((crossY < b.y && crossY > a.y) || (crossY > b.y && crossY < a.y)) {
 			// this crossY yes
 		} else {
-			return false;
+			intersects = false;
 		}
 		if ((crossY < other.b.y && crossY > other.a.y) ||
 		    (crossY > other.b.y && crossY < other.a.y)) {
 			// other crossY yes
 		} else {
-			return false;
+			intersects = false;
 		}
-		return true;
+		return {intersects, {crossX, crossY}};
 	}
 
 	float calcSquaredLen() const { return ::calcSquaredLen(a, b); }
@@ -137,6 +151,18 @@ struct Segment2
 };
 
 #include <cmath>
+
+template <typename T> constexpr T abs(T x) { return x > 0 ? x : -x; }
+
+/*constexpr */ inline bool Point2::insideSegment(Segment2 const& line) const
+{
+	// http://stackoverflow.com/a/17590923
+	double AB = calcSquaredLen(line.a, line.b),
+	       AP = calcSquaredLen(line.a, *this),
+	       PB = calcSquaredLen(line.b, *this);
+	double res = std::sqrt(AP) + std::sqrt(PB) - std::sqrt(AB);
+	return abs(res) < 1e-6;
+}
 
 // The distance from a point to a line defined by 2 points (i.e. a segment)
 inline double distanceToLine(Point2 point, Segment2 line)

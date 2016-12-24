@@ -15,7 +15,7 @@ typedef std::list<Segment2> Walls;
 class Maze
 {
 public:
-	static Maze build(const Ways&, Builder&& = {});
+	static Maze build(Ways&, Builder&& = {});
 
 	void draw(GLenum mode);
 
