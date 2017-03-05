@@ -14,8 +14,6 @@ public:
 	Game(ushort maze_id, bool dont_join_lines, ushort max_lines);
 	void render(double deltaTime, State& state) const;
 
-	static Game fromCmd(int, char**);
-
 	Game(const Game&) = delete;
 	Game operator=(const Game&) = delete;
 

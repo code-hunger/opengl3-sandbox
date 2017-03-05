@@ -1,10 +1,27 @@
 #include "Game.h"
 #include "graphics/include/Window.h"
+#include "tclap/CmdLine.h"
 #include <GL/glew.h>
 
 #include <cstdio>
 
 #include <iostream>
+
+Game gameFromCmd(int argc, char** argv)
+{
+	using namespace TCLAP;
+
+	CmdLine cmd("Game title", ' ', "0.1");
+	UnlabeledValueArg<ushort> maze_id("maze_id", "Maze id to load", false, 1,
+	                                  "number", cmd);
+	ValueArg<ushort> max_lines("m", "max_lines", "Max ways to be added", false,
+	                           0, "count", cmd);
+	SwitchArg no_join_lines("n", "nojoin", "Don't join intersecting lines",
+	                     cmd, true);
+	cmd.parse(argc, argv);
+
+	return {maze_id.getValue(), no_join_lines.getValue(), max_lines.getValue()};
+}
 
 int main(int argc, char** argv)
 {
@@ -13,7 +30,7 @@ int main(int argc, char** argv)
 		Window window;
 
 		// a Window is needed to construct a game
-		Game game = Game::fromCmd(argc, argv);
+		Game game = gameFromCmd(argc, argv);
 
 		window.run(game);
 	} catch (int e) {
