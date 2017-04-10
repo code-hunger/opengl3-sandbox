@@ -44,7 +44,7 @@ struct Point2
 struct Segment2
 {
 	const Point2 a, b;
-	const double slope = atan((b.y - a.y) / (b.x - a.x));
+	const float slope = atanf((b.y - a.y) / (b.x - a.x));
 	bool operator==(const Segment2& other) const
 	{
 		return (a == other.a && b == other.b) || (a == other.b && b == other.a);

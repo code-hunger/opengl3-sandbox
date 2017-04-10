@@ -31,7 +31,7 @@ void insertIfBipgEnough(WideRoads& ways, const WideRoad2& way, float minLength)
 	}
 }
 
-float get_ip_width(const WideRoad2& way, const Point2& ip)
+float get_way_width_at_point(const WideRoad2& way, const Point2& ip)
 {
 	const WidePoint2 &a = (way.a.width < way.b.width ? way.a : way.b),
 	                 &b = (&a == &way.a ? way.b : way.a);
@@ -46,8 +46,8 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 	WidePoint2 &wayCloser = getEndCloserTo(way, ip),
 	           &otherCloser = getEndCloserTo(other, ip);
 
-	const float ipoint_width_way = get_ip_width(way, ip),
-	            ipoint_width_other = get_ip_width(other, ip);
+	const float ipoint_width_way = get_way_width_at_point(way, ip),
+	            ipoint_width_other = get_way_width_at_point(other, ip);
 
 	WideRoad2 complementing_to_way = {{ip, ipoint_width_way}, wayCloser},
 	          complementing_to_other = {{ip, ipoint_width_other}, otherCloser};
@@ -107,10 +107,9 @@ void normalizeWays(WideRoads& ways, CrossRoads& crossRoads)
 
 std::pair<Segment2, Segment2> createWalls(const WideRoad2& way)
 {
-	double slope = way.segment().slope;
+	float slope = way.segment().slope;
 
-	float angle_sin = static_cast<float>(sin(slope)),
-	      angle_cos = static_cast<float>(cos(slope)),
+	float angle_sin = sinf(slope), angle_cos = cosf(slope),
 	      deltaXA = way.a.width * angle_sin, deltaXB = way.b.width * angle_sin,
 	      deltaYA = way.a.width * angle_cos, deltaYB = way.b.width * angle_cos;
 
