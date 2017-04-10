@@ -4,12 +4,16 @@
 #include <fstream>
 #include <string>
 
-std::string readFile(const char* fileName)
+std::string readFile(std::ifstream input)
 {
-	/* printf("Reading file %s\n", fileName); */
 	std::string s;
-	getline(std::ifstream(fileName), s, '\0');
+	getline(input, s, '\0');
 	return s;
+}
+
+std::string readFile(std::string fileName)
+{
+	return readFile(std::ifstream(fileName));
 }
 
 inline std::string readFile(const char* path, const char* fileName)

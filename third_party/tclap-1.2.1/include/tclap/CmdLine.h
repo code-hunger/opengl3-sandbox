@@ -396,7 +396,7 @@ inline void CmdLine::xorAdd( std::vector<Arg*>& ors )
 {
 	_xorHandler.add( ors );
 
-	for (ArgVectorIterator it = ors.begin(); it != ors.end(); it++)
+	for (ArgVectorIterator it = ors.begin(); it != ors.end(); ++it)
 	{
 		(*it)->forceRequired();
 		(*it)->setRequireLabel( "OR required" );
@@ -419,7 +419,7 @@ inline void CmdLine::add( Arg& a )
 
 inline void CmdLine::add( Arg* a )
 {
-	for( ArgListIterator it = _argList.begin(); it != _argList.end(); it++ )
+	for( ArgListIterator it = _argList.begin(); it != _argList.end(); ++it )
 		if ( *a == *(*it) )
 			throw( SpecificationException(
 			        "Argument with same flag/name already exists!",
@@ -458,7 +458,7 @@ inline void CmdLine::parse(std::vector<std::string>& args)
 		{
 			bool matched = false;
 			for (ArgListIterator it = _argList.begin();
-			     it != _argList.end(); it++) {
+			     it != _argList.end(); ++it ) {
 				if ( (*it)->processArg( &i, args ) )
 				{
 					requiredCount += _xorHandler.check( *it );
@@ -527,7 +527,7 @@ inline void CmdLine::missingArgsException()
 		int count = 0;
 
 		std::string missingArgList;
-		for (ArgListIterator it = _argList.begin(); it != _argList.end(); it++)
+		for (ArgListIterator it = _argList.begin(); it != _argList.end(); ++it)
 		{
 			if ( (*it)->isRequired() && !(*it)->isSet() )
 			{
@@ -619,7 +619,7 @@ inline bool CmdLine::getExceptionHandling() const
 
 inline void CmdLine::reset()
 {
-	for( ArgListIterator it = _argList.begin(); it != _argList.end(); it++ )
+	for( ArgListIterator it = _argList.begin(); it != _argList.end(); ++it )
 		(*it)->reset();
 	
 	_progName.clear();

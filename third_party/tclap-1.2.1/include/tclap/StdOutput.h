@@ -168,14 +168,14 @@ StdOutput::_shortUsage( CmdLineInterface& _cmd,
 		{
 			s += " {";
 			for ( ArgVectorIterator it = xorList[i].begin(); 
-				  it != xorList[i].end(); it++ )
+				  it != xorList[i].end(); ++it )
 				s += (*it)->shortID() + "|";
 
 			s[s.length()-1] = '}';
 		}
 
 	// then the rest
-	for (ArgListIterator it = argList.begin(); it != argList.end(); it++)
+	for (ArgListIterator it = argList.begin(); it != argList.end(); ++it)
 		if ( !xorHandler.contains( (*it) ) )
 			s += " " + (*it)->shortID();
 
@@ -197,11 +197,11 @@ StdOutput::_longUsage( CmdLineInterface& _cmd,
 	std::vector< std::vector<Arg*> > xorList = xorHandler.getXorList();
 
 	// first the xor 
-	for ( int i = 0; static_cast<unsigned int>(i) < xorList.size(); i++ )
+	for ( int i = 0; static_cast<unsigned int>(i) < xorList.size(); ++ i)
 		{
 			for ( ArgVectorIterator it = xorList[i].begin(); 
 				  it != xorList[i].end(); 
-				  it++ )
+				  ++it )
 				{
 					spacePrint( os, (*it)->longID(), 75, 3, 3 );
 					spacePrint( os, (*it)->getDescription(), 75, 5, 0 );
@@ -213,7 +213,7 @@ StdOutput::_longUsage( CmdLineInterface& _cmd,
 		}
 
 	// then the rest
-	for (ArgListIterator it = argList.begin(); it != argList.end(); it++)
+	for (ArgListIterator it = argList.begin(); it != argList.end(); ++it)
 		if ( !xorHandler.contains( (*it) ) )
 			{
 				spacePrint( os, (*it)->longID(), 75, 3, 3 ); 

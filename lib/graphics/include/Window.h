@@ -2,35 +2,50 @@
 #define WINDOW_H
 
 #include <GL/glew.h>
+#include <iostream>
+#include <memory>
+#include <vector>
 class GLFWwindow;
-struct Renderer;
+struct State;
+
+// using Renderer = std::function<void(double deltaTime, State&)>;
+using Renderer = void (&)(void*, double deltaTime, State&);
 
 class Window
 {
-public:
 	Window();
-	virtual ~Window();
 
-	void run(const Renderer&);
+	friend class GlfwWrapper;
+	friend void keyCallback(GLFWwindow*, int, int, int, int);
 
-	static void prepareOpenGL();
+public:
+	~Window();
+
+	// is const& needed?
+	void run(void*, Renderer);
+
+	template <typename T> inline void run(T& obj, Renderer render)
+	{
+		run(static_cast<void*>(&obj), render);
+	}
 
 	Window(const Window&) = delete;
-	void operator=(const Window&) = delete;
+	Window& operator=(Window) = delete;
+
+	Window(Window&&) = default;
 
 protected:
-	GLFWwindow* const window;
+	GLFWwindow* window;
 
-	static bool hintsSet;
+	GLushort width, height;
 
 	bool keys[1024]{false};
 
-	GLushort width = 0, height = 0;
 	void updateSize();
 
 	bool shouldClose() const;
 
-	void keyCallback(int key, int scancode, int action, int mods);
+	void keyCallback(ushort key, int scancode, int action, int mods) &;
 };
 
 #endif /* end of include guard: WINDOW_H */

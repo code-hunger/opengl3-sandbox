@@ -1,19 +1,26 @@
 #ifndef SHADER_H_837DGZOX
 #define SHADER_H_837DGZOX
 
+#include <string>
+using std::string;
+
 struct Shader
 {
-	const unsigned id;
-	const unsigned type;
-	char infoLog[512];
+	unsigned id;
+	unsigned type;
+	string infoLog;
 
-	Shader(const char* source, unsigned type);
+	Shader(const string& source, unsigned type);
 	virtual ~Shader();
 
 	bool tryToCompile();
 
-	Shader(const Shader&) = delete;
-	void operator=(const Shader&) = delete;
+	Shader(Shader&& other)
+	    : id(other.id), type(other.type), infoLog(other.infoLog)
+	{
+		other.id = 0;
+	};
+	void operator=(Shader) = delete;
 };
 
 #endif /* end of include guard: SHADER_H_837DGZOX */

@@ -1,48 +1,53 @@
 #ifndef GEOMETRY_IO_H_W6BMNIRU
 #define GEOMETRY_IO_H_W6BMNIRU
 
-#include "geometry.h"
+#include "types.h"
 
 #include <fstream>
+#include <iomanip> // std::setw
 
-inline std::istream& operator>>(std::istream& in, Point2& point)
+namespace math {
+
+using std::istream;
+using std::ostream;
+
+inline istream& operator>>(istream& in, Point2& point)
 {
 	return in >> point.x >> point.y;
 }
 
-inline std::ostream& operator<<(std::ostream& out, const Point2& point)
+inline ostream& operator<<(ostream& out, const Point2& point)
 {
-	return out << point.x << ' ' << point.y;
+	using namespace std;
+	return out << setprecision(2) << setw(5) << right << point.x << ' '
+	           << setprecision(2) << setw(5) << left << point.y;
 }
 
-inline std::istream& operator>>(std::istream& in, Segment2& line)
+inline ostream& operator<<(ostream& out, const ColorSegment2& line)
 {
-	return in >> line.a >> line.b;
+	return out << std::setw(10) << line.color.name << line.line.a
+	           << line.line.b;
 }
 
-inline std::ostream& operator<<(std::ostream& out, const Segment2& line)
-{
-	return out << line.color.name << ' ' << line.a << ' ' << line.b;
-}
-
-inline std::ostream& operator<<(std::ostream& out, const WidePoint2& point)
+inline ostream& operator<<(ostream& out, const WidePoint2& point)
 {
 	return out << point.point << ' ' << point.width;
 }
 
-inline std::ostream& operator<<(std::ostream& out, const WideRoad2& line)
+inline ostream& operator<<(ostream& out, const WideRoad2& line)
 {
 	return out << line.a << ' ' << line.b;
 }
 
-inline std::istream& operator>>(std::istream& in, WidePoint2& point)
+inline istream& operator>>(istream& in, WidePoint2& point)
 {
 	return in >> point.point >> point.width;
 }
 
-inline std::istream& operator>>(std::istream& in, WideRoad2& way)
+inline istream& operator>>(istream& in, WideRoad2& way)
 {
 	return in >> way.a >> way.b;
+}
 }
 
 #endif /* end of include guard: GEOMETRY_IO_H_W6BMNIRU */

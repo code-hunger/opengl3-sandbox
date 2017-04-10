@@ -2,10 +2,12 @@
 
 #define MAX_LINES 60
 
-Maze Maze::build(Ways& ways, Builder&& builder)
-{
-	Walls walls = builder.build_from_paths(ways);
+using namespace math;
 
+VertexArray wallsToVertArr(const ColorSegmentList& walls);
+
+Maze Maze::build(WideRoads&& ways, const ColorSegmentList& walls)
+{
 	if (walls.size() > MAX_LINES) {
 		throw "Maximum allowed line number exceeded";
 	}
@@ -13,7 +15,7 @@ Maze Maze::build(Ways& ways, Builder&& builder)
 	return {ways, walls, wallsToVertArr(walls)};
 }
 
-VertexArray Maze::wallsToVertArr(const Walls& walls)
+VertexArray wallsToVertArr(const ColorSegmentList& walls)
 {
 	// 12 floats per line: per point 3x position and 3x color
 	float points[MAX_LINES * 12];
@@ -21,22 +23,22 @@ VertexArray Maze::wallsToVertArr(const Walls& walls)
 	int i = 0;
 	for (const auto& _wall : walls) { // Copy wallsP into points[]
 		auto wall = &_wall;
-		points[i++] = wall->a.x;
-		points[i++] = wall->a.y;
+		points[i++] = wall->line.a.x;
+		points[i++] = wall->line.a.y;
 		points[i++] = 0;
 		points[i++] = wall->color.r;
 		points[i++] = wall->color.g;
 		points[i++] = wall->color.b;
 
-		points[i++] = wall->b.x;
-		points[i++] = wall->b.y;
+		points[i++] = wall->line.b.x;
+		points[i++] = wall->line.b.y;
 		points[i++] = 0;
 		points[i++] = wall->color.r;
 		points[i++] = wall->color.g;
 		points[i++] = wall->color.b;
 	}
 
-	return {{points, points + i}};
+	return {vector<float>{points, points + i}};
 
 	/*for (const auto& path : ways) {
 	  points[i++] = path.a.point.x;
@@ -54,8 +56,8 @@ VertexArray Maze::wallsToVertArr(const Walls& walls)
 	  }*/
 }
 
-Maze::Maze(Ways ways, Walls walls, VertexArray vertArray)
-    : paths(ways), walls(walls), vertArray(vertArray)
+Maze::Maze(WideRoads paths, ColorSegmentList walls, VertexArray vertArray)
+    : paths(paths), walls(walls), vertArray(vertArray)
 {
 }
 

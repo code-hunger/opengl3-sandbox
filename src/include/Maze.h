@@ -2,30 +2,30 @@
 #define MAZE_H_UAWB7QD4
 
 #include "graphics/include/VertexArray.h"
-#include "math/include/geometry.h"
-#include "maze_builder/include/builder.h"
+#include "math/include/types.h"
 
 #include <unordered_set>
 
 // @TODO: USE forward_list
 #include <list>
 
-typedef std::list<Segment2> Walls;
+namespace math {
+typedef std::list<math::ColorSegment2> ColorSegmentList;
+}
 
 class Maze
 {
 public:
-	static Maze build(Ways&, Builder&& = {});
+	static Maze build(math::WideRoads&&, const math::ColorSegmentList&);
 
 	void draw(GLenum mode);
 
 private:
-	Ways paths;
-	Walls walls;
+	math::WideRoads paths;
+	math::ColorSegmentList walls;
 	VertexArray vertArray;
 
-	Maze(Ways, Walls, VertexArray);
-	static VertexArray wallsToVertArr(const Walls&);
+	Maze(math::WideRoads, math::ColorSegmentList, VertexArray);
 };
 
 #endif /* end of include guard: MAZE_H_UAWB7QD4 */

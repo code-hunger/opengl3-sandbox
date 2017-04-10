@@ -18,11 +18,11 @@
  */
 class Logger
 {
-	char unsigned level;
+	ushort level;
 
 	void refresh() const;
 
-	Logger(char unsigned level = 0): level(level) {};
+	explicit Logger(char unsigned level = 0) : level(level){};
 
 public:
 	enum Color {
@@ -31,8 +31,8 @@ public:
 		Green = 10,
 		Yellow = 3,
 		Orange = 202,
-		Blue = 45, // 
-		White = 15, //
+		Blue = 45,
+		White = 15,
 		Default = -1,
 	};
 

@@ -1,9 +1,12 @@
 #include "HomeScreen.h"
+
 #include "graphics/include/Shader.h"
 #include "graphics/include/config.h"
 #include "graphics/include/utils.h"
+#include "logger/include/logger.h"
 #include "math/include/geometry_io.h"
 #include "maze_builder/include/builder.h"
+
 #include <GLFW/glfw3.h>
 #include <Maze.h>
 #include <cstdio>
@@ -12,48 +15,74 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
+using namespace math;
+
+std::string getMazeFileName(unsigned maze_id)
 {
 	std::string fileName(MAZE_DIRECTORY "/maze");
 	fileName += std::to_string(static_cast<unsigned>(maze_id));
 	fileName += ".txt";
-	std::ifstream input(fileName);
+	return fileName;
+}
+
+std::ifstream openMazeFile(unsigned maze_id)
+{
+	std::ifstream input(getMazeFileName(maze_id));
 
 	if (input.fail()) {
 		throw "File does not exist!";
 	}
 
+	return input;
+}
+
+WideRoads fetchLinesFromMaze(std::ifstream& input)
+{
 	WideRoad2 line{{}, {}};
-	Ways lines;
+	WideRoads lines;
 	while (input >> line) {
 		lines.push_back(line);
 	}
-	printf("Fetched %lu lines in maze!\n", lines.size());
 
-	return Maze::build(lines, {join_it, max_lines});
+	return lines;
 }
 
-HomeScreen::HomeScreen(ushort maze_id, bool join_it,
-                       ushort max_lines)
+Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
+{
+	std::ifstream input = openMazeFile(maze_id);
+	WideRoads lines = fetchLinesFromMaze(input);
+
+	Builder builder{join_it, max_lines};
+	return Maze::build(std::move(lines), builder.build_from_paths(lines));
+}
+
+std::string getShaderSource(const char* shaderName)
+{
+	return readFile(SHADER_DIRECTORY, shaderName);
+}
+
+void compileShader(Shader& shader)
+{
+	if (!shader.tryToCompile()) {
+		ERR << "\nShader compilation failed: " << shader.infoLog;
+		throw "Shader copmilation fail";
+	}
+}
+
+void createShader(const char* name, GLuint type, const ShaderProgram& program)
+{
+	Shader shader{getShaderSource(name).c_str(), type};
+
+	compileShader(shader);
+	program.attachShader(shader.id);
+}
+
+HomeScreen::HomeScreen(ushort maze_id, bool join_it, ushort max_lines)
     : maze(getMazeFromFile(maze_id, join_it, max_lines))
 {
-	Shader frag_sh(readFile(SHADER_DIRECTORY "/fragment_shader.glsl").c_str(),
-	               GL_FRAGMENT_SHADER),
-	    vert_sh(readFile(SHADER_DIRECTORY "/vertex_shader.glsl").c_str(),
-	            GL_VERTEX_SHADER);
+	createShader("fragment_shader.glsl", GL_FRAGMENT_SHADER, shaderProgram);
+	createShader("vertex_shader.glsl", GL_VERTEX_SHADER, shaderProgram);
 
-	if (!frag_sh.tryToCompile()) {
-		printf("Frag Shader compilation failed: %s", frag_sh.infoLog);
-		throw;
-	}
-
-	if (!vert_sh.tryToCompile()) {
-		printf("Vert Shader compilation failed: %s", vert_sh.infoLog);
-		throw;
-	}
-
-	shaderProgram.attachShader(vert_sh.id);
-	shaderProgram.attachShader(frag_sh.id);
 	shaderProgram.link();
 
 	glm::mat4 proj = glm::ortho(0.f, 100.f, 0.f, 100.f, 0.1f, -.1f);
@@ -63,7 +92,7 @@ HomeScreen::HomeScreen(ushort maze_id, bool join_it,
 	shaderProgram.setUniformMatrix("model_view_projection", matrix);
 }
 
-void HomeScreen::update(const double deltaTime, State& state)
+void update(const double deltaTime, State& state)
 {
 	(void)deltaTime;
 	if (state.keys[GLFW_KEY_ESCAPE]) {
@@ -71,12 +100,17 @@ void HomeScreen::update(const double deltaTime, State& state)
 	}
 }
 
-void HomeScreen::render(const double deltaTime, const State& state)
+void render(const double deltaTime, Maze& maze)
 {
 	(void)deltaTime;
-	(void)state;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	maze.draw(GL_LINES);
+}
+
+void HomeScreen::work(const double deltaTime, State& state)
+{
+	update(deltaTime, state);
+	render(deltaTime, maze);
 }
 
 HomeScreen::~HomeScreen() {}

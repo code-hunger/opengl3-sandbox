@@ -3,12 +3,9 @@
 
 #include "graphics/include/State.h"
 
-class Screen
+struct Screen
 {
-public:
-	Screen() {}
-	virtual void update(double deltaTime, State& state) = 0;
-	virtual void render(double deltaTime, const State& state) = 0;
+	virtual void work(double deltaTime, State& state) = 0;
 	virtual ~Screen(){};
 };
 

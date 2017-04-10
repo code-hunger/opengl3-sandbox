@@ -14,12 +14,13 @@ public:
 	HomeScreen(ushort maze_id, bool join_it, ushort max_lines);
 	virtual ~HomeScreen();
 
-	void update(double deltaTime, State& state);
-	void render(double deltaTime, const State& state);
+	void work(double deltaTime, State& state);
 
 private:
 	ShaderProgram shaderProgram{};
 	Maze maze;
+
+	void attachShader(uint id) { shaderProgram.attachShader(id); };
 };
 
 #endif /* end of include guard: HOMESCREEN_H_A3CBSROG */

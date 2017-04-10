@@ -1,11 +1,13 @@
 #include "builder.h"
 
 #include "logger/include/logger.h"
+#include "math/include/geometry.h"
 #include "math/include/geometry_io.h"
 
 #include <cassert>
 #include <cmath>
 
+#include <deque>
 #include <list>
 #include <set>
 
@@ -15,150 +17,149 @@ constexpr bool FORCE_VALIDATE = false;
 
 constexpr unsigned WIDEPOINT_WIDTH = 3;
 
-inline unsigned long get_ptr_val(void* ptr)
+using namespace math;
+
+template <typename T> unsigned long ptr(const T& a)
 {
-	return reinterpret_cast<unsigned long>(ptr) % 10000l;
+	return reinterpret_cast<unsigned long>(&a) % 1000;
 }
 
-// It's wrong. To be removed
-// @Deprecated
-void dump(PWalls walls)
+void insertIfBipgEnough(WideRoads& ways, const WideRoad2& way, float minLength)
 {
-	std::set<CrossRoad*> count_unique;
-	for (const auto& _p : walls) {
-		{
-			auto& p = _p.first.first;
-			count_unique.insert(p.a.crossRoad);
-			count_unique.insert(p.b.crossRoad);
-
-			LOG << p.color << " " << get_ptr_val(p.a.crossRoad) << " "
-			    << get_ptr_val(p.b.crossRoad);
-		}
-		{
-			auto& p = _p.first.second;
-			count_unique.insert(p.a.crossRoad);
-			count_unique.insert(p.b.crossRoad);
-
-			LOG << p.color << " " << get_ptr_val(p.a.crossRoad) << " "
-			    << get_ptr_val(p.b.crossRoad);
-		}
-	}
-	LOG << "Unique crossRoads: " << count_unique.size();
-}
-
-void validate_cross_road(CrossRoad* crossRoad)
-{
-	if (crossRoad == nullptr) {
-		throw "CrossRoad pointer is empty!";
-	}
-	if (crossRoad->points.size() < 1) {
-		throw "CrossRoads should have at least one point!";
+	if (calcSquaredLen(way) > minLength * minLength) {
+		ways.push_back(way);
 	}
 }
 
-void validate_walls(const PWalls& walls, bool force = FORCE_VALIDATE)
+float get_ip_width(const WideRoad2& way, const Point2& ip)
 {
-	if (not force) return;
+	const WidePoint2 &a = (way.a.width < way.b.width ? way.a : way.b),
+	                 &b = (&a == &way.a ? way.b : way.a);
+	return sqrt(calcSquaredLen(a, ip)) * (b.width - a.width) /
+	           sqrt(calcSquaredLen(way)) +
+	       a.width;
+}
 
-	bool valid = true;
-	for (const auto& _wall : walls) {
-		auto& wall = _wall.first;
-		if (wall.first.a.crossRoad != wall.second.a.crossRoad) {
-			LOG << "pointA's crossRoad is not the same as opposite's "
-			       "A.crossRoad";
-			valid = false;
-		}
-		if (wall.first.b.crossRoad != wall.second.b.crossRoad) {
-			LOG << "pointB's crossRoad is not the same as opposite's "
-			       "B.crossRoad";
-			valid = false;
-		}
+void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
+               const Point2& ip, CrossRoads& crossRoads)
+{
+	WidePoint2 &wayCloser = getEndCloserTo(way, ip),
+	           &otherCloser = getEndCloserTo(other, ip);
 
-		try {
-			// first or second - doesn't matter, they're equal
-			validate_cross_road(wall.first.a.crossRoad);
-			validate_cross_road(wall.first.b.crossRoad);
-		} catch (const char* err) {
-			LOG << err;
-			valid = false;
-		}
+	const float ipoint_width_way = get_ip_width(way, ip),
+	            ipoint_width_other = get_ip_width(other, ip);
+
+	WideRoad2 complementing_to_way = {{ip, ipoint_width_way}, wayCloser},
+	          complementing_to_other = {{ip, ipoint_width_other}, otherCloser};
+
+	insertIfBipgEnough(ways, complementing_to_way, way.a.width);
+	insertIfBipgEnough(ways, complementing_to_other, other.a.width);
+
+	wayCloser.point = ip;
+	wayCloser.width = ipoint_width_way;
+
+	otherCloser.point = ip;
+	otherCloser.width = ipoint_width_other;
+
+	WidePoint2 &wayFurther = (&wayCloser == &way.a ? way.b : way.a),
+	           &otherFurther = (&otherCloser == &other.a ? other.b : other.a);
+
+	crossRoads.emplace_back();
+	CrossRoad& ip_crossRoad = crossRoads.back();
+
+	complementing_to_way.b.crossRoad = wayFurther.crossRoad;
+	complementing_to_other.b.crossRoad = otherFurther.crossRoad;
+
+	wayCloser.crossRoad = otherCloser.crossRoad =
+	    complementing_to_way.a.crossRoad = complementing_to_other.a.crossRoad =
+	        &ip_crossRoad;
+
+	if (wayFurther.crossRoad == nullptr) {
+		crossRoads.emplace_back();
+		wayFurther.crossRoad = &crossRoads.back();
 	}
-	if (!valid) {
-		throw "Walls' state invalid!";
+	if (otherFurther.crossRoad == nullptr) {
+		crossRoads.emplace_back();
+		otherFurther.crossRoad = &crossRoads.back();
 	}
 }
 
-bool tryToInsert(CrossRoad& cr, WidePoint2 const& point_to_insert)
+void injectWay(WideRoads& ways, WideRoad2& way, CrossRoads& crossRoads)
 {
-	if (cr.points.size() < 1)
-		throw "CrossRoad MUST have at least 1 point inside!";
+	for (auto& other : ways) {
+		if (&other == &way) continue;
+		const std::pair<bool, Point2>& intersect_result = intersect(way, other);
 
-	for (const auto& point : cr.points) {
-		// Note that they're always positive
-		float dist = calcSquaredLen(point.point, point_to_insert.point),
-		      max_allowed = point.width + point_to_insert.width;
-
-		// dist is not squared, so we do max_allowed ^ 2
-		if (dist < max_allowed * max_allowed) {
-			cr.points.push_back(point_to_insert);
-			return true;
+		if (intersect_result.first) {
+			const Point2& intersection_point = intersect_result.second;
+			intersect(ways, way, other, intersection_point, crossRoads);
 		}
 	}
-	return false;
 }
 
-std::pair<Segment2, Segment2> Builder::createWalls(WideRoad2 const& way)
+void normalizeWays(WideRoads& ways, CrossRoads& crossRoads)
 {
-	const Segment2 line = way.getSegmnet2();
-	double line_angle = atan((line.b.y - line.a.y) / (line.b.x - line.a.x));
-	float angle_sin = static_cast<float>(sin(line_angle)),
-	      angle_cos = static_cast<float>(cos(line_angle)),
+
+	for (auto& i : ways) {
+		injectWay(ways, i, crossRoads);
+	}
+}
+
+std::pair<Segment2, Segment2> createWalls(const WideRoad2& way)
+{
+	double slope = way.segment().slope;
+
+	float angle_sin = static_cast<float>(sin(slope)),
+	      angle_cos = static_cast<float>(cos(slope)),
 	      deltaXA = way.a.width * angle_sin, deltaXB = way.b.width * angle_sin,
 	      deltaYA = way.a.width * angle_cos, deltaYB = way.b.width * angle_cos;
 
-	return {{{line.a.x + deltaXA, line.a.y - deltaYA},
-	         {line.b.x + deltaXB, line.b.y - deltaYB},
-	         Color::next()},
-	        {{line.a.x - deltaXA, line.a.y + deltaYA},
-	         {line.b.x - deltaXB, line.b.y + deltaYB},
-	         Color::next()}};
+	const Point2 &a = way.a.point, &b = way.b.point;
+
+	return {{{a.x + deltaXA, a.y - deltaYA}, {b.x + deltaXB, b.y - deltaYB}},
+	        {{a.x - deltaXA, a.y + deltaYA}, {b.x - deltaXB, b.y + deltaYB}}};
 }
 
-void normalizeWay(Ways& paths, Ways::value_type& way)
+void dump(const ColorSegmentList& maze)
 {
-	for (auto& other : paths) {
-		auto intersects = way.getSegmnet2().intersectsWith(other.getSegmnet2());
+	for (const ColorSegment2& segment : maze) {
+		LOG << segment << ptr(segment.line.a) << " " << ptr(segment.line.b);
 	}
 }
 
-void Builder::normalizeWays(Ways& paths)
+ColorSegmentList createWalls(const WideRoads& input_paths,
+                             const CrossRoads& crossRoads)
 {
-	for (auto& i : paths) {
-		normalizeWay(paths, i);
+	ColorSegmentList generated_maze;
+	for (const WideRoad2& path : input_paths) {
+		auto walls = createWalls(path);
+		generated_maze.push_back(toColorSegment(walls.first));
+		generated_maze.push_back(toColorSegment(walls.second));
+		generated_maze.push_back(toColorSegment(path));
 	}
+
+	for (const auto& crossRoad : crossRoads) {
+		const auto& points = crossRoad.points;
+		if (points.size() < 2) continue;
+		LOG << "HERER";
+		for (auto p = points.begin() + 1; p != points.end(); ++p) {
+			generated_maze.push_back(toWhiteSegment2(Segment2{**p, **(p - 1)}));
+		}
+	}
+	return generated_maze;
 }
 
-std::list<Segment2> Builder::build_from_paths(Ways& paths)
+math::ColorSegmentList Builder::build_from_paths(WideRoads& input_paths)
 {
-	CrossRoads cross_roads;
+	CrossRoads crossRoads;
+	normalizeWays(input_paths, crossRoads);
 
-	normalizeWays(paths);
+	ColorSegmentList generated_maze = createWalls(input_paths, crossRoads);
 
-	std::list<Segment2> maze;
+	LOG("%lu walls generated from %lu lines", generated_maze.size(),
+	    input_paths.size());
 
-	for (auto i : paths) {
-		Segment2 middle = i.getSegmnet2();
-		middle.color = Color::next();
-		maze.push_back(middle);
-	}
+	dump(generated_maze);
 
-	LOG("Ways added to maze. Will validate.");
-
-	// validate_walls(wallsP, true);
-
-	LOG("%lu walls generated from %lu lines", maze.size(), paths.size());
-
-	// dump(wallsP);
-	LOG("CrossRoads in std::list cross_roads: %lu", cross_roads.size());
-	return maze;
+	return generated_maze;
 }
