@@ -24,11 +24,14 @@ template <typename T> unsigned long ptr(const T& a)
 	return reinterpret_cast<unsigned long>(&a) % 1000;
 }
 
-void insertIfBipgEnough(WideRoads& ways, const WideRoad2& way, float minLength)
+WideRoad2* insertIfBipgEnough(WideRoads& ways, const WideRoad2& way,
+                              float minLength)
 {
 	if (calcSquaredLen(way) > minLength * minLength) {
 		ways.push_back(way);
+		return &ways.back();
 	}
+	return nullptr;
 }
 
 float get_way_width_at_point(const WideRoad2& way, const Point2& ip)
@@ -38,6 +41,26 @@ float get_way_width_at_point(const WideRoad2& way, const Point2& ip)
 	return sqrt(calcSquaredLen(a, ip)) * (b.width - a.width) /
 	           sqrt(calcSquaredLen(way)) +
 	       a.width;
+}
+
+void insert_croad_for_complement(WideRoad2& way, WidePoint2& closer,
+                                 const Point2& ip, float ipoint_width,
+                                 CrossRoads& crossRoads,
+                                 CrossRoad& ip_crossRoad,
+                                 WideRoad2& inserted_complement)
+{
+	closer.point = ip;
+	closer.width = ipoint_width;
+
+	WidePoint2& further = (&closer == &way.a ? way.b : way.a);
+	inserted_complement.b.crossRoad = closer.crossRoad;
+
+	closer.crossRoad = inserted_complement.a.crossRoad = &ip_crossRoad;
+
+	if (further.crossRoad == nullptr) {
+		crossRoads.emplace_back();
+		further.crossRoad = &crossRoads.back();
+	}
 }
 
 void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
@@ -52,35 +75,24 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 	WideRoad2 complementing_to_way = {{ip, ipoint_width_way}, wayCloser},
 	          complementing_to_other = {{ip, ipoint_width_other}, otherCloser};
 
-	insertIfBipgEnough(ways, complementing_to_way, way.a.width);
-	insertIfBipgEnough(ways, complementing_to_other, other.a.width);
-
-	wayCloser.point = ip;
-	wayCloser.width = ipoint_width_way;
-
-	otherCloser.point = ip;
-	otherCloser.width = ipoint_width_other;
-
-	WidePoint2 &wayFurther = (&wayCloser == &way.a ? way.b : way.a),
-	           &otherFurther = (&otherCloser == &other.a ? other.b : other.a);
-
+	WideRoad2 *inserted_complement_way =
+	              insertIfBipgEnough(ways, complementing_to_way,
+	                                 std::max(way.a.width, way.b.width)),
+	          *inserted_complement_other =
+	              insertIfBipgEnough(ways, complementing_to_other,
+	                                 std::max(other.a.width, way.b.width));
 	crossRoads.emplace_back();
 	CrossRoad& ip_crossRoad = crossRoads.back();
 
-	complementing_to_way.b.crossRoad = wayFurther.crossRoad;
-	complementing_to_other.b.crossRoad = otherFurther.crossRoad;
-
-	wayCloser.crossRoad = otherCloser.crossRoad =
-	    complementing_to_way.a.crossRoad = complementing_to_other.a.crossRoad =
-	        &ip_crossRoad;
-
-	if (wayFurther.crossRoad == nullptr) {
-		crossRoads.emplace_back();
-		wayFurther.crossRoad = &crossRoads.back();
+	if (inserted_complement_way) {
+		insert_croad_for_complement(way, wayCloser, ip, ipoint_width_way,
+		                            crossRoads, ip_crossRoad,
+		                            *inserted_complement_way);
 	}
-	if (otherFurther.crossRoad == nullptr) {
-		crossRoads.emplace_back();
-		otherFurther.crossRoad = &crossRoads.back();
+	if (inserted_complement_other) {
+		insert_croad_for_complement(other, otherCloser, ip, ipoint_width_other,
+		                            crossRoads, ip_crossRoad,
+		                            *inserted_complement_other);
 	}
 }
 
