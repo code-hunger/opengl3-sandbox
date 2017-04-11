@@ -53,8 +53,6 @@ void insert_croad_for_complement(WidePoint2& closer, WidePoint2& farther,
 	}
 }
 
-using std::experimental::optional;
-
 void combineCroads(CrossRoads& crossRoads, CrossRoads::iterator& destination,
                    WidePoint2& source_point)
 {
