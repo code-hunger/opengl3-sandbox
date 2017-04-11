@@ -86,8 +86,8 @@ template <typename T> constexpr T abs(T x) { return x > 0 ? x : -x; }
 	return abs(res) < 1e-6;
 }
 
-template <typename T> constexpr auto fabs(T a) { return a < 0 ? -a : a; }
-template <typename T> constexpr auto pow2(T a) { return a * a; }
+template <typename T> constexpr T fabs(T a) { return a < 0 ? -a : a; }
+template <typename T> constexpr T pow2(T a) { return a * a; }
 
 // The distance from a point to a line defined by 2 points (i.e. a segment)
 inline double constexpr distanceToLine(const Point2& point,

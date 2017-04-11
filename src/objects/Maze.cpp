@@ -21,26 +21,25 @@ VertexArray wallsToVertArr(const ColorSegmentList& walls)
 	float points[MAX_LINES * 12];
 
 	int i = 0;
-	for (const auto& _wall : walls) { // Copy wallsP into points[]
-		auto wall = &_wall;
-		points[i++] = wall->line.a.x;
-		points[i++] = wall->line.a.y;
+	for (const ColorSegment2& wall : walls) { // Copy wallsP into points[]
+		points[i++] = wall.line.a.x;
+		points[i++] = wall.line.a.y;
 		points[i++] = 0;
-		points[i++] = wall->color.r;
-		points[i++] = wall->color.g;
-		points[i++] = wall->color.b;
+		points[i++] = wall.color.r;
+		points[i++] = wall.color.g;
+		points[i++] = wall.color.b;
 
-		points[i++] = wall->line.b.x;
-		points[i++] = wall->line.b.y;
+		points[i++] = wall.line.b.x;
+		points[i++] = wall.line.b.y;
 		points[i++] = 0;
-		points[i++] = wall->color.r;
-		points[i++] = wall->color.g;
-		points[i++] = wall->color.b;
+		points[i++] = wall.color.r;
+		points[i++] = wall.color.g;
+		points[i++] = wall.color.b;
 	}
 
 	return {vector<float>{points, points + i}};
 
-	/*for (const auto& path : ways) {
+	/*for (const WideRoad2& path : ways) {
 	  points[i++] = path.a.point.x;
 	  points[i++] = path.a.point.y;
 	  points[i++] = 0;

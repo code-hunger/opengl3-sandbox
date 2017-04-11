@@ -22,7 +22,7 @@ GLFWwindow* createWindow(const char* title)
 void keyCallback(GLFWwindow* glfwWindow, int key, int scancode, int action,
                  int mods)
 {
-	auto window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+	Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
 	window->keyCallback(static_cast<ushort>(key), scancode, action, mods);
 }
 
@@ -33,7 +33,7 @@ std::pair<ushort, ushort> fetchWindowSize(GLFWwindow* window)
 	return {static_cast<ushort>(w), static_cast<ushort>(h)};
 }
 
-auto getStaticSize(GLFWwindow* window)
+std::pair<ushort,ushort> getStaticSize(GLFWwindow* window)
 {
 	static auto size = fetchWindowSize(window);
 	return size;

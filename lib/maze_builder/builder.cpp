@@ -69,13 +69,13 @@ void combineCroads(CrossRoads& crossRoads, CrossRoads::iterator& destination,
 {
 	if (source_point.crossRoad) {
 		CrossRoads::iterator source_iterator = *source_point.crossRoad;
-		std::vector<WidePoint2*>& source_points = source_iterator->points;
+		std::vector<WidePoint2 *> &source_points = source_iterator->points,
+		                          &dest_p = destination->points;
 
-		//for (WidePoint2* i : source_points) {
-			//i->crossRoad = destination;
+		// for (WidePoint2* i : source_points) {
+		// i->crossRoad = destination;
 		//}
 
-		auto& dest_p = destination->points;
 		dest_p.insert(dest_p.end(), source_points.begin(), source_points.end());
 
 		crossRoads.erase(source_iterator);
@@ -104,7 +104,7 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 	              insertIfBipgEnough(ways, complementing_to_other,
 	                                 std::max(other.a.width, way.b.width));
 	crossRoads.emplace_back();
-	auto ip_crossRoad = std::prev(crossRoads.end());
+	CrossRoads::iterator ip_crossRoad = std::prev(crossRoads.end());
 
 	if (inserted_complement_way) {
 		insert_croad_for_complement(wayCloser, wayFarther, ip, ip_width_way,
@@ -124,7 +124,7 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 
 void injectWay(WideRoads& ways, WideRoad2& way, CrossRoads& crossRoads)
 {
-	for (auto& other : ways) {
+	for (WideRoad2& other : ways) {
 		if (&other == &way) continue;
 		const std::pair<bool, Point2>& intersect_result = intersect(way, other);
 
@@ -138,7 +138,7 @@ void injectWay(WideRoads& ways, WideRoad2& way, CrossRoads& crossRoads)
 void normalizeWays(WideRoads& ways, CrossRoads& crossRoads)
 {
 
-	for (auto& i : ways) {
+	for (WideRoad2& i : ways) {
 		injectWay(ways, i, crossRoads);
 	}
 }
@@ -169,7 +169,7 @@ ColorSegmentList createWalls(const WideRoads& ways,
 {
 	ColorSegmentList generated_maze;
 	for (const WideRoad2& way : ways) {
-		auto walls = createWalls(way);
+		const auto& walls = createWalls(way);
 		generated_maze.push_back(toColorSegment(walls.first));
 		generated_maze.push_back(toColorSegment(walls.second));
 		generated_maze.push_back(toColorSegment(way));
