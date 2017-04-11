@@ -52,8 +52,9 @@ Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
 	std::ifstream input = openMazeFile(maze_id);
 	WideRoads lines = fetchLinesFromMaze(input);
 
-	Builder builder{join_it, max_lines};
-	return Maze::build(std::move(lines), builder.build_from_paths(lines));
+	const ColorSegmentList& walls =
+	    Builder{join_it, max_lines}.build_from_paths(lines);
+	return Maze::build(std::move(lines), walls);
 }
 
 std::string getShaderSource(const char* shaderName)
