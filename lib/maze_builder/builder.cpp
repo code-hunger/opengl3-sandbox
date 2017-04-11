@@ -173,9 +173,9 @@ ColorSegmentList createWalls(const WideRoads& ways,
 {
 	ColorSegmentList generated_maze;
 	for (const WideRoad2& way : ways) {
-		const auto& walls = createWalls(way);
-		generated_maze.push_back(toColorSegment(walls.first));
-		generated_maze.push_back(toColorSegment(walls.second));
+		//const auto& walls = createWalls(way);
+		//generated_maze.push_back(toColorSegment(walls.first));
+		//generated_maze.push_back(toColorSegment(walls.second));
 		generated_maze.push_back(toColorSegment(way));
 	}
 
@@ -200,10 +200,10 @@ math::ColorSegmentList Builder::build_from_paths(WideRoads& ways)
 
 	ColorSegmentList generated_maze = createWalls(ways, crossRoads);
 
-	LOG("%lu walls generated from %lu lines", generated_maze.size(),
-	    ways.size());
+	//LOG("%lu walls generated from %lu lines", generated_maze.size(),
+		//ways.size());
 
-	dump(generated_maze);
+	//dump(generated_maze);
 
 	return generated_maze;
 }

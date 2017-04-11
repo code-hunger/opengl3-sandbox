@@ -41,6 +41,8 @@ public:
 		glfwSetErrorCallback(errorCallback);
 		setWindowHints();
 		exists = true;
+
+		LOG << "GlfwWrapper created";
 	}
 
 	GlfwWrapper(GlfwWrapper&&) = default;
@@ -54,7 +56,7 @@ public:
 	{
 		exists = false;
 		glfwTerminate();
-		LOG("Wrapper exit!");
+		LOG("GlfwWrapper exited");
 	}
 };
 
