@@ -72,9 +72,9 @@ void combineCroads(CrossRoads& crossRoads, CrossRoads::iterator& destination,
 		std::vector<WidePoint2 *> &source_points = source_iterator->points,
 		                          &dest_p = destination->points;
 
-		// for (WidePoint2* i : source_points) {
-		// i->crossRoad = destination;
-		//}
+		for (WidePoint2* i : source_points) {
+			i->crossRoad = destination;
+		}
 
 		dest_p.insert(dest_p.end(), source_points.begin(), source_points.end());
 
@@ -105,6 +105,9 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 	                                 std::max(other.a.width, way.b.width));
 	crossRoads.emplace_back();
 	CrossRoads::iterator ip_crossRoad = std::prev(crossRoads.end());
+
+	ip_crossRoad->points.push_back(&otherCloser);
+	ip_crossRoad->points.push_back(&wayCloser);
 
 	if (inserted_complement_way) {
 		insert_croad_for_complement(wayCloser, wayFarther, ip, ip_width_way,
@@ -178,10 +181,13 @@ ColorSegmentList createWalls(const WideRoads& ways,
 
 	for (const CrossRoad& crossRoad : crossRoads) {
 		const std::vector<WidePoint2*>& points = crossRoad.points;
-		if (points.size() < 2) continue;
-		LOG << "HERE";
-		for (auto p = points.begin() + 1; p != points.end(); ++p, ++p) {
-			generated_maze.push_back(toWhiteSegment2({**p, **(p - 1)}));
+		if (points.empty()) continue;
+
+		for (auto p = points.begin(), q = p + 1; q != points.end(); ++p, ++q) {
+			Point2 p_p = (*p)->point, p_q = (*q)->point;
+			p_p.x -= 5;
+			p_q.x += 5;
+			generated_maze.push_back(toWhiteSegment2({p_p, p_q}));
 		}
 	}
 	return generated_maze;
