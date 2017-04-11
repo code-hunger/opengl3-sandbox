@@ -34,15 +34,6 @@ WideRoad2* insertIfBipgEnough(WideRoads& ways, const WideRoad2& way,
 	return nullptr;
 }
 
-float get_way_width_at_point(const WideRoad2& way, const Point2& ip)
-{
-	const WidePoint2 &a = (way.a.width < way.b.width ? way.a : way.b),
-	                 &b = (&a == &way.a ? way.b : way.a);
-	return sqrt(calcSquaredLen(a, ip)) * (b.width - a.width) /
-	           sqrt(calcSquaredLen(way)) +
-	       a.width;
-}
-
 void insert_croad_for_complement(WidePoint2& closer, WidePoint2& farther,
                                  const Point2& ip, float ipoint_width,
                                  CrossRoads& crossRoads,
@@ -91,8 +82,8 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 	           &wayFarther = (&wayCloser == &way.a ? way.b : way.a),
 	           &otherFarther = (&otherCloser == &other.a ? other.b : other.a);
 
-	const float ip_width_way = get_way_width_at_point(way, ip),
-	            ip_width_other = get_way_width_at_point(other, ip);
+	const float ip_width_way = get_width_at_point(way, ip),
+	            ip_width_other = get_width_at_point(other, ip);
 
 	WideRoad2 complementing_to_way = {{ip, ip_width_way}, wayCloser},
 	          complementing_to_other = {{ip, ip_width_other}, otherCloser};

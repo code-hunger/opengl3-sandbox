@@ -94,13 +94,23 @@ template <typename T> constexpr T fabs(T a) { return a < 0 ? -a : a; }
 template <typename T> constexpr T pow2(T a) { return a * a; }
 
 // The distance from a point to a line defined by 2 points (i.e. a segment)
-inline double constexpr distanceToLine(const Point2& point,
+inline constexpr double distanceToLine(const Point2& point,
                                        const Segment2& line)
 {
 	return fabs((line.b.y - line.a.y) * point.x -
 	            (line.b.x - line.a.x) * point.y + line.b.x * line.a.y -
 	            line.b.y * line.a.x) /
 	       sqrt(pow2(line.b.y - line.a.y) + pow2(line.b.x - line.a.x));
+}
+
+inline constexpr float get_width_at_point(const WideRoad2& way,
+                                          const Point2& ip)
+{
+	const WidePoint2 &a = (way.a.width < way.b.width ? way.a : way.b),
+	                 &b = (&a == &way.a ? way.b : way.a);
+	return sqrt(calcSquaredLen(a, ip)) * (b.width - a.width) /
+	           sqrt(calcSquaredLen(way)) +
+	       a.width;
 }
 
 inline constexpr Point2 middleOf(Point2 a, Point2 b)
