@@ -43,37 +43,59 @@ float get_way_width_at_point(const WideRoad2& way, const Point2& ip)
 	       a.width;
 }
 
-void insert_croad_for_complement(WideRoad2& way, WidePoint2& closer,
+void insert_croad_for_complement(WidePoint2& closer, WidePoint2& farther,
                                  const Point2& ip, float ipoint_width,
                                  CrossRoads& crossRoads,
-                                 CrossRoad& ip_crossRoad,
+                                 CrossRoads::iterator ip_crossRoad,
                                  WideRoad2& inserted_complement)
 {
 	closer.point = ip;
 	closer.width = ipoint_width;
 
-	WidePoint2& further = (&closer == &way.a ? way.b : way.a);
 	inserted_complement.b.crossRoad = closer.crossRoad;
 
-	closer.crossRoad = inserted_complement.a.crossRoad = &ip_crossRoad;
+	closer.crossRoad = inserted_complement.a.crossRoad = ip_crossRoad;
 
-	if (further.crossRoad == nullptr) {
+	if (!farther.crossRoad) {
 		crossRoads.emplace_back();
-		further.crossRoad = &crossRoads.back();
+		farther.crossRoad = std::prev(crossRoads.end());
 	}
+}
+
+using std::experimental::optional;
+
+void combineCroads(CrossRoads& crossRoads, CrossRoads::iterator& destination,
+                   WidePoint2& source_point)
+{
+	if (source_point.crossRoad) {
+		CrossRoads::iterator source_iterator = *source_point.crossRoad;
+		std::vector<WidePoint2*>& source_points = source_iterator->points;
+
+		//for (WidePoint2* i : source_points) {
+			//i->crossRoad = destination;
+		//}
+
+		auto& dest_p = destination->points;
+		dest_p.insert(dest_p.end(), source_points.begin(), source_points.end());
+
+		crossRoads.erase(source_iterator);
+	}
+	source_point.crossRoad = destination;
 }
 
 void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
                const Point2& ip, CrossRoads& crossRoads)
 {
 	WidePoint2 &wayCloser = getEndCloserTo(way, ip),
-	           &otherCloser = getEndCloserTo(other, ip);
+	           &otherCloser = getEndCloserTo(other, ip),
+	           &wayFarther = (&wayCloser == &way.a ? way.b : way.a),
+	           &otherFarther = (&otherCloser == &other.a ? other.b : other.a);
 
-	const float ipoint_width_way = get_way_width_at_point(way, ip),
-	            ipoint_width_other = get_way_width_at_point(other, ip);
+	const float ip_width_way = get_way_width_at_point(way, ip),
+	            ip_width_other = get_way_width_at_point(other, ip);
 
-	WideRoad2 complementing_to_way = {{ip, ipoint_width_way}, wayCloser},
-	          complementing_to_other = {{ip, ipoint_width_other}, otherCloser};
+	WideRoad2 complementing_to_way = {{ip, ip_width_way}, wayCloser},
+	          complementing_to_other = {{ip, ip_width_other}, otherCloser};
 
 	WideRoad2 *inserted_complement_way =
 	              insertIfBipgEnough(ways, complementing_to_way,
@@ -82,17 +104,21 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 	              insertIfBipgEnough(ways, complementing_to_other,
 	                                 std::max(other.a.width, way.b.width));
 	crossRoads.emplace_back();
-	CrossRoad& ip_crossRoad = crossRoads.back();
+	auto ip_crossRoad = std::prev(crossRoads.end());
 
 	if (inserted_complement_way) {
-		insert_croad_for_complement(way, wayCloser, ip, ipoint_width_way,
+		insert_croad_for_complement(wayCloser, wayFarther, ip, ip_width_way,
 		                            crossRoads, ip_crossRoad,
 		                            *inserted_complement_way);
+	} else {
+		combineCroads(crossRoads, ip_crossRoad, wayCloser);
 	}
 	if (inserted_complement_other) {
-		insert_croad_for_complement(other, otherCloser, ip, ipoint_width_other,
-		                            crossRoads, ip_crossRoad,
+		insert_croad_for_complement(otherCloser, otherFarther, ip,
+		                            ip_width_other, crossRoads, ip_crossRoad,
 		                            *inserted_complement_other);
+	} else {
+		combineCroads(crossRoads, ip_crossRoad, otherCloser);
 	}
 }
 
@@ -149,12 +175,12 @@ ColorSegmentList createWalls(const WideRoads& input_paths,
 		generated_maze.push_back(toColorSegment(path));
 	}
 
-	for (const auto& crossRoad : crossRoads) {
-		const auto& points = crossRoad.points;
+	for (const CrossRoad& crossRoad : crossRoads) {
+		const std::vector<WidePoint2*>& points = crossRoad.points;
 		if (points.size() < 2) continue;
-		LOG << "HERER";
-		for (auto p = points.begin() + 1; p != points.end(); ++p) {
-			generated_maze.push_back(toWhiteSegment2(Segment2{**p, **(p - 1)}));
+		LOG << "HERE";
+		for (auto p = points.begin() + 1; p != points.end(); ++p, ++p) {
+			generated_maze.push_back(toWhiteSegment2({**p, **(p - 1)}));
 		}
 	}
 	return generated_maze;

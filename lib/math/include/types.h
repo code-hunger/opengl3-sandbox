@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cstdio>
 #include <deque>
+#include <experimental/optional>
 #include <list>
 #include <vector>
 
@@ -64,13 +65,19 @@ struct ColorSegment2
 	operator Segment2() const { return line; }
 };
 
-struct CrossRoad;
+struct WidePoint2;
+
+struct CrossRoad
+{
+	std::vector<WidePoint2*> points{};
+};
+typedef std::list<CrossRoad> CrossRoads;
 
 struct WidePoint2
 {
 	Point2 point;
 	float width;
-	CrossRoad* crossRoad = nullptr;
+	std::experimental::optional<CrossRoads::iterator> crossRoad{};
 
 	bool operator==(const WidePoint2& other) const
 	{
@@ -90,14 +97,8 @@ struct WideRoad2
 	Segment2 segment() const { return {a.point, b.point}; }
 };
 
-struct CrossRoad
-{
-	std::vector<Point2*> points{};
-};
-
 typedef std::pair<ColorSegment2, ColorSegment2> ColorSegment2Pair;
 typedef std::list<WideRoad2> WideRoads;
-typedef std::list<CrossRoad> CrossRoads;
 }
 
 #endif /* end of include guard: TYPES_H_H3EJYX5K */
