@@ -34,6 +34,11 @@ WideRoad2* insertIfBipgEnough(WideRoads& ways, const WideRoad2& way,
 	return nullptr;
 }
 
+CrossRoads::iterator create_crossRoad(CrossRoads& crossRoads) {
+	crossRoads.emplace_back();
+	return --crossRoads.end();
+}
+
 void insert_croad_for_complement(WidePoint2& closer, WidePoint2& farther,
                                  const Point2& ip, float ipoint_width,
                                  CrossRoads& crossRoads,
@@ -48,8 +53,7 @@ void insert_croad_for_complement(WidePoint2& closer, WidePoint2& farther,
 	closer.crossRoad = inserted_complement.a.crossRoad = ip_crossRoad;
 
 	if (!farther.crossRoad) {
-		crossRoads.emplace_back();
-		farther.crossRoad = std::prev(crossRoads.end());
+		farther.crossRoad = create_crossRoad(crossRoads);
 	}
 }
 
@@ -92,8 +96,8 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 	          *inserted_complement_other =
 	              insertIfBipgEnough(ways, complementing_to_other,
 	                                 std::max(other.a.width, way.b.width));
-	crossRoads.emplace_back();
-	CrossRoads::iterator ip_crossRoad = std::prev(crossRoads.end());
+
+	CrossRoads::iterator ip_crossRoad = create_crossRoad(crossRoads);
 
 	ip_crossRoad->points.push_back(&otherCloser);
 	ip_crossRoad->points.push_back(&wayCloser);
