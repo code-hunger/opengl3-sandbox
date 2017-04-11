@@ -126,11 +126,10 @@ void injectWay(WideRoads& ways, const WideRoads::iterator& way,
                CrossRoads& crossRoads)
 {
 	for (auto other = ways.begin(); other != way; ++other) {
-		const std::pair<bool, Point2>& intersect_result =
-		    intersect(*way, *other);
+		const auto& intersect_result = intersect(*way, *other);
 
-		if (intersect_result.first) {
-			const Point2& intersection_point = intersect_result.second;
+		if (intersect_result.intersects) {
+			const Point2& intersection_point = intersect_result.point;
 			intersect(ways, *way, *other, intersection_point, crossRoads);
 		}
 	}

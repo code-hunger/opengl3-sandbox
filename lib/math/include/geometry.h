@@ -36,41 +36,45 @@ inline constexpr LineEquation getEquation(const Segment2& segment)
 	return {x_coeff, a.y - x_coeff * a.x};
 }
 
-inline constexpr std::pair<bool, Point2> intersect(const Segment2& one,
-                                                   const Segment2& other)
+inline constexpr auto intersect(const Segment2& one, const Segment2& other)
 {
-	LineEquation eThis = getEquation(one), eOther = getEquation(other);
+	const LineEquation eThis = getEquation(one), eOther = getEquation(other);
 
-	float crossX = (eOther.b - eThis.b) / (eThis.a - eOther.a),
-	      crossY = eThis.a * crossX + eThis.b;
+	const float crossX = (eOther.b - eThis.b) / (eThis.a - eOther.a),
+	            crossY = eThis.a * crossX + eThis.b;
 
-	bool intersects = true;
+	struct
+	{
+		Point2 point;
+		bool intersects = true;
+	} result{{crossX, crossY}};
 
 	if ((crossX < one.b.x && crossX > one.a.x) ||
 	    (crossX > one.b.x && crossX < one.a.x)) {
 		// this crossX yes
 	} else {
-		intersects = false;
+		result.intersects = false;
 	}
 	if ((crossX < other.b.x && crossX > other.a.x) ||
 	    (crossX > other.b.x && crossX < other.a.x)) {
 		// other crossX yes
 	} else {
-		intersects = false;
+		result.intersects = false;
 	}
 	if ((crossY < one.b.y && crossY > one.a.y) ||
 	    (crossY > one.b.y && crossY < one.a.y)) {
 		// this crossY yes
 	} else {
-		intersects = false;
+		result.intersects = false;
 	}
 	if ((crossY < other.b.y && crossY > other.a.y) ||
 	    (crossY > other.b.y && crossY < other.a.y)) {
 		// other crossY yes
 	} else {
-		intersects = false;
+		result.intersects = false;
 	}
-	return {intersects, {crossX, crossY}};
+
+	return result;
 }
 
 template <typename T> constexpr T abs(T x) { return x > 0 ? x : -x; }
