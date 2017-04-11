@@ -122,24 +122,26 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 	}
 }
 
-void injectWay(WideRoads& ways, WideRoad2& way, CrossRoads& crossRoads)
+void injectWay(WideRoads& ways, const WideRoads::iterator& way,
+               CrossRoads& crossRoads)
 {
-	for (WideRoad2& other : ways) {
-		if (&other == &way) continue;
-		const std::pair<bool, Point2>& intersect_result = intersect(way, other);
+	for (auto other = ways.begin(); other != way; ++other) {
+		const std::pair<bool, Point2>& intersect_result =
+		    intersect(*way, *other);
 
 		if (intersect_result.first) {
 			const Point2& intersection_point = intersect_result.second;
-			intersect(ways, way, other, intersection_point, crossRoads);
+			intersect(ways, *way, *other, intersection_point, crossRoads);
 		}
 	}
 }
 
 void normalizeWays(WideRoads& ways, CrossRoads& crossRoads)
 {
-
-	for (WideRoad2& i : ways) {
-		injectWay(ways, i, crossRoads);
+	// explicitly calc ways.end() since injectWay push_back()s newly added ways.
+	// Those ways need to be injected and checked, too
+	for (auto way = ways.begin(); way != ways.end(); ++way) {
+		injectWay(ways, way, crossRoads);
 	}
 }
 
