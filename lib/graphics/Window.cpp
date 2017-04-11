@@ -33,7 +33,7 @@ std::pair<ushort, ushort> fetchWindowSize(GLFWwindow* window)
 	return {static_cast<ushort>(w), static_cast<ushort>(h)};
 }
 
-std::pair<ushort,ushort> getStaticSize(GLFWwindow* window)
+std::pair<ushort, ushort> getStaticSize(GLFWwindow* window)
 {
 	static auto size = fetchWindowSize(window);
 	return size;
@@ -62,13 +62,12 @@ void Window::run(void* renderObject, Renderer& renderFunction)
 {
 	glfwMakeContextCurrent(window);
 
-	int frames = 0;
-	double prevTime = glfwGetTime()
+	double prevTime = glfwGetTime();
+
 #ifdef PRINT_FPS
-	    ,
-	       last_time_check = prevTime
+	int frames = 0;
+	double last_time_check = prevTime;
 #endif
-	    ;
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -87,8 +86,8 @@ void Window::run(void* renderObject, Renderer& renderFunction)
 		double time = glfwGetTime(), deltaTime = time - prevTime;
 		prevTime = time;
 
-		++frames;
 #ifdef PRINT_FPS
+		++frames;
 		if (time - last_time_check >= 1) {
 			LOG("%f since last check", frames / (time - last_time_check));
 			last_time_check = glfwGetTime();
