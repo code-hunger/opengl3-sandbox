@@ -41,12 +41,12 @@ int main(int argc, char** argv)
 		// a Window is needed to construct a ScreenManager
 		ScreenManager screenManager = screenManagerFromCmd(argc, argv);
 
-		window.run<ScreenManager>(screenManager, renderFunction);
+		window.run(screenManager, renderFunction);
 	} catch (int e) {
-		LOG("Something bad happened. Code %d\n", e);
+		ERR << "Something bad happened. Code " << e;
 		return e;
 	} catch (const char* e) {
-		LOG("Something bad happened. Error text: %s\n", e);
+		ERR << "Something bad happened. Error text: " << e;
 		return EXIT_FAILURE;
 	}
 
