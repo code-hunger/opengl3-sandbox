@@ -92,8 +92,8 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 {
 	WidePoint2 &wayCloser = getEndCloserTo(way, ip),
 	           &otherCloser = getEndCloserTo(other, ip);
-			   //&wayFarther = (&wayCloser == &way.a ? way.b : way.a),
-			   //&otherFarther = (&otherCloser == &other.a ? other.b : other.a);
+	//&wayFarther = (&wayCloser == &way.a ? way.b : way.a),
+	//&otherFarther = (&otherCloser == &other.a ? other.b : other.a);
 
 	const float ip_width_way = get_width_at_point(way, ip),
 	            ip_width_other = get_width_at_point(other, ip);
@@ -184,14 +184,16 @@ void dump(const ColorSegmentList& maze)
 	}
 }
 
+#define toDarkSegment(t) toColorSegment(t, {.1f, .1f, .1f, "dark"})
+
 ColorSegmentList createWalls(const WideRoads& ways,
                              const CrossRoads& crossRoads)
 {
 	ColorSegmentList generated_maze;
 	for (const WideRoad2& way : ways) {
-		//const auto& walls = createWalls(way);
-		//generated_maze.push_back(toColorSegment(walls.first));
-		//generated_maze.push_back(toColorSegment(walls.second));
+		const auto& walls = createWalls(way);
+		generated_maze.push_back(toDarkSegment(walls.first));
+		generated_maze.push_back(toDarkSegment(walls.second));
 		generated_maze.push_back(toColorSegment(way));
 	}
 
@@ -199,6 +201,10 @@ ColorSegmentList createWalls(const WideRoads& ways,
 		const std::vector<WidePoint2*>& points = crossRoad.points;
 		if (points.empty()) continue;
 
+		LOG << points.size() << " points!";
+		for (auto& i : points) {
+			LOG << *i;
+		}
 		for (auto p = points.cbegin(), q = p + 1; q != points.cend();
 		     ++p, ++q) {
 			Point2 p_p = (*p)->point, p_q = (*q)->point;
@@ -217,10 +223,10 @@ math::ColorSegmentList Builder::build_from_paths(WideRoads& ways)
 
 	ColorSegmentList generated_maze = createWalls(ways, crossRoads);
 
-	//LOG("%lu walls generated from %lu lines", generated_maze.size(),
-		//ways.size());
+	LOG("%lu walls generated from %lu lines", generated_maze.size(),
+	    ways.size());
 
-	//dump(generated_maze);
+	// dump(generated_maze);
 
 	return generated_maze;
 }
