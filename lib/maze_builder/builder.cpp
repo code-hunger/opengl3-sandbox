@@ -21,7 +21,7 @@ using namespace math;
 
 template <typename T> unsigned long ptr(const T& a)
 {
-	return reinterpret_cast<unsigned long>(&a) % 1000;
+	return reinterpret_cast<unsigned long>(&a) % 10000;
 }
 
 WideRoad2* insertIfBipgEnough(WideRoads& ways, const WideRoad2& way,
@@ -34,10 +34,13 @@ WideRoad2* insertIfBipgEnough(WideRoads& ways, const WideRoad2& way,
 	return nullptr;
 }
 
-CrossRoads::iterator create_crossRoad(CrossRoads& crossRoads) {
+CrossRoads::iterator create_crossRoad(CrossRoads& crossRoads)
+{
 	crossRoads.emplace_back();
 	return --crossRoads.end();
 }
+
+#include <algorithm>
 
 void insert_croad_for_complement(WidePoint2& closer, WidePoint2& farther,
                                  const Point2& ip, float ipoint_width,
@@ -50,10 +53,22 @@ void insert_croad_for_complement(WidePoint2& closer, WidePoint2& farther,
 
 	inserted_complement.b.crossRoad = closer.crossRoad;
 
+	{
+		// remove closer from its crossroad since we're moving (we *will* move
+		// it 3 lines later) closer to ip
+		auto& points = (*inserted_complement.b.crossRoad)->points;
+		auto it = std::find(points.begin(), points.end(), &closer);
+		if (it == points.end()) throw "A very very bad logic error";
+		points.erase(it);
+		points.push_back(&inserted_complement.b);
+	}
+
 	closer.crossRoad = inserted_complement.a.crossRoad = ip_crossRoad;
 
-	if (!farther.crossRoad) {
-		farther.crossRoad = create_crossRoad(crossRoads);
+	{
+		auto& points = ip_crossRoad->points;
+		points.push_back(&closer);
+		points.push_back(&inserted_complement.a);
 	}
 }
 
@@ -95,18 +110,17 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 	                                 std::max(way.a.width, way.b.width)),
 	          *inserted_complement_other =
 	              insertIfBipgEnough(ways, complementing_to_other,
-	                                 std::max(other.a.width, way.b.width));
+	                                 std::max(other.a.width, other.b.width));
 
 	CrossRoads::iterator ip_crossRoad = create_crossRoad(crossRoads);
 
-	ip_crossRoad->points.push_back(&otherCloser);
-	ip_crossRoad->points.push_back(&wayCloser);
 
 	if (inserted_complement_way) {
 		insert_croad_for_complement(wayCloser, wayFarther, ip, ip_width_way,
 		                            crossRoads, ip_crossRoad,
 		                            *inserted_complement_way);
 	} else {
+		throw "not implemented!";
 		combineCroads(crossRoads, ip_crossRoad, wayCloser);
 	}
 	if (inserted_complement_other) {
@@ -114,6 +128,7 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 		                            ip_width_other, crossRoads, ip_crossRoad,
 		                            *inserted_complement_other);
 	} else {
+		 throw "not implemented!";
 		combineCroads(crossRoads, ip_crossRoad, otherCloser);
 	}
 }
@@ -131,11 +146,26 @@ void injectWay(WideRoads& ways, const WideRoads::iterator& way,
 	}
 }
 
+void addCrossRoadsIfNone(WidePoint2& p, CrossRoads& crossRoads)
+{
+	if (!p.crossRoad) {
+		p.crossRoad = create_crossRoad(crossRoads);
+		(*p.crossRoad)->points.push_back(&p);
+	}
+}
+
+void addCrossRoadsIfNone(WideRoad2& way, CrossRoads& crossRoads)
+{
+	addCrossRoadsIfNone(way.a, crossRoads);
+	addCrossRoadsIfNone(way.b, crossRoads);
+}
+
 void normalizeWays(WideRoads& ways, CrossRoads& crossRoads)
 {
-	// explicitly calc ways.end() since injectWay push_back()s newly added ways.
-	// Those ways need to be injected and checked, too
+	// explicitly calc ways.end() everytime  since injectWay does push_back() on
+	// newly added ways.  Those ways need to be injected and checked, too
 	for (auto way = ways.begin(); way != ways.end(); ++way) {
+		addCrossRoadsIfNone(*way, crossRoads);
 		injectWay(ways, way, crossRoads);
 	}
 }
