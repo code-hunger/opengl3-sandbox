@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project (game)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++17 -Wall -Wextra -Wpedantic -Wdouble-promotion -Wconversion -Wsign-conversion -Wlogical-op -Wabi  -Wctor-dtor-privacy -Wmaybe-uninitialized -Wuninitialized -Wnon-virtual-dtor  -Wreorder -Weffc++  -Wstrict-null-sentinel -Wno-non-template-friend -Wold-style-cast -Woverloaded-virtual -Wno-pmf-conversions -Wsign-promo -Wno-error=unused-variable")
+add_compile_options(-std=gnu++17 -Wall -Wextra -Wpedantic -Wdouble-promotion -Wconversion -Wsign-conversion -Wlogical-op -Wabi  -Wctor-dtor-privacy -Wmaybe-uninitialized -Wuninitialized -Wnon-virtual-dtor -Wreorder -Weffc++ -Wstrict-null-sentinel -Wno-non-template-friend -Wold-style-cast -Woverloaded-virtual -Wno-pmf-conversions -Wsign-promo -Wno-error=unused-variable)
 
 set(SHADER_DIRECTORY ${PROJECT_SOURCE_DIR}/src/shaders)
 set(MAZE_DIRECTORY ${PROJECT_SOURCE_DIR}/data/mazes)
