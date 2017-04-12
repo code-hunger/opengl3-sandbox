@@ -4,12 +4,11 @@
 #include "math/include/geometry.h"
 #include "math/include/geometry_io.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 
-#include <deque>
 #include <list>
-#include <set>
 
 constexpr long double PI = 3.141592653589793238462643383279502884L;
 
@@ -40,11 +39,8 @@ CrossRoads::iterator create_crossRoad(CrossRoads& crossRoads)
 	return --crossRoads.end();
 }
 
-#include <algorithm>
-
-void insert_croad_for_complement(WidePoint2& closer, WidePoint2& farther,
-                                 const Point2& ip, float ipoint_width,
-                                 CrossRoads& crossRoads,
+void insert_croad_for_complement(WidePoint2& closer, const Point2& ip,
+                                 float ipoint_width,
                                  CrossRoads::iterator ip_crossRoad,
                                  WideRoad2& inserted_complement)
 {
@@ -95,9 +91,9 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
                const Point2& ip, CrossRoads& crossRoads)
 {
 	WidePoint2 &wayCloser = getEndCloserTo(way, ip),
-	           &otherCloser = getEndCloserTo(other, ip),
-	           &wayFarther = (&wayCloser == &way.a ? way.b : way.a),
-	           &otherFarther = (&otherCloser == &other.a ? other.b : other.a);
+	           &otherCloser = getEndCloserTo(other, ip);
+			   //&wayFarther = (&wayCloser == &way.a ? way.b : way.a),
+			   //&otherFarther = (&otherCloser == &other.a ? other.b : other.a);
 
 	const float ip_width_way = get_width_at_point(way, ip),
 	            ip_width_other = get_width_at_point(other, ip);
@@ -114,21 +110,18 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 
 	CrossRoads::iterator ip_crossRoad = create_crossRoad(crossRoads);
 
-
 	if (inserted_complement_way) {
-		insert_croad_for_complement(wayCloser, wayFarther, ip, ip_width_way,
-		                            crossRoads, ip_crossRoad,
+		insert_croad_for_complement(wayCloser, ip, ip_width_way, ip_crossRoad,
 		                            *inserted_complement_way);
 	} else {
 		throw "not implemented!";
 		combineCroads(crossRoads, ip_crossRoad, wayCloser);
 	}
 	if (inserted_complement_other) {
-		insert_croad_for_complement(otherCloser, otherFarther, ip,
-		                            ip_width_other, crossRoads, ip_crossRoad,
-		                            *inserted_complement_other);
+		insert_croad_for_complement(otherCloser, ip, ip_width_other,
+		                            ip_crossRoad, *inserted_complement_other);
 	} else {
-		 throw "not implemented!";
+		throw "not implemented!";
 		combineCroads(crossRoads, ip_crossRoad, otherCloser);
 	}
 }
@@ -206,7 +199,8 @@ ColorSegmentList createWalls(const WideRoads& ways,
 		const std::vector<WidePoint2*>& points = crossRoad.points;
 		if (points.empty()) continue;
 
-		for (auto p = points.begin(), q = p + 1; q != points.end(); ++p, ++q) {
+		for (auto p = points.cbegin(), q = p + 1; q != points.cend();
+		     ++p, ++q) {
 			Point2 p_p = (*p)->point, p_q = (*q)->point;
 			p_p.x -= 5;
 			p_q.x += 5;
