@@ -78,7 +78,7 @@ void combineCroads(CrossRoads& crossRoads, CrossRoads::iterator& destination,
 {
 	if (!source_point.crossRoad) throw "No crossRoad in point";
 
-	if(source_point.crossRoad == destination) return;
+	if (source_point.crossRoad == destination) return;
 
 	LOG << "Merging " << ptr(**source_point.crossRoad) << " into "
 	    << ptr(*destination);
@@ -104,12 +104,11 @@ void combineCroads(CrossRoads& crossRoads, CrossRoads::iterator& destination,
 }
 
 void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
-               const Point2& ip, CrossRoads& crossRoads)
+               CrossRoads::iterator ip_crossRoad, const Point2& ip,
+               CrossRoads& crossRoads)
 {
 	WidePoint2 &wayCloser = getEndCloserTo(way, ip),
 	           &otherCloser = getEndCloserTo(other, ip);
-	//&wayFarther = (&wayCloser == &way.a ? way.b : way.a),
-	//&otherFarther = (&otherCloser == &other.a ? other.b : other.a);
 
 	const float ip_width_way = get_width_at_point(way, ip),
 	            ip_width_other = get_width_at_point(other, ip);
@@ -123,9 +122,6 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 	          *inserted_complement_other =
 	              insertIfBipgEnough(ways, complementing_to_other,
 	                                 std::max(other.a.width, other.b.width));
-
-	CrossRoads::iterator ip_crossRoad = create_crossRoad(crossRoads);
-	LOG << "Ip croad at " << ptr(*ip_crossRoad);
 
 	if (inserted_complement_way) {
 		insert_croad_for_complement(wayCloser, ip, ip_width_way, ip_crossRoad,
@@ -150,10 +146,8 @@ void injectWay(WideRoads& ways, const WideRoads::iterator& way,
 		LOG << "Intersect with " << *other << " - "
 		    << intersect_result.intersects;
 		if (intersect_result.intersects) {
-			INDENT(intersect(ways, *way, *other, intersect_result.point,
-			                 crossRoads));
-			// WARN << "Return here. Expecting more: " << (std::next(other) !=
-			// way);
+			INDENT(intersect(ways, *way, *other, create_crossRoad(crossRoads),
+			                 intersect_result.point, crossRoads));
 		}
 	}
 }
