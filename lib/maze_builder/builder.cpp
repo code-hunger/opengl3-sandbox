@@ -71,19 +71,22 @@ void insert_croad_for_complement(WidePoint2& closer, const Point2& ip,
 void combineCroads(CrossRoads& crossRoads, CrossRoads::iterator& destination,
                    WidePoint2& source_point)
 {
-	if (source_point.crossRoad) {
-		CrossRoads::iterator source_iterator = *source_point.crossRoad;
-		std::vector<WidePoint2 *> &source_points = source_iterator->points,
-		                          &dest_p = destination->points;
+	if (!source_point.crossRoad) throw "No crossRoad in point";
 
-		for (WidePoint2* i : source_points) {
-			i->crossRoad = destination;
-		}
+	LOG << "Combining cross roads";
 
-		dest_p.insert(dest_p.end(), source_points.begin(), source_points.end());
+	CrossRoads::iterator source_iterator = *source_point.crossRoad;
+	std::vector<WidePoint2 *> &source_points = source_iterator->points,
+	                          &dest_p = destination->points;
 
-		crossRoads.erase(source_iterator);
+	for (WidePoint2* i : source_points) {
+		i->crossRoad = destination;
 	}
+
+	dest_p.insert(dest_p.end(), source_points.begin(), source_points.end());
+
+	crossRoads.erase(source_iterator);
+
 	source_point.crossRoad = destination;
 }
 
@@ -114,14 +117,12 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 		insert_croad_for_complement(wayCloser, ip, ip_width_way, ip_crossRoad,
 		                            *inserted_complement_way);
 	} else {
-		throw "not implemented!";
 		combineCroads(crossRoads, ip_crossRoad, wayCloser);
 	}
 	if (inserted_complement_other) {
 		insert_croad_for_complement(otherCloser, ip, ip_width_other,
 		                            ip_crossRoad, *inserted_complement_other);
 	} else {
-		throw "not implemented!";
 		combineCroads(crossRoads, ip_crossRoad, otherCloser);
 	}
 }
