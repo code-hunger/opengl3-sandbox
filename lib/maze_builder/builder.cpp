@@ -78,17 +78,25 @@ void combineCroads(CrossRoads& crossRoads, CrossRoads::iterator& destination,
 {
 	if (!source_point.crossRoad) throw "No crossRoad in point";
 
-	LOG << "Combining cross roads";
+	if(source_point.crossRoad == destination) return;
+
+	LOG << "Merging " << ptr(**source_point.crossRoad) << " into "
+	    << ptr(*destination);
 
 	CrossRoads::iterator source_iterator = *source_point.crossRoad;
-	std::vector<WidePoint2 *> &source_points = source_iterator->points,
-	                          &dest_p = destination->points;
 
-	for (WidePoint2* i : source_points) {
+	++Logger::get();
+
+	for (WidePoint2* i : source_iterator->points) {
+		LOG << "Moving croad from " << *i;
 		i->crossRoad = destination;
+		destination->points.emplace_back(i);
 	}
 
-	dest_p.insert(dest_p.end(), source_points.begin(), source_points.end());
+	--Logger::get();
+
+	LOG << "Destination has " << destination->points.size() << " points now";
+	LOG << "Erasing " << ptr(*source_iterator);
 
 	crossRoads.erase(source_iterator);
 
@@ -117,6 +125,7 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 	                                 std::max(other.a.width, other.b.width));
 
 	CrossRoads::iterator ip_crossRoad = create_crossRoad(crossRoads);
+	LOG << "Ip croad at " << ptr(*ip_crossRoad);
 
 	if (inserted_complement_way) {
 		insert_croad_for_complement(wayCloser, ip, ip_width_way, ip_crossRoad,
@@ -143,6 +152,8 @@ void injectWay(WideRoads& ways, const WideRoads::iterator& way,
 		if (intersect_result.intersects) {
 			INDENT(intersect(ways, *way, *other, intersect_result.point,
 			                 crossRoads));
+			// WARN << "Return here. Expecting more: " << (std::next(other) !=
+			// way);
 		}
 	}
 }
@@ -209,9 +220,12 @@ ColorSegmentList createWalls(const WideRoads& ways,
 	LOG << crossRoads.size() << " croads!";
 	for (const CrossRoad& crossRoad : crossRoads) {
 		const std::vector<WidePoint2*>& points = crossRoad.points;
+
+		LOG << "Croad " << ptr(crossRoad) << " has " << points.size()
+		    << " points!";
+
 		if (points.empty()) continue;
 
-		LOG << points.size() << " points!";
 		for (auto& i : points) {
 			LOG << *i;
 		}
