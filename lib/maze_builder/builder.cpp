@@ -103,37 +103,24 @@ void combineCroads(CrossRoads& crossRoads, CrossRoads::iterator& destination,
 	source_point.crossRoad = destination;
 }
 
-void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
+void intersect(WideRoads& ways, WideRoad2& way,
                CrossRoads::iterator ip_crossRoad, const Point2& ip,
                CrossRoads& crossRoads)
 {
-	WidePoint2 &wayCloser = getEndCloserTo(way, ip),
-	           &otherCloser = getEndCloserTo(other, ip);
+	WidePoint2& wayCloser = getEndCloserTo(way, ip);
 
-	const float ip_width_way = get_width_at_point(way, ip),
-	            ip_width_other = get_width_at_point(other, ip);
+	const float ip_width_way = get_width_at_point(way, ip);
 
-	WideRoad2 complementing_to_way = {{ip, ip_width_way}, wayCloser},
-	          complementing_to_other = {{ip, ip_width_other}, otherCloser};
+	WideRoad2 complementing_to_way = {{ip, ip_width_way}, wayCloser};
 
-	WideRoad2 *inserted_complement_way =
-	              insertIfBipgEnough(ways, complementing_to_way,
-	                                 std::max(way.a.width, way.b.width)),
-	          *inserted_complement_other =
-	              insertIfBipgEnough(ways, complementing_to_other,
-	                                 std::max(other.a.width, other.b.width));
+	WideRoad2* inserted_complement_way = insertIfBipgEnough(
+	    ways, complementing_to_way, std::max(way.a.width, way.b.width));
 
 	if (inserted_complement_way) {
 		insert_croad_for_complement(wayCloser, ip, ip_width_way, ip_crossRoad,
 		                            *inserted_complement_way);
 	} else {
 		combineCroads(crossRoads, ip_crossRoad, wayCloser);
-	}
-	if (inserted_complement_other) {
-		insert_croad_for_complement(otherCloser, ip, ip_width_other,
-		                            ip_crossRoad, *inserted_complement_other);
-	} else {
-		combineCroads(crossRoads, ip_crossRoad, otherCloser);
 	}
 }
 
@@ -146,8 +133,11 @@ void injectWay(WideRoads& ways, const WideRoads::iterator& way,
 		LOG << "Intersect with " << *other << " - "
 		    << intersect_result.intersects;
 		if (intersect_result.intersects) {
-			INDENT(intersect(ways, *way, *other, create_crossRoad(crossRoads),
-			                 intersect_result.point, crossRoads));
+			CrossRoads::iterator ip_crossRoad = create_crossRoad(crossRoads);
+			INDENT(intersect(ways, *way, ip_crossRoad, intersect_result.point,
+			                 crossRoads));
+			INDENT(intersect(ways, *other, ip_crossRoad, intersect_result.point,
+			                 crossRoads));
 		}
 	}
 }
