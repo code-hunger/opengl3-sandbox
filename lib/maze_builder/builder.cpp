@@ -10,6 +10,11 @@
 
 #include <list>
 
+#define INDENT(a)                                                              \
+	++Logger::get();                                                           \
+	a;                                                                         \
+	--Logger::get();
+
 constexpr long double PI = 3.141592653589793238462643383279502884L;
 
 constexpr bool FORCE_VALIDATE = false;
@@ -133,9 +138,11 @@ void injectWay(WideRoads& ways, const WideRoads::iterator& way,
 	for (auto other = ways.begin(); other != way; ++other) {
 		const auto& intersect_result = intersect(*way, *other);
 
+		LOG << "Intersect with " << *other << " - "
+		    << intersect_result.intersects;
 		if (intersect_result.intersects) {
-			const Point2& intersection_point = intersect_result.point;
-			intersect(ways, *way, *other, intersection_point, crossRoads);
+			INDENT(intersect(ways, *way, *other, intersect_result.point,
+			                 crossRoads));
 		}
 	}
 }
@@ -160,7 +167,8 @@ void normalizeWays(WideRoads& ways, CrossRoads& crossRoads)
 	// newly added ways.  Those ways need to be injected and checked, too
 	for (auto way = ways.begin(); way != ways.end(); ++way) {
 		addCrossRoadsIfNone(*way, crossRoads);
-		injectWay(ways, way, crossRoads);
+		LOG << "Will inject" << *way;
+		INDENT(injectWay(ways, way, crossRoads));
 	}
 }
 
@@ -198,6 +206,7 @@ ColorSegmentList createWalls(const WideRoads& ways,
 		generated_maze.push_back(toColorSegment(way));
 	}
 
+	LOG << crossRoads.size() << " croads!";
 	for (const CrossRoad& crossRoad : crossRoads) {
 		const std::vector<WidePoint2*>& points = crossRoad.points;
 		if (points.empty()) continue;
@@ -219,15 +228,18 @@ ColorSegmentList createWalls(const WideRoads& ways,
 
 math::ColorSegmentList Builder::build_from_paths(WideRoads& ways)
 {
+	++Logger::get();
 	CrossRoads crossRoads;
-	normalizeWays(ways, crossRoads);
+	LOG << "Normalize ways";
+	INDENT(normalizeWays(ways, crossRoads));
 
 	ColorSegmentList generated_maze = createWalls(ways, crossRoads);
 
-	LOG("%lu walls generated from %lu lines", generated_maze.size(),
+	LOG("%lu walls generated from %lu lines\n", generated_maze.size(),
 	    ways.size());
 
 	// dump(generated_maze);
 
+	--Logger::get();
 	return generated_maze;
 }
