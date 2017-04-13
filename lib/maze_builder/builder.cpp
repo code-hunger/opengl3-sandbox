@@ -124,21 +124,20 @@ void intersect(WideRoads& ways, WideRoad2& way,
 	}
 }
 
-void injectWay(WideRoads& ways, const WideRoads::iterator& way,
+void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
                CrossRoads& crossRoads)
 {
-	for (auto other = ways.begin(); other != way; ++other) {
-		const auto& intersect_result = intersect(*way, *other);
+	const auto& intersect_result = intersect(way, other);
 
-		LOG << "Intersect with " << *other << " - "
-		    << intersect_result.intersects;
-		if (intersect_result.intersects) {
-			CrossRoads::iterator ip_crossRoad = create_crossRoad(crossRoads);
-			INDENT(intersect(ways, *way, ip_crossRoad, intersect_result.point,
-			                 crossRoads));
-			INDENT(intersect(ways, *other, ip_crossRoad, intersect_result.point,
-			                 crossRoads));
-		}
+	LOG << "Intersect with " << other << " - " << intersect_result.intersects;
+
+	if (intersect_result.intersects) {
+
+		Point2 ip = intersect_result.point;
+		CrossRoads::iterator ip_crossRoad = create_crossRoad(crossRoads);
+
+		intersect(ways, way, ip_crossRoad, ip, crossRoads);
+		intersect(ways, other, ip_crossRoad, ip, crossRoads);
 	}
 }
 
@@ -163,7 +162,9 @@ void normalizeWays(WideRoads& ways, CrossRoads& crossRoads)
 	for (auto way = ways.begin(); way != ways.end(); ++way) {
 		addCrossRoadsIfNone(*way, crossRoads);
 		LOG << "Will inject" << *way;
-		INDENT(injectWay(ways, way, crossRoads));
+		for (auto other = ways.begin(); other != way; ++other) {
+			INDENT(intersect(ways, *way, *other, crossRoads));
+		}
 	}
 }
 
