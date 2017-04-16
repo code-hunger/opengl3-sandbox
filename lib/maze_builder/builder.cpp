@@ -49,6 +49,7 @@ void insert_croad_for_complement(WidePoint2& closer, const Point2& ip,
                                  CrossRoads::iterator ip_crossRoad,
                                  WideRoad2& inserted_complement)
 {
+	LOG << "Insert complement" << inserted_complement;
 	closer.point = ip;
 	closer.width = ipoint_width;
 
@@ -78,7 +79,10 @@ void combineCroads(CrossRoads& crossRoads, CrossRoads::iterator& destination,
 {
 	if (!source_point.crossRoad) throw "No crossRoad in point";
 
-	if (source_point.crossRoad == destination) return;
+	if (source_point.crossRoad == destination) {
+		WARN("Source same as destination in %s on line %d", __FILE__, __LINE__);
+		return;
+	}
 
 	LOG << "Merging " << ptr(**source_point.crossRoad) << " into "
 	    << ptr(*destination);
@@ -129,7 +133,8 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 {
 	const auto& intersect_result = intersect(way, other);
 
-	LOG << "Intersect with " << other << " - " << intersect_result.intersects;
+	LOG << "Intersect with " << other << " on " << intersect_result.point
+	    << " - " << intersect_result.intersects;
 
 	if (intersect_result.intersects) {
 
@@ -229,8 +234,9 @@ math::ColorSegmentList Builder::build_from_paths(WideRoads& ways)
 {
 	++Logger::get();
 	CrossRoads crossRoads;
-	LOG << "Normalize ways";
+	LOG << "Normalize ways - first " << ways.size();
 	INDENT(normalizeWays(ways, crossRoads));
+	LOG << "Normalized - " << ways.size();
 
 	ColorSegmentList generated_maze = createWalls(ways, crossRoads);
 
