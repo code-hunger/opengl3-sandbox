@@ -172,20 +172,33 @@ void addCrossRoadsIfNone(WidePoint2& p, CrossRoads& crossRoads)
 	}
 }
 
-void addCrossRoadsIfNone(WideRoad2& way, CrossRoads& crossRoads)
+bool find_points(const std::vector<WidePoint2*>& haystack,
+                 const WidePoint2& needle)
 {
-	addCrossRoadsIfNone(way.a, crossRoads);
-	addCrossRoadsIfNone(way.b, crossRoads);
+	return std::find(haystack.begin(), haystack.end(), &needle) !=
+	       haystack.end();
 }
 
 void normalizeWays(WideRoads& ways, CrossRoads& crossRoads)
 {
-	// explicitly calc ways.end() everytime  since injectWay does push_back() on
-	// newly added ways.  Those ways need to be injected and checked, too
+	// explicitly calc ways.end() everytime  since intersect() does push_back()
+	// on newly added ways.  Those ways need to be injected and checked, too
 	for (auto way = ways.begin(); way != ways.end(); ++way) {
-		addCrossRoadsIfNone(*way, crossRoads);
-		LOG << "Will inject" << *way;
+		addCrossRoadsIfNone(way->a, crossRoads);
+		addCrossRoadsIfNone(way->b, crossRoads);
+
+		LOG << "Will inject " << *way << "; croad: " << ptr(**way->a.crossRoad)
+		    << " " << ptr(**way->b.crossRoad);
 		for (auto other = ways.begin(); other != way; ++other) {
+			const auto &a_points = (*way->a.crossRoad)->points,
+			           &b_points = (*way->b.crossRoad)->points;
+
+			if (find_points(a_points, other->a) ||
+			    find_points(b_points, other->b) ||
+			    find_points(a_points, other->b) ||
+			    find_points(b_points, other->a)) {
+				continue;
+			}
 			INDENT(intersect(ways, *way, *other, crossRoads));
 		}
 	}
