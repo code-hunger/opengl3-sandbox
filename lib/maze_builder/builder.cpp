@@ -115,10 +115,10 @@ void intersect(WideRoads& ways, WideRoad2& way,
 
 	const float ip_width_way = get_width_at_point(way, ip);
 
-	WideRoad2 complementing_to_way = {{ip, ip_width_way}, wayCloser};
-
-	WideRoad2* inserted_complement_way = insertIfBipgEnough(
-	    ways, complementing_to_way, std::max(way.a.width, way.b.width));
+	WideRoad2 complementing_to_way = {{ip, ip_width_way}, wayCloser},
+	          *inserted_complement_way =
+	              insertIfBipgEnough(ways, complementing_to_way,
+	                                 std::max(way.a.width, way.b.width));
 
 	if (inserted_complement_way) {
 		insert_croad_for_complement(wayCloser, ip, ip_width_way, ip_crossRoad,
@@ -136,13 +136,31 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 	LOG << "Intersect with " << other << " on " << intersect_result.point
 	    << " - " << intersect_result.intersects;
 
-	if (intersect_result.intersects) {
+	Point2 const& ip = intersect_result.point;
 
-		Point2 ip = intersect_result.point;
-		CrossRoads::iterator ip_crossRoad = create_crossRoad(crossRoads);
+	if (intersect_result.intersects) {
+		CrossRoads::iterator const& ip_crossRoad = create_crossRoad(crossRoads);
 
 		intersect(ways, way, ip_crossRoad, ip, crossRoads);
 		intersect(ways, other, ip_crossRoad, ip, crossRoads);
+	}
+
+	else if (distanceToLine(way, other) < 5) {
+		LOG << "But... is close!";
+
+		if (insideSegment(ip, way)) {
+			CrossRoads::iterator ip_crossRoad = create_crossRoad(crossRoads);
+			intersect(ways, way, ip_crossRoad, ip, crossRoads);
+			combineCroads(crossRoads, ip_crossRoad, getEndCloserTo(other, ip));
+		} else if (insideSegment(ip, other)) {
+			CrossRoads::iterator ip_crossRoad = create_crossRoad(crossRoads);
+			intersect(ways, other, ip_crossRoad, ip, crossRoads);
+			combineCroads(crossRoads, ip_crossRoad, getEndCloserTo(way, ip));
+		} else {
+			LOG << "Edges close, combine them";
+			combineCroads(crossRoads, *getEndCloserTo(way, ip).crossRoad,
+			              getEndCloserTo(other, ip));
+		}
 	}
 }
 
