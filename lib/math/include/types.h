@@ -66,10 +66,12 @@ struct ColorSegment2
 };
 
 struct WidePoint2;
+struct WideRoad2;
 
 struct CrossRoad
 {
-	std::vector<WidePoint2*> points{};
+	using Points = std::vector<std::pair<WidePoint2*, WideRoad2*>>;
+	Points points{};
 };
 typedef std::list<CrossRoad> CrossRoads;
 
