@@ -2,6 +2,7 @@
 #define GEOMETRY_H_NTEYZYI7
 
 #include "types.h"
+#include <algorithm>
 
 namespace math {
 
@@ -97,10 +98,25 @@ template <typename T> constexpr T pow2(T a) { return a * a; }
 inline constexpr double distanceToLine(const Point2& point,
                                        const Segment2& line)
 {
-	return fabs((line.b.y - line.a.y) * point.x -
-	            (line.b.x - line.a.x) * point.y + line.b.x * line.a.y -
-	            line.b.y * line.a.x) /
-	       sqrt(pow2(line.b.y - line.a.y) + pow2(line.b.x - line.a.x));
+	// http://paulbourke.net/geometry/pointlineplane/
+	float x3 = point.x, x1 = line.a.x, x2 = line.b.x;
+	float y3 = point.y, y1 = line.a.y, y2 = line.b.y;
+
+	float u =
+	    ((x3 - x1) * (x2 - x1) + (y3 - y1) * (y2 - y1)) / calcSquaredLen(line);
+
+	const Point2& other_proj =
+	    (u < 0
+	         ? line.a
+	         : u > 1 ? line.b : Point2{x1 + u * (x2 - x1), y1 + u * (y2 - y1)});
+
+	return sqrt(calcSquaredLen(point, other_proj));
+}
+
+inline constexpr double distanceToLine(const Segment2& a, const Segment2& b)
+{
+	return std::min({distanceToLine(b.a, a), distanceToLine(b.b, a),
+	                 distanceToLine(a.a, b), distanceToLine(a.b, b)});
 }
 
 inline constexpr float get_width_at_point(const WideRoad2& way,
