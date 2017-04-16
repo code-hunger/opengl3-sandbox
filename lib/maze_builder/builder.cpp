@@ -5,10 +5,7 @@
 #include "math/include/geometry_io.h"
 
 #include <algorithm>
-#include <cassert>
 #include <cmath>
-
-#include <list>
 
 #define INDENT(a)                                                              \
 	++Logger::get();                                                           \
