@@ -80,15 +80,14 @@ inline constexpr auto intersect(const Segment2& one, const Segment2& other)
 
 template <typename T> constexpr T abs(T x) { return x > 0 ? x : -x; }
 
-/*constexpr */ inline bool insideSegment(const Point2& point,
-                                         Segment2 const& line)
+constexpr inline bool insideSegment(const Point2& point, const Segment2& line)
 {
 	// http://stackoverflow.com/a/17590923
 	double AB = calcSquaredLen(line.a, line.b),
 	       AP = calcSquaredLen(line.a, point),
 	       PB = calcSquaredLen(line.b, point);
 	double res = sqrt(AP) + sqrt(PB) - sqrt(AB);
-	return abs(res) < 1e-6;
+	return abs(res) < 1e-5;
 }
 
 template <typename T> constexpr T fabs(T a) { return a < 0 ? -a : a; }
