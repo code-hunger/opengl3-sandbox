@@ -1,6 +1,6 @@
 #include "Maze.h"
 
-#define MAX_LINES 60
+#define MAX_LINES 100
 
 using namespace math;
 
