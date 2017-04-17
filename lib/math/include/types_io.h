@@ -1,5 +1,5 @@
-#ifndef GEOMETRY_IO_H_W6BMNIRU
-#define GEOMETRY_IO_H_W6BMNIRU
+#ifndef TYPES_IO_H_W6BMNIRU
+#define TYPES_IO_H_W6BMNIRU
 
 #include "types.h"
 
@@ -50,4 +50,4 @@ inline istream& operator>>(istream& in, WideRoad2& way)
 }
 }
 
-#endif /* end of include guard: GEOMETRY_IO_H_W6BMNIRU */
+#endif /* end of include guard: TYPES_IO_H_W6BMNIRU */

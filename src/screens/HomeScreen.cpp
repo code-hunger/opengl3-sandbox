@@ -4,7 +4,7 @@
 #include "graphics/include/config.h"
 #include "graphics/include/utils.h"
 #include "logger/include/logger.h"
-#include "math/include/geometry_io.h"
+#include "math/include/types_io.h"
 #include "maze_builder/include/builder.h"
 
 #include <GLFW/glfw3.h>
