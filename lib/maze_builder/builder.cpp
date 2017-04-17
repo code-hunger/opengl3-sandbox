@@ -28,7 +28,7 @@ template <typename T> unsigned long ptr(const T& a)
 WideRoad2* insertIfBipgEnough(WideRoads& ways, const WideRoad2& way,
                               float minLength)
 {
-	if (calcSquaredLen(way) > minLength * minLength) {
+	if (way.len2() > minLength * minLength) {
 		ways.push_back(way);
 		return &ways.back();
 	}
@@ -112,9 +112,9 @@ void intersect(WideRoads& ways, WideRoad2& way,
                CrossRoads::iterator ip_crossRoad, const Point2& ip,
                CrossRoads& crossRoads)
 {
-	WidePoint2& wayCloser = getEndCloserTo(way, ip);
+	WidePoint2& wayCloser = way.getEndCloserTo(ip);
 
-	const float ip_width_way = get_width_at_point(way, ip);
+	const float ip_width_way = way.widthAt(ip);
 
 	WideRoad2 complementing_to_way = {{ip, ip_width_way}, wayCloser},
 	          *inserted_complement_way =
@@ -149,18 +149,18 @@ void intersect(WideRoads& ways, WideRoad2& way, WideRoad2& other,
 	else if (distanceToLine(way, other) < 5) {
 		LOG << "But... is close!";
 
-		if (insideSegment(ip, way)) {
+		if (way.segment().isInside(ip)) {
 			CrossRoads::iterator ip_crossRoad = create_crossRoad(crossRoads);
 			intersect(ways, way, ip_crossRoad, ip, crossRoads);
-			combineCroads(crossRoads, ip_crossRoad, getEndCloserTo(other, ip));
-		} else if (insideSegment(ip, other)) {
+			combineCroads(crossRoads, ip_crossRoad, other.getEndCloserTo(ip));
+		} else if (other.segment().isInside(ip)) {
 			CrossRoads::iterator ip_crossRoad = create_crossRoad(crossRoads);
 			intersect(ways, other, ip_crossRoad, ip, crossRoads);
-			combineCroads(crossRoads, ip_crossRoad, getEndCloserTo(way, ip));
+			combineCroads(crossRoads, ip_crossRoad, way.getEndCloserTo(ip));
 		} else {
 			LOG << "Edges close, combine them";
-			combineCroads(crossRoads, *getEndCloserTo(way, ip).crossRoad,
-			              getEndCloserTo(other, ip));
+			combineCroads(crossRoads, *way.getEndCloserTo(ip).crossRoad,
+			              other.getEndCloserTo(ip));
 		}
 	}
 }
@@ -227,17 +227,17 @@ void dump(const ColorSegmentList& maze)
 	}
 }
 
-#define toDarkSegment(t) toColorSegment(t, {.1f, .1f, .1f, "dark"})
+#define toDarkSegment(t) t.colorSegment({.1f, .1f, .1f, "dark"})
 
 ColorSegmentList createWalls(const WideRoads& ways,
                              const CrossRoads& crossRoads)
 {
 	ColorSegmentList generated_maze;
 	for (const WideRoad2& way : ways) {
-		const auto& walls = createWalls(way);
-		generated_maze.push_back(toDarkSegment(walls.first));
-		generated_maze.push_back(toDarkSegment(walls.second));
-		generated_maze.push_back(toColorSegment(way));
+		//const auto& walls = createWalls(way);
+		//generated_maze.push_back(walls.first.colorSegment());
+		//generated_maze.push_back(walls.second.colorSegment());
+		generated_maze.push_back(way.colorSegment());
 	}
 
 	LOG << crossRoads.size() << " croads!";
@@ -257,7 +257,7 @@ ColorSegmentList createWalls(const WideRoads& ways,
 			Point2 p_p = p->first->point, p_q = q->first->point;
 			p_p.x -= 5;
 			p_q.x += 5;
-			generated_maze.push_back(toWhiteSegment2({p_p, p_q}));
+			generated_maze.push_back(Segment2{p_p, p_q}.whiteSegment());
 		}
 	}
 	return generated_maze;

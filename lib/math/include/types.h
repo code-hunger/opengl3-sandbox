@@ -17,6 +17,8 @@ struct Color
 	static const Color& next();
 };
 
+struct Segment2;
+
 struct Point2
 {
 	float x, y;
@@ -25,7 +27,17 @@ struct Point2
 	{
 		return this->x == other.x && this->y == other.y;
 	}
+
+	constexpr inline float distance2(const Point2&) const;
+	constexpr inline float distance2(const Segment2&) const;
 };
+
+struct LineEquation
+{
+	float a, b;
+};
+
+struct ColorSegment2;
 
 struct Segment2
 {
@@ -35,11 +47,13 @@ struct Segment2
 	{
 		return (a == other.a && b == other.b) || (a == other.b && b == other.a);
 	}
-};
 
-struct LineEquation
-{
-	float a, b;
+	inline constexpr float len2() const;
+	inline constexpr LineEquation equation() const;
+	inline constexpr bool isInside(const Point2&) const;
+	inline const Point2& getEndCloserTo(const Point2&) const;
+	inline ColorSegment2 colorSegment(Color color = Color::next()) const;
+	inline ColorSegment2 whiteSegment() const;
 };
 
 struct ColorSegment2
@@ -82,6 +96,13 @@ struct WideRoad2
 	}
 	operator Segment2() const { return {a.point, b.point}; }
 	Segment2 segment() const { return {a.point, b.point}; }
+
+	inline float len2() const;
+	inline float widthAt(const Point2&) const;
+	inline WidePoint2& getEndCloserTo(const Point2&);
+
+	inline ColorSegment2 colorSegment(Color color = Color::next()) const;
+	inline ColorSegment2 whiteSegment() const;
 };
 
 typedef std::pair<ColorSegment2, ColorSegment2> ColorSegment2Pair;
