@@ -3,13 +3,6 @@
 
 #include "math/include/types.h"
 
-// @TODO: USE forward_list
-#include <list>
-
-namespace math {
-typedef std::list<math::ColorSegment2> ColorSegmentList;
-}
-
 struct Builder
 {
 	bool join = true;

@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "graphics/include/GlfwWrapper.h"
+#include "graphics/include/State.h"
 
 class Screen;
 

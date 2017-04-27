@@ -60,4 +60,4 @@ Maze::Maze(WideRoads paths, ColorSegmentList walls, VertexArray vertArray)
 {
 }
 
-void Maze::draw(GLenum mode) { vertArray.draw(mode); }
+void Maze::draw(uint mode) { vertArray.draw(mode); }

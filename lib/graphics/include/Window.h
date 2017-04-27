@@ -2,9 +2,7 @@
 #define WINDOW_H
 
 #include <GL/glew.h>
-#include <iostream>
-#include <memory>
-#include <vector>
+
 class GLFWwindow;
 struct State;
 
@@ -45,7 +43,7 @@ protected:
 
 	bool shouldClose() const;
 
-	void keyCallback(ushort key, int scancode, int action, int mods) &;
+	void keyCallback(unsigned short key, int scancode, int action, int mods) &;
 };
 
 #endif /* end of include guard: WINDOW_H */

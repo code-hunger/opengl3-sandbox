@@ -1,13 +1,11 @@
 #include "ScreenManager.h"
+
 #include "graphics/include/GlfwWrapper.h"
 #include "graphics/include/Window.h"
+
 #include "logger/include/logger.h"
+
 #include "tclap/CmdLine.h"
-#include <GL/glew.h>
-
-#include <cstdio>
-
-#include <iostream>
 
 bool GlfwWrapper::exists = false;
 

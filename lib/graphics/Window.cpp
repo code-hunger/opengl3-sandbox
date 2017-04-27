@@ -1,14 +1,9 @@
 #include "Window.h"
 
 #include "State.h"
-#include "config.h"
 #include "logger/include/logger.h"
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
 
-#include <assert.h>
-#include <cstdio>
-#include <cstdlib>
+#include <GLFW/glfw3.h>
 
 #define WIDTH 700
 #define HEIGHT 700

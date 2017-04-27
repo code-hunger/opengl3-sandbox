@@ -1,9 +1,6 @@
 #ifndef STATE_H_CODY3JAM
 #define STATE_H_CODY3JAM
 
-#include <memory>
-#include <vector>
-
 struct State
 {
 	int mouseX, mouseY;

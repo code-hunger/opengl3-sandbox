@@ -106,6 +106,7 @@ struct WideRoad2
 };
 
 typedef std::pair<ColorSegment2, ColorSegment2> ColorSegment2Pair;
+typedef std::list<math::ColorSegment2> ColorSegmentList;
 typedef std::list<WideRoad2> WideRoads;
 }
 

@@ -3,8 +3,6 @@
 
 #include <GL/glew.h>
 
-#include <cstdio>
-
 Shader::Shader(const string& source, const GLenum type)
     : id(glCreateShader(type)), type(type), infoLog()
 {

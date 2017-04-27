@@ -4,9 +4,6 @@
 #include "math/include/geometry.h"
 #include "math/include/types_io.h"
 
-#include <algorithm>
-#include <cmath>
-
 #define INDENT(a)                                                              \
 	++Logger::get();                                                           \
 	a;                                                                         \

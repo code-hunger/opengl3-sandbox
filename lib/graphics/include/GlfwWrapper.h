@@ -3,12 +3,7 @@
 
 #include "Window.h"
 #include "logger/include/logger.h"
-#include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <cstdio>
-#include <forward_list>
-
-#include <vector>
 
 static void setWindowHints()
 {
