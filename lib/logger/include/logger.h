@@ -1,8 +1,6 @@
 #ifndef LOGGER_H_F36PNJYA
 #define LOGGER_H_F36PNJYA
 
-#include <cstdio>
-
 #include <iostream>
 
 #define LOG Logger::get()

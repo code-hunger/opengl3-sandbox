@@ -3,8 +3,6 @@
 #include <cstdarg>
 #include <cstdio>
 
-#include <iostream>
-
 const Logger& Logger::operator()(bool val)
 {
 	refresh();
