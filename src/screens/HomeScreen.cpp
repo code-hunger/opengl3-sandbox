@@ -7,8 +7,7 @@
 #include "math/include/types_io.h"
 #include "maze_builder/include/builder.h"
 
-#include <GLFW/glfw3.h>
-#include <Maze.h>
+#include "Maze.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -78,8 +77,10 @@ void createShader(const char* name, GLuint type, const ShaderProgram& program)
 }
 
 HomeScreen::HomeScreen(ushort maze_id, bool join_it, ushort max_lines)
-    : maze(getMazeFromFile(maze_id, join_it, max_lines))
+    : screen_elements{}
 {
+	screen_elements.emplace_back(
+	    std::make_unique<Maze>(getMazeFromFile(maze_id, join_it, max_lines)));
 	createShader("fragment_shader.glsl", GL_FRAGMENT_SHADER, shaderProgram);
 	createShader("vertex_shader.glsl", GL_VERTEX_SHADER, shaderProgram);
 
@@ -95,12 +96,12 @@ HomeScreen::HomeScreen(ushort maze_id, bool join_it, ushort max_lines)
 void update(const double deltaTime, State& state)
 {
 	(void)deltaTime;
-	if (state.keys[GLFW_KEY_ESCAPE]) {
+	if (state.keys[256]) {
 		state.shouldClose = true;
 	}
 }
 
-void render(const double deltaTime, Maze& maze)
+void render(const double deltaTime, Drawable& maze)
 {
 	(void)deltaTime;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -110,7 +111,9 @@ void render(const double deltaTime, Maze& maze)
 void HomeScreen::work(const double deltaTime, State& state)
 {
 	update(deltaTime, state);
-	render(deltaTime, maze);
+	for (auto& element : screen_elements) {
+		render(deltaTime, *element);
+	}
 }
 
 HomeScreen::~HomeScreen() {}

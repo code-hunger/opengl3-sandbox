@@ -1,10 +1,13 @@
 #ifndef HOMESCREEN_H_A3CBSROG
 #define HOMESCREEN_H_A3CBSROG
 
-#include "Maze.h"
 #include "Screen.h"
 #include "graphics/include/ShaderProgram.h"
-#include "graphics/include/VertexArray.h"
+
+#include <memory>
+#include <vector>
+
+struct Drawable;
 
 typedef unsigned short ushort;
 
@@ -18,9 +21,9 @@ public:
 
 private:
 	ShaderProgram shaderProgram{};
-	Maze maze;
+	std::vector<std::unique_ptr<Drawable>> screen_elements;
 
-	void attachShader(uint id) { shaderProgram.attachShader(id); };
+	void attachShader(unsigned id) { shaderProgram.attachShader(id); };
 };
 
 #endif /* end of include guard: HOMESCREEN_H_A3CBSROG */
