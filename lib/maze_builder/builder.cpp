@@ -226,17 +226,21 @@ void dump(const ColorSegmentList& maze)
 
 #define toDarkSegment(t) t.colorSegment({.1f, .1f, .1f, "dark"})
 
-ColorSegmentList createWalls(const WideRoads& ways,
-                             const CrossRoads& crossRoads)
+ColorSegmentList createWalls(WideRoads& ways)
 {
 	ColorSegmentList generated_maze;
 	for (const WideRoad2& way : ways) {
-		//const auto& walls = createWalls(way);
-		//generated_maze.push_back(walls.first.colorSegment());
-		//generated_maze.push_back(walls.second.colorSegment());
+		// const auto& walls = createWalls(way);
+		// generated_maze.push_back(walls.first.colorSegment());
+		// generated_maze.push_back(walls.second.colorSegment());
 		generated_maze.push_back(way.colorSegment());
 	}
 
+	return generated_maze;
+}
+
+void dumpCroads(CrossRoads const& crossRoads, ColorSegmentList& generated_maze)
+{
 	LOG << crossRoads.size() << " croads!";
 	for (const CrossRoad& crossRoad : crossRoads) {
 		const CrossRoad::Points& points = crossRoad.points;
@@ -257,7 +261,6 @@ ColorSegmentList createWalls(const WideRoads& ways,
 			generated_maze.push_back(Segment2{p_p, p_q}.whiteSegment());
 		}
 	}
-	return generated_maze;
 }
 
 math::ColorSegmentList Builder::build_from_paths(WideRoads& ways)
@@ -268,7 +271,7 @@ math::ColorSegmentList Builder::build_from_paths(WideRoads& ways)
 	INDENT(normalizeWays(ways, crossRoads));
 	LOG << "Normalized - " << ways.size();
 
-	ColorSegmentList generated_maze = createWalls(ways, crossRoads);
+	ColorSegmentList generated_maze = createWalls(ways);
 
 	LOG("%lu walls generated from %lu lines\n", generated_maze.size(),
 	    ways.size());
