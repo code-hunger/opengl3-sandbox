@@ -8,11 +8,9 @@
 #define ERR Logger::get()(Logger::Red)
 
 #ifndef _MSC_VER
-#define PRINTF_FORMAT const Logger& operator()(const char*, ...) __attribute__((format(printf, 2, 3)));
-#define PRINTF_FORMAT_CONST const Logger& operator()(const char*, ...) const __attribute__((format(printf, 2, 3)));
+#define PRINTF_FORMAT __attribute__((format(printf, 2, 3)));
 #else
-#define PRINTF_FORMAT ;
-#define PRINTF_FORMAT_CONST ;
+#define PRINTF_FORMAT 
 #endif
 
 /*
@@ -46,8 +44,8 @@ public:
 	};
 
 	// printf-like logging; either const or non-const
-	PRINTF_FORMAT
-	PRINTF_FORMAT_CONST
+	const Logger& operator()(const char*, ...) PRINTF_FORMAT;
+	const Logger& operator()(const char*, ...) const PRINTF_FORMAT;
 
 	// cout-like logging
 	template <typename T> const Logger& operator<<(T);
