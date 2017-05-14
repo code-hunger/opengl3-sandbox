@@ -127,5 +127,5 @@ void Window::keyCallback(ushort key, int scancode, int action, int mods) &
 Window::~Window()
 {
 	glfwDestroyWindow(window);
-	LOG << "Winodw destroyed!";
+	LOG << "Window destroyed!";
 }
