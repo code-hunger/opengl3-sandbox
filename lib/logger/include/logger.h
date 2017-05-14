@@ -14,6 +14,9 @@
  * Result of both states is CONST state
  * Non-const state cat be accuired only by calling Logger::get()
  */
+
+typedef unsigned short ushort;
+
 class Logger
 {
 	ushort level;
