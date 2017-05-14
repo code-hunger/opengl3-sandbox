@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.0)
 project (game)
 
-add_compile_options(-std=gnu++17 -Wall -Wextra -Wpedantic -Wdouble-promotion -Wconversion -Wsign-conversion -Wlogical-op -Wabi  -Wctor-dtor-privacy -Wmaybe-uninitialized -Wuninitialized -Wnon-virtual-dtor -Wreorder -Weffc++ -Wstrict-null-sentinel -Wno-non-template-friend -Wold-style-cast -Woverloaded-virtual -Wno-pmf-conversions -Wsign-promo -Wno-error=unused-variable)
+if(CMAKE_COMPILER_IS_GNUCXX)
+	add_compile_options(-Wall -Wextra -Wpedantic -Wdouble-promotion -Wconversion -Wsign-conversion -Wlogical-op -Wabi  -Wctor-dtor-privacy -Wmaybe-uninitialized -Wuninitialized -Wnon-virtual-dtor -Wreorder -Weffc++ -Wstrict-null-sentinel -Wno-non-template-friend -Wold-style-cast -Woverloaded-virtual -Wno-pmf-conversions -Wsign-promo -Wno-error=unused-variable)
+endif(CMAKE_COMPILER_IS_GNUCXX)
+
+if(MSVC)
+	add_compile_options(-W4)
+endif(MSVC)
 
 set(SHADER_DIRECTORY ${PROJECT_SOURCE_DIR}/src/shaders)
 set(MAZE_DIRECTORY ${PROJECT_SOURCE_DIR}/data/mazes)
@@ -26,3 +32,5 @@ add_subdirectory(lib/graphics)
 add_subdirectory(lib/maze_builder)
 add_subdirectory(lib/logger)
 
+set_property(TARGET game PROPERTY CXX_STANDARD 14)
+set_property(TARGET game PROPERTY CXX_STANDARD_REQUIRED ON)
