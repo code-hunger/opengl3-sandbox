@@ -7,6 +7,14 @@
 #define WARN Logger::get()(Logger::Orange)
 #define ERR Logger::get()(Logger::Red)
 
+#ifndef _MSC_VER
+#define PRINTF_FORMAT const Logger& operator()(const char*, ...) __attribute__((format(printf, 2, 3)));
+#define PRINTF_FORMAT_CONST const Logger& operator()(const char*, ...) const __attribute__((format(printf, 2, 3)));
+#else
+#define PRINTF_FORMAT ;
+#define PRINTF_FORMAT_CONST ;
+#endif
+
 /*
  * NON-const state means indent MUST be printed
  * Const state means indent MUST NOT be printed
@@ -38,11 +46,8 @@ public:
 	};
 
 	// printf-like logging; either const or non-const
-	//TO-DO: This causes compile errors in VS2015, fix it
-	//const Logger& operator()(const char*, ...)
-	//    __attribute__((format(printf, 2, 3)));
-	//const Logger& operator()(const char*, ...) const
-	//    __attribute__((format(printf, 2, 3)));
+	PRINTF_FORMAT
+	PRINTF_FORMAT_CONST
 
 	// cout-like logging
 	template <typename T> const Logger& operator<<(T);
