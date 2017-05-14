@@ -7,6 +7,12 @@
 #define WARN Logger::get()(Logger::Orange)
 #define ERR Logger::get()(Logger::Red)
 
+#ifndef _MSC_VER
+#define PRINTF_FORMAT __attribute__((format(printf, 2, 3)))
+#else
+#define PRINTF_FORMAT 
+#endif
+
 /*
  * NON-const state means indent MUST be printed
  * Const state means indent MUST NOT be printed
@@ -14,6 +20,9 @@
  * Result of both states is CONST state
  * Non-const state cat be accuired only by calling Logger::get()
  */
+
+typedef unsigned short ushort;
+
 class Logger
 {
 	ushort level;
@@ -35,10 +44,8 @@ public:
 	};
 
 	// printf-like logging; either const or non-const
-	const Logger& operator()(const char*, ...)
-	    __attribute__((format(printf, 2, 3)));
-	const Logger& operator()(const char*, ...) const
-	    __attribute__((format(printf, 2, 3)));
+	const Logger& operator()(const char*, ...) PRINTF_FORMAT;
+	const Logger& operator()(const char*, ...) const PRINTF_FORMAT;
 
 	// cout-like logging
 	template <typename T> const Logger& operator<<(T);
