@@ -8,7 +8,7 @@
 #define ERR Logger::get()(Logger::Red)
 
 #ifndef _MSC_VER
-#define PRINTF_FORMAT __attribute__((format(printf, 2, 3)));
+#define PRINTF_FORMAT __attribute__((format(printf, 2, 3)))
 #else
 #define PRINTF_FORMAT 
 #endif
