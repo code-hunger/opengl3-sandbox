@@ -35,10 +35,11 @@ public:
 	};
 
 	// printf-like logging; either const or non-const
-	const Logger& operator()(const char*, ...)
-	    __attribute__((format(printf, 2, 3)));
-	const Logger& operator()(const char*, ...) const
-	    __attribute__((format(printf, 2, 3)));
+	//TO-DO: This causes compile errors in VS2015, fix it
+	//const Logger& operator()(const char*, ...)
+	//    __attribute__((format(printf, 2, 3)));
+	//const Logger& operator()(const char*, ...) const
+	//    __attribute__((format(printf, 2, 3)));
 
 	// cout-like logging
 	template <typename T> const Logger& operator<<(T);
