@@ -30,7 +30,7 @@ GLint ShaderProgram::loadUniformLocation(const char* uniform)
 	if (uniforms.count(uniform)) return uniforms[uniform];
 
 	GLint loc = glGetUniformLocation(id, uniform);
-	if (loc <= -1) {
+	if (loc < 0) {
 		throw "Uniform location not found!";
 	}
 	uniforms[uniform] = loc;
