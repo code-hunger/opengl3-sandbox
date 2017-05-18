@@ -38,21 +38,6 @@ VertexArray wallsToVertArr(const ColorSegmentList& walls)
 	}
 
 	return {vector<float>{points, points + i}};
-
-	/*for (const WideRoad2& path : ways) {
-	  points[i++] = path.a.point.x;
-	  points[i++] = path.a.point.y;
-	  points[i++] = 0;
-	  points[i++] = 0.7f;
-	  points[i++] = 0.7f;
-	  points[i++] = 0.7f;
-	  points[i++] = path.b.point.x;
-	  points[i++] = path.b.point.y;
-	  points[i++] = 0;
-	  points[i++] = 0.7f;
-	  points[i++] = 0.7f;
-	  points[i++] = 0.7f;
-	  }*/
 }
 
 Maze::Maze(WideRoads paths, ColorSegmentList walls, VertexArray vertArray)
