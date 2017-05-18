@@ -45,5 +45,6 @@ void ShaderProgram::setUniformMatrix(GLint location, const GLfloat* matrix_data)
 void ShaderProgram::setUniformMatrix(const char* location,
                                      const GLfloat* matrix_data)
 {
+	use();
 	setUniformMatrix(loadUniformLocation(location), matrix_data);
 }
