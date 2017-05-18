@@ -20,7 +20,6 @@ public:
 	void work(double deltaTime, State& state);
 
 private:
-	ShaderProgram shaderProgram{};
 	std::vector<std::unique_ptr<Drawable>> screen_elements;
 };
 

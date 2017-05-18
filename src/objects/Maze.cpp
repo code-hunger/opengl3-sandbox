@@ -1,10 +1,41 @@
 #include "Maze.h"
+#include "logger/include/logger.h"
+
+#include "graphics/include/Shader.h"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "graphics/include/config.h"
+#include "graphics/include/utils.h"
 
 #define MAX_LINES 100
 
 using namespace math;
 
 VertexArray wallsToVertArr(const ColorSegmentList& walls);
+
+std::string getShaderSource(const char* shaderName)
+{
+	return readFile(SHADER_DIRECTORY, shaderName);
+}
+
+void compileShader(Shader& shader)
+{
+	if (!shader.tryToCompile()) {
+		ERR << "\nShader compilation failed: " << shader.infoLog;
+		throw "Shader copmilation fail";
+	}
+}
+
+void createShader(const char* name, GLuint type, const ShaderProgram& program)
+{
+	Shader shader{getShaderSource(name).c_str(), type};
+
+	compileShader(shader);
+	program.attachShader(shader.id);
+}
 
 Maze Maze::build(WideRoads&& ways, const ColorSegmentList& walls)
 {
@@ -44,6 +75,20 @@ Maze::Maze(const WideRoads& paths, const ColorSegmentList& walls,
            const VertexArray& vertArray)
     : paths(paths), walls(walls), vertArray(vertArray)
 {
+	createShader("fragment_shader.glsl", GL_FRAGMENT_SHADER, shaderProgram);
+	createShader("vertex_shader.glsl", GL_VERTEX_SHADER, shaderProgram);
+
+	shaderProgram.link();
+
+	glm::mat4 proj = glm::ortho(0.f, 100.f, 0.f, 100.f, 0.1f, -.1f);
+	const GLfloat* const matrix = glm::value_ptr(proj);
+
+	shaderProgram.use();
+	shaderProgram.setUniformMatrix("model_view_projection", matrix);
 }
 
-void Maze::draw(uint mode) { vertArray.draw(mode); }
+void Maze::draw(uint mode)
+{
+	shaderProgram.use();
+	vertArray.draw(mode);
+}
