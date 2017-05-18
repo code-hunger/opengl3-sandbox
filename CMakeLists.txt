@@ -6,7 +6,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 if(MSVC)
-	add_compile_options(-W4)
+	add_compile_options(/W4 /std:c++latest)
 endif(MSVC)
 
 set(SHADER_DIRECTORY ${PROJECT_SOURCE_DIR}/src/shaders)
