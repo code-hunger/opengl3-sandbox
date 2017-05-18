@@ -21,19 +21,15 @@ std::string getShaderSource(const char* shaderName)
 	return readFile(SHADER_DIRECTORY, shaderName);
 }
 
-void compileShader(Shader& shader)
-{
-	if (!shader.tryToCompile()) {
-		ERR << "\nShader compilation failed: " << shader.infoLog;
-		throw "Shader copmilation fail";
-	}
-}
-
 void createShader(const char* name, GLuint type, const ShaderProgram& program)
 {
 	Shader shader{getShaderSource(name).c_str(), type};
 
-	compileShader(shader);
+	if (!shader.tryToCompile()) {
+		ERR << "\nShader compilation failed: " << shader.infoLog;
+		throw "Shader copmilation fail";
+	}
+
 	program.attachShader(shader.id);
 }
 
