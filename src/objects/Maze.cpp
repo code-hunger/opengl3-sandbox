@@ -40,7 +40,8 @@ VertexArray wallsToVertArr(const ColorSegmentList& walls)
 	return {vector<float>{points, points + i}};
 }
 
-Maze::Maze(WideRoads paths, ColorSegmentList walls, VertexArray vertArray)
+Maze::Maze(const WideRoads& paths, const ColorSegmentList& walls,
+           const VertexArray& vertArray)
     : paths(paths), walls(walls), vertArray(vertArray)
 {
 }

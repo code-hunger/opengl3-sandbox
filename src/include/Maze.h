@@ -15,9 +15,10 @@ public:
 private:
 	math::WideRoads paths;
 	math::ColorSegmentList walls;
+
 	VertexArray vertArray;
 
-	Maze(math::WideRoads, math::ColorSegmentList, VertexArray);
+	Maze(const math::WideRoads&, const math::ColorSegmentList&, const VertexArray&);
 };
 
 #endif /* end of include guard: MAZE_H_UAWB7QD4 */
