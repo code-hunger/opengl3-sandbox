@@ -37,14 +37,10 @@ GLint ShaderProgram::loadUniformLocation(const char* uniform)
 	return loc;
 }
 
-void ShaderProgram::setUniformMatrix(GLint location, const GLfloat* matrix_data)
-{
-	glUniformMatrix4fv(location, 1, GL_FALSE, matrix_data);
-}
-
-void ShaderProgram::setUniformMatrix(const char* location,
+void ShaderProgram::setUniformMatrix(const char* uniformName,
                                      const GLfloat* matrix_data)
 {
 	use();
-	setUniformMatrix(loadUniformLocation(location), matrix_data);
+	GLint uniformLocation = loadUniformLocation(uniformName);
+	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, matrix_data);
 }

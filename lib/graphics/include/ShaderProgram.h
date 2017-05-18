@@ -23,9 +23,6 @@ struct ShaderProgram
 	GLint loadUniformLocation(const char*);
 
 	void setUniformMatrix(const char* location, const GLfloat* matrix_data);
-
-private:
-	void setUniformMatrix(GLint location, const GLfloat* matrix_data);
 };
 
 #endif /* end of include guard: SHADER_PROGRAM_H_IKLFSRJ5 */
