@@ -22,8 +22,6 @@ public:
 private:
 	ShaderProgram shaderProgram{};
 	std::vector<std::unique_ptr<Drawable>> screen_elements;
-
-	void attachShader(unsigned id) { shaderProgram.attachShader(id); };
 };
 
 #endif /* end of include guard: HOMESCREEN_H_A3CBSROG */
