@@ -3,14 +3,20 @@
 
 #include <cmath>
 
-#if __has_include(<experimental/optional>)
-#include <experimental/optional>
-template<typename T>
-using optional = std::experimental::optional<T>;
-#elif __has_include(<optional>)
+// if we can't check for header existence, or <optional> is available,
+// then use optional (this happens in VS2017)
+#if !defined(__has_include) || __has_include(<optional>)
 #include <optional>
-template<typename T>
-using optional = std::optional<T>;
+template <typename T> using optional = std::optional<T>;
+
+// We can check for header existence and <optional> is not available.
+// Try with <experimental/optional>! (happens in GCC)
+#elif __has_include(<experimental/optional>)
+#include <experimental/optional>
+template <typename T> using optional = std::experimental::optional<T>;
+
+// if we can check for header existence and neither <optional>
+// nor <experimental/optional> is available, abort compilation
 #else
 #error "Neither header <optional> nor <experimental/optional> available!"
 #endif
