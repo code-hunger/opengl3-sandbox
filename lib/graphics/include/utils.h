@@ -4,14 +4,14 @@
 #include <fstream>
 #include <string>
 
-std::string readFile(std::ifstream input)
+inline std::string readFile(std::ifstream input)
 {
 	std::string s;
 	getline(input, s, '\0');
 	return s;
 }
 
-std::string readFile(std::string fileName)
+inline std::string readFile(std::string fileName)
 {
 	return readFile(std::ifstream(fileName));
 }
