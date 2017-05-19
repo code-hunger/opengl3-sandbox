@@ -2,7 +2,19 @@
 #define TYPES_H_H3EJYX5K
 
 #include <cmath>
+
+#if __has_include(<experimental/optional>)
 #include <experimental/optional>
+template<typename T>
+using optional = std::experimental::optional<T>;
+#elif __has_include(<optional>)
+#include <optional>
+template<typename T>
+using optional = std::optional<T>;
+#else
+#error "Neither header <optional> nor <experimental/optional> available!"
+#endif
+
 #include <list>
 #include <vector>
 
@@ -78,7 +90,7 @@ struct WidePoint2
 {
 	Point2 point;
 	float width;
-	std::experimental::optional<CrossRoads::iterator> crossRoad{};
+	optional<CrossRoads::iterator> crossRoad{};
 
 	bool operator==(const WidePoint2& other) const
 	{
