@@ -1,6 +1,6 @@
 #include "HomeScreen.h"
 
-#include "graphics/config.h"
+#include "graphics/include/config.h"
 #include "graphics/include/utils.h"
 #include "logger/include/logger.h"
 #include "math/include/types_io.h"
