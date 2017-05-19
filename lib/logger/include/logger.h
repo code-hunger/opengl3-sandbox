@@ -10,8 +10,11 @@
 #ifndef _MSC_VER
 #define PRINTF_FORMAT __attribute__((format(printf, 2, 3)))
 #else
-#define PRINTF_FORMAT 
+#define PRINTF_FORMAT
 #endif
+
+#define WITH_CONST(sig, body)                                                  \
+	const Logger& operator sig body const Logger& operator sig const body
 
 /*
  * NON-const state means indent MUST be printed
@@ -31,6 +34,9 @@ class Logger
 
 	explicit Logger(char unsigned level = 0) : level(level){};
 
+	Logger(const Logger&) = delete;
+	void operator=(const Logger&) = delete;
+
 public:
 	enum Color {
 		Black = 0,
@@ -43,39 +49,26 @@ public:
 		Default = -1,
 	};
 
-	// printf-like logging; either const or non-const
-	const Logger& operator()(const char*, ...) PRINTF_FORMAT;
-	const Logger& operator()(const char*, ...) const PRINTF_FORMAT;
+	// printf-like logging
+	WITH_CONST(()(const char*, ...), PRINTF_FORMAT;)
 
 	// cout-like logging
 	template <typename T> const Logger& operator<<(T);
 	template <typename T> const Logger& operator<<(T) const;
 
-	// Color specifiers using (); either const or non-const
-	const Logger& operator()(Color);
-	const Logger& operator()(Color) const;
+	// Color specifiers
+	WITH_CONST(()(const Color&), ;)
+	WITH_CONST(<<(const Color& c), { return (*this)(c); })
 
-	// Color specifiers using <<; either const or non-const
-	inline const Logger& operator<<(Color c) { return (*this)(c); };
-	inline const Logger& operator<<(Color c) const { return (*this)(c); };
-
-	// Bool overloads; either const or non-const
-	const Logger& operator()(bool);
-	const Logger& operator()(bool) const;
-
-	// Bool overloads; either const or non-const
-	inline const Logger& operator<<(bool b) { return (*this)(b); };
-	inline const Logger& operator<<(bool b) const { return (*this)(b); };
+	// Bool overloads
+	WITH_CONST(()(bool), ;)
+	WITH_CONST(<<(bool b), { return (*this)(b); })
 
 	// Increase/decrease indentation
 	Logger& operator++();
 	Logger& operator--();
 
-	Logger(const Logger&) = delete;
-	void operator=(const Logger&) = delete;
-
-	// To be easily used in boolean expressions,
-	// e.g. CONDITION && LOG("msg")
+	// For usage in boolean expressions, e.g. CONDITION && LOG("msg")
 	operator bool() const { return 1; };
 
 	static Logger& get()
