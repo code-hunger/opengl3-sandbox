@@ -30,20 +30,17 @@ GLint ShaderProgram::loadUniformLocation(const char* uniform)
 	if (uniforms.count(uniform)) return uniforms[uniform];
 
 	GLint loc = glGetUniformLocation(id, uniform);
-	if (loc <= -1) {
+	if (loc < 0) {
 		throw "Uniform location not found!";
 	}
 	uniforms[uniform] = loc;
 	return loc;
 }
 
-void ShaderProgram::setUniformMatrix(GLint location, const GLfloat* matrix_data)
-{
-	glUniformMatrix4fv(location, 1, GL_FALSE, matrix_data);
-}
-
-void ShaderProgram::setUniformMatrix(const char* location,
+void ShaderProgram::setUniformMatrix(const char* uniformName,
                                      const GLfloat* matrix_data)
 {
-	setUniformMatrix(loadUniformLocation(location), matrix_data);
+	use();
+	GLint uniformLocation = loadUniformLocation(uniformName);
+	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, matrix_data);
 }

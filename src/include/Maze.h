@@ -2,6 +2,7 @@
 #define MAZE_H_UAWB7QD4
 
 #include "graphics/include/VertexArray.h"
+#include "graphics/include/ShaderProgram.h"
 #include "graphics/include/Drawable.h"
 #include "math/include/types.h"
 
@@ -15,9 +16,11 @@ public:
 private:
 	math::WideRoads paths;
 	math::ColorSegmentList walls;
-	VertexArray vertArray;
 
-	Maze(math::WideRoads, math::ColorSegmentList, VertexArray);
+	VertexArray vertArray;
+	ShaderProgram shaderProgram{};
+
+	Maze(const math::WideRoads&, const math::ColorSegmentList&, const VertexArray&);
 };
 
 #endif /* end of include guard: MAZE_H_UAWB7QD4 */
