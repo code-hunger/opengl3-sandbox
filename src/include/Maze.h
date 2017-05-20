@@ -17,7 +17,7 @@ private:
 	math::ColorSegmentList walls;
 
 	VertexArray vertArray;
-	ShaderProgram shaderProgram{};
+	ShaderProgram shaderProgram{"maze"};
 
 	Maze(const math::WideRoads&, const math::ColorSegmentList&, VertexArray&&);
 };

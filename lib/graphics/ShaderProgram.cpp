@@ -1,6 +1,14 @@
-#include "ShaderProgram.h"
 #include "Shader.h"
+#include "ShaderProgram.h"
 #include "logger/include/logger.h"
+
+ShaderProgram::ShaderProgram(const char* shaderName): uniforms{}
+{
+	createShader(std::string(shaderName).append(".frag").c_str(),
+	             GL_FRAGMENT_SHADER);
+	createShader(std::string(shaderName).append(".vert").c_str(),
+	             GL_VERTEX_SHADER);
+}
 
 void ShaderProgram::attachShader(GLuint shaderId) const
 {

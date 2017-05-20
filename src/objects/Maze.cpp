@@ -54,9 +54,6 @@ Maze::Maze(const WideRoads& paths, const ColorSegmentList& walls,
            VertexArray&& vertArray)
     : paths(paths), walls(walls), vertArray(std::move(vertArray))
 {
-	shaderProgram.createShader("maze.frag", GL_FRAGMENT_SHADER);
-	shaderProgram.createShader("maze.vert", GL_VERTEX_SHADER);
-
 	shaderProgram.link();
 
 	glm::mat4 proj = glm::ortho(0.f, 100.f, 0.f, 100.f, 0.1f, -.1f);
