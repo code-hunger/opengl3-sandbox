@@ -10,20 +10,20 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
 class ShipsCollection
 {
 public:
-	ShipsCollection() { shaderProgram.link(); }
-
-	void addShip(Ship&& ship)
+	ShipsCollection()
 	{
+		shaderProgram.link();
+
 		glm::mat4 proj = glm::ortho(0.f, 100.f, 0.f, 100.f, 0.1f, -.1f);
 		const GLfloat* const matrix = glm::value_ptr(proj);
 
 		shaderProgram.setUniformMatrix("model_view_projection", matrix);
-		ships.emplace_back(std::move(ship));
 	}
+
+	void addShip(Ship&& ship) { ships.emplace_back(std::move(ship)); }
 
 	void update(const State&, double) {}
 
