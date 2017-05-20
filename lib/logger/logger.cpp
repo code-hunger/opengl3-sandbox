@@ -6,12 +6,12 @@
 #define WITH_CONST_DEF(sig, body)                                              \
 	const Logger& Logger::operator() sig                                       \
 	{                                                                          \
+		refresh();                                                             \
 		body;                                                                  \
 		return *this;                                                          \
 	}                                                                          \
 	const Logger& Logger::operator() sig const                                 \
 	{                                                                          \
-		refresh();                                                             \
 		body;                                                                  \
 		return *this;                                                          \
 	}
