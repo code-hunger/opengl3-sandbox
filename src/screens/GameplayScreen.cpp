@@ -1,4 +1,4 @@
-#include "HomeScreen.h"
+#include "GameplayScreen.h"
 
 #include "graphics/include/config.h"
 #include "graphics/include/utils.h"
@@ -51,7 +51,7 @@ Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
 	return Maze::build(std::move(lines), walls);
 }
 
-HomeScreen::HomeScreen(ushort maze_id, bool join_it, ushort max_lines)
+GameplayScreen::GameplayScreen(ushort maze_id, bool join_it, ushort max_lines)
     : maze(getMazeFromFile(maze_id, join_it, max_lines))
 {
 }
@@ -71,10 +71,10 @@ void render(const double deltaTime, Maze& maze)
 	maze.draw(GL_LINES);
 }
 
-void HomeScreen::work(const double deltaTime, State& state)
+void GameplayScreen::work(const double deltaTime, State& state)
 {
 	update(deltaTime, state);
 	render(deltaTime, maze);
 }
 
-HomeScreen::~HomeScreen() {}
+GameplayScreen::~GameplayScreen() {}

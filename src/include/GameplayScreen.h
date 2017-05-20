@@ -7,11 +7,11 @@
 
 typedef unsigned short ushort;
 
-class HomeScreen : public Screen
+class GameplayScreen : public Screen
 {
 public:
-	HomeScreen(ushort maze_id, bool join_it, ushort max_lines);
-	virtual ~HomeScreen();
+	GameplayScreen(ushort maze_id, bool join_it, ushort max_lines);
+	virtual ~GameplayScreen();
 
 	void work(double deltaTime, State& state);
 

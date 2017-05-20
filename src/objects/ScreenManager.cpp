@@ -1,9 +1,9 @@
 #include "ScreenManager.h"
 
-#include "HomeScreen.h"
+#include "GameplayScreen.h"
 
 ScreenManager::ScreenManager(ushort mazeId, bool noJoinLines, ushort maxLines)
-    : screen(std::make_unique<HomeScreen>(mazeId, !noJoinLines, maxLines))
+    : screen(std::make_unique<GameplayScreen>(mazeId, !noJoinLines, maxLines))
 {
 }
 
