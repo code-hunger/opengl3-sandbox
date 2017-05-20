@@ -65,9 +65,8 @@ void update(const double deltaTime, State& state, ShipsCollection& ships)
 	ships.update(state, deltaTime);
 }
 
-void render(const double deltaTime, Maze& maze, const ShipsCollection& ships)
+void render(double, Maze& maze, const ShipsCollection& ships)
 {
-	(void)deltaTime;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	maze.draw(GL_LINES);
 	ships.draw();
