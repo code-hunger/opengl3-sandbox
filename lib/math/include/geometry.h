@@ -99,7 +99,7 @@ inline constexpr float Point2::distance2(const Segment2& line) const
 	return distance2(other_proj);
 }
 
-inline constexpr double distanceToLine(const Segment2& a, const Segment2& b)
+inline double distanceToLine(const Segment2& a, const Segment2& b)
 {
 	return sqrt(std::min({b.a.distance2(a), b.b.distance2(a),
 	                      a.a.distance2(b), a.b.distance2(b)}));
