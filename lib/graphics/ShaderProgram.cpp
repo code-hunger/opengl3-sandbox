@@ -47,7 +47,7 @@ void ShaderProgram::setUniformMatrix(const char* uniformName,
 	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, matrix_data);
 }
 
-void createShader(const char* name, GLuint type, const ShaderProgram& program)
+void ShaderProgram::createShader(const char* name, GLuint type)
 {
 	Shader shader{getShaderSource(name).c_str(), type};
 
@@ -56,5 +56,5 @@ void createShader(const char* name, GLuint type, const ShaderProgram& program)
 		throw "Shader copmilation fail";
 	}
 
-	program.attachShader(shader.id);
+	attachShader(shader.id);
 }

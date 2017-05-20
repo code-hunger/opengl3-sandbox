@@ -16,6 +16,8 @@ struct ShaderProgram
 
 	void attachShader(GLuint shaderId) const;
 
+	void createShader(const char* name, GLuint type);
+
 	void getInfoLog(char* infoLog) const; // 512 long
 
 	void use() const;
@@ -24,7 +26,5 @@ struct ShaderProgram
 
 	void setUniformMatrix(const char* location, const GLfloat* matrix_data);
 };
-
-void createShader(const char* name, GLuint type, const ShaderProgram&);
 
 #endif /* end of include guard: SHADER_PROGRAM_H_IKLFSRJ5 */
