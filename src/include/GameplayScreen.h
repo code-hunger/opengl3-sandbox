@@ -2,6 +2,7 @@
 #define HOMESCREEN_H_A3CBSROG
 
 #include "Maze.h"
+#include "ShipsCollection.h"
 #include "Screen.h"
 #include "graphics/ShaderProgram.h"
 
@@ -17,6 +18,7 @@ public:
 
 private:
 	Maze maze;
+	ShipsCollection ships{};
 };
 
 #endif /* end of include guard: HOMESCREEN_H_A3CBSROG */

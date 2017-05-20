@@ -54,27 +54,29 @@ Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
 GameplayScreen::GameplayScreen(ushort maze_id, bool join_it, ushort max_lines)
     : maze(getMazeFromFile(maze_id, join_it, max_lines))
 {
+	ships.addShip({Point2{17, 37}, 2});
 }
 
-void update(const double deltaTime, State& state)
+void update(const double deltaTime, State& state, ShipsCollection& ships)
 {
-	(void)deltaTime;
 	if (state.keys[GLFW_KEY_ESCAPE]) {
 		state.shouldClose = true;
 	}
+	ships.update(state, deltaTime);
 }
 
-void render(const double deltaTime, Maze& maze)
+void render(const double deltaTime, Maze& maze, const ShipsCollection& ships)
 {
 	(void)deltaTime;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	maze.draw(GL_LINES);
+	ships.draw();
 }
 
 void GameplayScreen::work(const double deltaTime, State& state)
 {
-	update(deltaTime, state);
-	render(deltaTime, maze);
+	update(deltaTime, state, ships);
+	render(deltaTime, maze, ships);
 }
 
 GameplayScreen::~GameplayScreen() {}
