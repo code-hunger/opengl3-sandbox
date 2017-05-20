@@ -8,16 +8,13 @@
 class Ship
 {
 public:
-	Ship(math::Point2 position, double direction)
-	    : position(position), direction(direction)
-	{
-	}
+	Ship(math::Point2 position, double direction = 0);
 
 	Ship(Ship&&) = default;
 
 private:
-	math::Point2 position{};
-	double direction{};
+	math::Point2 position;
+	double direction;
 };
 
 #endif /* end of include guard: SHIP_H_IKJGK1NW */
