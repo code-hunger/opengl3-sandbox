@@ -1,4 +1,6 @@
 #include "ShaderProgram.h"
+#include "Shader.h"
+#include "logger/include/logger.h"
 
 void ShaderProgram::attachShader(GLuint shaderId) const
 {
@@ -43,4 +45,16 @@ void ShaderProgram::setUniformMatrix(const char* uniformName,
 	use();
 	GLint uniformLocation = loadUniformLocation(uniformName);
 	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, matrix_data);
+}
+
+void createShader(const char* name, GLuint type, const ShaderProgram& program)
+{
+	Shader shader{getShaderSource(name).c_str(), type};
+
+	if (!shader.tryToCompile()) {
+		ERR << "\nShader compilation failed: " << shader.infoLog;
+		throw "Shader copmilation fail";
+	}
+
+	program.attachShader(shader.id);
 }

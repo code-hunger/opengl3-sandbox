@@ -1,6 +1,9 @@
 #include "Shader.h"
 #include "logger/include/logger.h"
 
+#include "config.h"
+#include "utils.h"
+
 #include <GL/glew.h>
 
 Shader::Shader(const string& source, const GLenum type)
@@ -35,4 +38,9 @@ bool Shader::tryToCompile()
 	infoLog = getInfoLog(id);
 
 	return false;
+}
+
+std::string getShaderSource(const char* shaderName)
+{
+	return readFile(SHADER_DIRECTORY, shaderName);
 }

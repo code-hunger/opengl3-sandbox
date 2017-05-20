@@ -16,23 +16,6 @@ using namespace math;
 
 VertexArray wallsToVertArr(const ColorSegmentList& walls);
 
-std::string getShaderSource(const char* shaderName)
-{
-	return readFile(SHADER_DIRECTORY, shaderName);
-}
-
-void createShader(const char* name, GLuint type, const ShaderProgram& program)
-{
-	Shader shader{getShaderSource(name).c_str(), type};
-
-	if (!shader.tryToCompile()) {
-		ERR << "\nShader compilation failed: " << shader.infoLog;
-		throw "Shader copmilation fail";
-	}
-
-	program.attachShader(shader.id);
-}
-
 Maze Maze::build(WideRoads&& ways, const ColorSegmentList& walls)
 {
 	if (walls.size() > MAX_LINES) {
