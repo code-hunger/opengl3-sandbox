@@ -1,4 +1,14 @@
+#include "Shader.h"
 #include "ShaderProgram.h"
+#include "logger/include/logger.h"
+
+ShaderProgram::ShaderProgram(const char* shaderName): uniforms{}
+{
+	createShader(std::string(shaderName).append(".frag").c_str(),
+	             GL_FRAGMENT_SHADER);
+	createShader(std::string(shaderName).append(".vert").c_str(),
+	             GL_VERTEX_SHADER);
+}
 
 void ShaderProgram::attachShader(GLuint shaderId) const
 {
@@ -43,4 +53,16 @@ void ShaderProgram::setUniformMatrix(const char* uniformName,
 	use();
 	GLint uniformLocation = loadUniformLocation(uniformName);
 	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, matrix_data);
+}
+
+void ShaderProgram::createShader(const char* name, GLuint type)
+{
+	Shader shader{getShaderSource(name).c_str(), type};
+
+	if (!shader.tryToCompile()) {
+		ERR << "\nShader compilation failed: " << shader.infoLog;
+		throw "Shader copmilation fail";
+	}
+
+	attachShader(shader.id);
 }

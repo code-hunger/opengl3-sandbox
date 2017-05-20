@@ -1,4 +1,4 @@
-#include "HomeScreen.h"
+#include "GameplayScreen.h"
 
 #include "graphics/include/config.h"
 #include "graphics/include/utils.h"
@@ -7,6 +7,7 @@
 #include "maze_builder/include/builder.h"
 
 #include "Maze.h"
+#include <GLFW/glfw3.h>
 
 using namespace math;
 
@@ -50,34 +51,30 @@ Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
 	return Maze::build(std::move(lines), walls);
 }
 
-HomeScreen::HomeScreen(ushort maze_id, bool join_it, ushort max_lines)
-    : screen_elements{}
+GameplayScreen::GameplayScreen(ushort maze_id, bool join_it, ushort max_lines)
+    : maze(getMazeFromFile(maze_id, join_it, max_lines))
 {
-	screen_elements.emplace_back(
-	    std::make_unique<Maze>(getMazeFromFile(maze_id, join_it, max_lines)));
 }
 
 void update(const double deltaTime, State& state)
 {
 	(void)deltaTime;
-	if (state.keys[256]) {
+	if (state.keys[GLFW_KEY_ESCAPE]) {
 		state.shouldClose = true;
 	}
 }
 
-void render(const double deltaTime, Drawable& maze)
+void render(const double deltaTime, Maze& maze)
 {
 	(void)deltaTime;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	maze.draw(GL_LINES);
 }
 
-void HomeScreen::work(const double deltaTime, State& state)
+void GameplayScreen::work(const double deltaTime, State& state)
 {
 	update(deltaTime, state);
-	for (auto& element : screen_elements) {
-		render(deltaTime, *element);
-	}
+	render(deltaTime, maze);
 }
 
-HomeScreen::~HomeScreen() {}
+GameplayScreen::~GameplayScreen() {}

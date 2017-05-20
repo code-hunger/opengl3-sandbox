@@ -24,6 +24,8 @@ public:
 
 	void draw(uint mode, ulong start = 0, int count = 0) const;
 
+	VertexArray(VertexArray&&) = default;
+
 	uint getVAO() const { return VAO; }
 };
 

@@ -3,49 +3,31 @@
 #include <cstdarg>
 #include <cstdio>
 
-const Logger& Logger::operator()(bool val)
-{
-	refresh();
-	printf("%s", val ? "true" : "false");
-	return *this;
-}
+#define WITH_CONST_DEF(sig, body)                                              \
+	const Logger& Logger::operator() sig                                       \
+	{                                                                          \
+		refresh();                                                             \
+		body;                                                                  \
+		return *this;                                                          \
+	}                                                                          \
+	const Logger& Logger::operator() sig const                                 \
+	{                                                                          \
+		body;                                                                  \
+		return *this;                                                          \
+	}
 
-const Logger& Logger::operator()(bool val) const
-{
-	printf("%s", val ? "true" : "false");
-	return *this;
-}
+WITH_CONST_DEF((bool val), printf("%s", val ? "true" : "false"))
 
-const Logger& Logger::operator()(Color color)
-{
-	refresh();
-	return (const_cast<const Logger*>(this))->operator()(color);
-}
-
-const Logger& Logger::operator()(Color color) const
-{
+WITH_CONST_DEF((const Color& color), {
 	printf("\033[%d;38;5;%dm", color != Color::Default, color);
-	return *this;
-}
+})
 
-const Logger& Logger::operator()(const char* msg, ...)
-{
-	refresh();
+WITH_CONST_DEF((const char* msg, ...), {
 	va_list args;
 	va_start(args, msg);
 	vprintf(msg, args);
 	va_end(args);
-	return *this;
-}
-
-const Logger& Logger::operator()(const char* msg, ...) const
-{
-	va_list args;
-	va_start(args, msg);
-	vprintf(msg, args);
-	va_end(args);
-	return *this;
-}
+})
 
 void Logger::refresh() const
 {

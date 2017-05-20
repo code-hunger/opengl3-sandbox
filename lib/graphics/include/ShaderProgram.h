@@ -8,6 +8,9 @@ struct ShaderProgram
 {
 	const GLuint id{glCreateProgram()};
 
+	ShaderProgram() = default;
+	ShaderProgram(const char* shaderName);
+
 	// const char* instead of std::string because it's hard-coded in the program
 	// and doesn't need any special pointer-handling (like delete[])
 	std::unordered_map<const char*, GLint> uniforms;
@@ -15,6 +18,8 @@ struct ShaderProgram
 	void link() const;
 
 	void attachShader(GLuint shaderId) const;
+
+	void createShader(const char* name, GLuint type);
 
 	void getInfoLog(char* infoLog) const; // 512 long
 

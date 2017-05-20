@@ -16,23 +16,6 @@ using namespace math;
 
 VertexArray wallsToVertArr(const ColorSegmentList& walls);
 
-std::string getShaderSource(const char* shaderName)
-{
-	return readFile(SHADER_DIRECTORY, shaderName);
-}
-
-void createShader(const char* name, GLuint type, const ShaderProgram& program)
-{
-	Shader shader{getShaderSource(name).c_str(), type};
-
-	if (!shader.tryToCompile()) {
-		ERR << "\nShader compilation failed: " << shader.infoLog;
-		throw "Shader copmilation fail";
-	}
-
-	program.attachShader(shader.id);
-}
-
 Maze Maze::build(WideRoads&& ways, const ColorSegmentList& walls)
 {
 	if (walls.size() > MAX_LINES) {
@@ -68,12 +51,9 @@ VertexArray wallsToVertArr(const ColorSegmentList& walls)
 }
 
 Maze::Maze(const WideRoads& paths, const ColorSegmentList& walls,
-           const VertexArray& vertArray)
-    : paths(paths), walls(walls), vertArray(vertArray)
+           VertexArray&& vertArray)
+    : paths(paths), walls(walls), vertArray(std::move(vertArray))
 {
-	createShader("fragment_shader.glsl", GL_FRAGMENT_SHADER, shaderProgram);
-	createShader("vertex_shader.glsl", GL_VERTEX_SHADER, shaderProgram);
-
 	shaderProgram.link();
 
 	glm::mat4 proj = glm::ortho(0.f, 100.f, 0.f, 100.f, 0.1f, -.1f);

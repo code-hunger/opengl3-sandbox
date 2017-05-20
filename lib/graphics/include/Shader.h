@@ -23,4 +23,6 @@ struct Shader
 	void operator=(Shader) = delete;
 };
 
+std::string getShaderSource(const char* shaderName);
+
 #endif /* end of include guard: SHADER_H_837DGZOX */
