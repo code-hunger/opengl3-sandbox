@@ -13,6 +13,7 @@ public:
 	void addShip(Ship&& ship) { ships.emplace_back(std::move(ship)); };
 
 	void update(const State&, double) {}
+
 	void draw() const
 	{
 		shaderProgram.use();
@@ -24,8 +25,8 @@ private:
 	std::vector<Ship> ships{};
 
 	VertexArray vertexArray{{
-	    1, 1, 0, 1,  1, 1, 1, 11, 0, 1, 1, 1, 11, 11, 0,
-	    1, 1, 1, 11, 1, 0, 1, 1,  1, 1, 1, 0, 1,  1,  1,
+	    0, 0, 0, 1,  1, 1, 0, 10, 0, 1, 1, 1, 10, 10, 0,
+	    1, 1, 1, 10, 0, 0, 1, 1,  1, 0, 0, 0, 1,  1,  1,
 	}};
 };
 
