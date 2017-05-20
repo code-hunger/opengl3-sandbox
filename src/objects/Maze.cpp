@@ -68,8 +68,8 @@ VertexArray wallsToVertArr(const ColorSegmentList& walls)
 }
 
 Maze::Maze(const WideRoads& paths, const ColorSegmentList& walls,
-           const VertexArray& vertArray)
-    : paths(paths), walls(walls), vertArray(vertArray)
+           VertexArray&& vertArray)
+    : paths(paths), walls(walls), vertArray(std::move(vertArray))
 {
 	createShader("fragment_shader.glsl", GL_FRAGMENT_SHADER, shaderProgram);
 	createShader("vertex_shader.glsl", GL_VERTEX_SHADER, shaderProgram);
