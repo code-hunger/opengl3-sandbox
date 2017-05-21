@@ -230,10 +230,10 @@ ColorSegmentList createWalls(WideRoads& ways)
 {
 	ColorSegmentList generated_maze;
 	for (const WideRoad2& way : ways) {
-		// const auto& walls = createWalls(way);
-		// generated_maze.push_back(walls.first.colorSegment());
-		// generated_maze.push_back(walls.second.colorSegment());
-		generated_maze.push_back(way.colorSegment());
+		const auto& walls = createWalls(way);
+		generated_maze.push_back(walls.first.colorSegment());
+		generated_maze.push_back(walls.second.colorSegment());
+		// generated_maze.push_back(way.colorSegment());
 	}
 
 	return generated_maze;
