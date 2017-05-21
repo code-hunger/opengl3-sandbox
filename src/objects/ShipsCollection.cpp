@@ -33,7 +33,7 @@ void ShipsCollection::update(const State& state, double time)
 	shaderProgram.setUniformMatrix("model", glm::value_ptr(model));
 }
 
-void ShipsCollection::draw() const
+void ShipsCollection::draw()
 {
 	shaderProgram.use();
 

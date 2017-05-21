@@ -15,7 +15,7 @@ public:
 
 	void update(const State&, double);
 
-	void draw() const;
+	void draw();
 
 private:
 	ShaderProgram shaderProgram{"ship"};
