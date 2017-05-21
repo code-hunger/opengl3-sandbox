@@ -18,6 +18,7 @@ public:
 	auto getX() const { return position.x; }
 	auto getY() const { return position.y; }
 
+	auto getDirection() { return direction; }
 private:
 	math::Point2 position;
 	double direction;

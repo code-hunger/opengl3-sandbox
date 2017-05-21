@@ -27,7 +27,10 @@ void ShipsCollection::draw()
 	shaderProgram.use();
 
 	for (auto& ship : ships) {
-		auto model = glm::translate(glm::vec3(ship.getX(), ship.getY(), 0));
+		auto model = glm::rotate(
+		    glm::translate(glm::vec3(ship.getX(), ship.getY(), 0)),
+		    static_cast<float>(ship.getDirection()), glm::vec3(0.f, 0.f, 1.f));
+
 		shaderProgram.setUniformMatrix("model", glm::value_ptr(model));
 		vertexArray.draw(GL_TRIANGLE_STRIP);
 	}
