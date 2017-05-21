@@ -32,3 +32,10 @@ void ShipsCollection::update(const State& state, double time)
 
 	shaderProgram.setUniformMatrix("model", glm::value_ptr(model));
 }
+
+void ShipsCollection::draw() const
+{
+	shaderProgram.use();
+
+	vertexArray.draw(GL_TRIANGLE_STRIP);
+}

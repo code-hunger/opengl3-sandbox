@@ -15,12 +15,7 @@ public:
 
 	void update(const State&, double);
 
-	void draw() const
-	{
-		shaderProgram.use();
-
-		vertexArray.draw(GL_TRIANGLE_STRIP);
-	}
+	void draw() const;
 
 private:
 	ShaderProgram shaderProgram{"ship"};
