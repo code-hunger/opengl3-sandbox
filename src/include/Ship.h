@@ -15,6 +15,9 @@ public:
 
 	void update(const State&, double time);
 
+	auto getX() const { return position.x; }
+	auto getY() const { return position.y; }
+
 private:
 	math::Point2 position;
 	double direction;
