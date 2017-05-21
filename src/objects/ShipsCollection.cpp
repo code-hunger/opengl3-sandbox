@@ -15,8 +15,12 @@ ShipsCollection::ShipsCollection()
 	shaderProgram.setUniformMatrix("view_projection", matrix);
 }
 
-void ShipsCollection::update(const State&, double time)
+void ShipsCollection::update(const State& state, double time)
 {
+	for (Ship& ship : ships) {
+		ship.update(state, time);
+	}
+
 	static float angle = 0;
 	angle += time;
 	if (angle > 3.141592653589f) angle -= 6.283185307179f;
