@@ -226,14 +226,19 @@ void dump(const ColorSegmentList& maze)
 
 #define toDarkSegment(t) t.colorSegment({.1f, .1f, .1f, "dark"})
 
-ColorSegmentList createWalls(WideRoads& ways)
+#include <map>
+
+// For each cross road holds pairs of the walls ending on it
+using CrossRoadWallPairs = std::map<CrossRoad*, std::vector<std::pair<Segment2*, Segment2>>>;
+
+ColorSegmentList createWalls(CrossRoadWallPairs &crossRoadWallPairs, WideRoads& ways)
 {
 	ColorSegmentList generated_maze;
 	for (const WideRoad2& way : ways) {
 		const auto& walls = createWallsPair(way);
 		generated_maze.push_back(walls.first.colorSegment());
+		// add the generated walls to crossRoadWallPairs
 		generated_maze.push_back(walls.second.colorSegment());
-		// generated_maze.push_back(way.colorSegment());
 	}
 
 	return generated_maze;
@@ -299,7 +304,9 @@ math::ColorSegmentList Builder::build_from_paths(WideRoads& ways)
 	INDENT(normalizeWays(ways, crossRoads));
 	LOG << "Normalized - " << ways.size();
 
-	ColorSegmentList generated_maze = createWalls(ways);
+	CrossRoadWallPairs crossRoadWallPairs;
+
+	ColorSegmentList generated_maze = createWalls(crossRoadWallPairs, ways);
 
 	for (CrossRoad& crossRoad : crossRoads) {
 		stripWallEdges(crossRoad);
