@@ -263,36 +263,31 @@ void dumpCroads(CrossRoads const& crossRoads, ColorSegmentList& generated_maze)
 	}
 }
 
-void stripWallEdges(CrossRoads& crossRoads)
+void stripWallEdges(CrossRoad& crossRoad)
 {
-	for (CrossRoad& crossRoad : crossRoads) {
-		CrossRoad::Points& points = crossRoad.points;
-		// @TODO Make this a test
-		for (auto const& i : points) {
-			if (i.first != &i.second->a && i.first != &i.second->b)
-				throw "Very very bad code logic!";
-		}
+	CrossRoad::Points& points = crossRoad.points;
+	// @TODO Make this a test
+	for (auto const& i : points) {
+		if (i.first != &i.second->a && i.first != &i.second->b)
+			throw "Very very bad code logic!";
+	}
 
-		// sort the walls at this joint by slope
-		std::sort(points.begin(), points.end(),
-		          [](const CrossRoad::Points::value_type& a,
-		             const CrossRoad::Points::value_type& b) {
-			          double slope_a = a.second->segment().slope,
-			                 slope_b = b.second->segment().slope;
-			          if (slope_a > slope_b) return true;
-			          if (slope_a < slope_b) return false;
-			          if (a.first->point.x > b.first->point.x) return true;
-			          if (a.first->point.x < b.first->point.x) return false;
-			          return a.first->point.y > b.first->point.y;
-			      });
+	// sort the walls at this joint by slope
+	std::sort(points.begin(), points.end(),
+	          [](const CrossRoad::Points::value_type& a,
+	             const CrossRoad::Points::value_type& b) {
+		          double slope_a = a.second->segment().slope,
+		                 slope_b = b.second->segment().slope;
+		          if (slope_a > slope_b) return true;
+		          if (slope_a < slope_b) return false;
+		          if (a.first->point.x > b.first->point.x) return true;
+		          if (a.first->point.x < b.first->point.x) return false;
+		          return a.first->point.y > b.first->point.y;
+		      });
 
-		// for (auto i = 1 + points.begin(); i != points.end(); i += 2) {
-		// WidePoint2& toMove =
-		//&i->second->a == i->first ? i->second->a : i->second->b;
-		// auto j = -1 + i;
-		// WidePoint2& toMove_prev =
-		//&j->second->a == j->first ? j->second->a : j->second->b;
-		//}
+	LOG << "points count:" << points.size() << "\n";
+	for (const auto& i : points) {
+		LOG << *i.first << ", second: " << *i.second;
 	}
 }
 
@@ -306,7 +301,9 @@ math::ColorSegmentList Builder::build_from_paths(WideRoads& ways)
 
 	ColorSegmentList generated_maze = createWalls(ways);
 
-	stripWallEdges(crossRoads);
+	for (CrossRoad& crossRoad : crossRoads) {
+		stripWallEdges(crossRoad);
+	}
 
 	LOG("%lu walls generated from %lu lines\n", generated_maze.size(),
 	    ways.size());
