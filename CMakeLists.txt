@@ -22,10 +22,9 @@ include_directories(${PROJECT_SOURCE_DIR}/lib/math/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/include)
 include_directories(${PROJECT_SOURCE_DIR}/third_party/tclap-1.2.1/include)
 
-file(GLOB SOURCES_RECURSIVE "src/**/*.cpp")
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB_RECURSE SOURCES "src/*.cpp")
 
-add_executable(game ${SOURCES_RECURSIVE} ${SOURCES})
+add_executable(game ${SOURCES})
 target_link_libraries (game graphics maze_builder)
 
 add_subdirectory(lib/graphics)
