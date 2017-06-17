@@ -1,10 +1,10 @@
 #ifndef SHIP_H_IKJGK1NW
 #define SHIP_H_IKJGK1NW
 
-#include "graphics/include/ShaderProgram.h"
-#include "graphics/include/State.h"
-#include "graphics/include/VertexArray.h"
-#include "math/include/types.h"
+#include "graphics/ShaderProgram.h"
+#include "graphics/State.h"
+#include "graphics/VertexArray.h"
+#include "math/types.h"
 
 class Ship
 {

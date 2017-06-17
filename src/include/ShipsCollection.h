@@ -2,7 +2,7 @@
 #define SHIPSCOLLECTION_H_YWCRVLBE
 
 #include "Ship.h"
-#include "graphics/include/State.h"
+#include "graphics/State.h"
 
 #include <vector>
 

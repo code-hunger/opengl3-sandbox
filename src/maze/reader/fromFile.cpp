@@ -1,5 +1,5 @@
-#include "graphics/include/config.h"
-#include "math/include/types_io.h"
+#include "graphics/config.h"
+#include "math/types_io.h"
 #include <fstream>
 #include <string>
 
