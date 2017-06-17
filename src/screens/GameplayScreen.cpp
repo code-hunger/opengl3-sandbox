@@ -1,12 +1,13 @@
 #include "GameplayScreen.h"
 
-#include "../maze/reader/fromFile.h"
 #include "graphics/utils.h"
 #include "logger/logger.h"
 #include "maze_builder/builder.h"
 
 #include "Maze.h"
 #include <GLFW/glfw3.h>
+
+math::WideRoads fetchLinesFromMaze(unsigned maze_id);
 
 Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
 {

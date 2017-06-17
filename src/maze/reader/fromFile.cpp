@@ -1,7 +1,9 @@
-#include <string>
-#include <fstream>
-#include "math/include/types_io.h"
 #include "graphics/include/config.h"
+#include "math/include/types_io.h"
+#include <fstream>
+#include <string>
+
+using namespace math;
 
 static std::string getMazeFileName(unsigned maze_id)
 {
@@ -11,7 +13,7 @@ static std::string getMazeFileName(unsigned maze_id)
 	return fileName;
 }
 
-std::ifstream openMazeFile(unsigned maze_id)
+static std::ifstream openMazeFile(unsigned maze_id)
 {
 	std::ifstream input{getMazeFileName(maze_id)};
 
@@ -22,10 +24,10 @@ std::ifstream openMazeFile(unsigned maze_id)
 	return input;
 }
 
-math::WideRoads fetchLinesFromMaze(std::ifstream& input)
+static WideRoads fetchLinesFromMaze(std::ifstream& input)
 {
-	math::WideRoad2 line{{}, {}};
-	math::WideRoads lines;
+	WideRoad2 line{{}, {}};
+	WideRoads lines;
 	while (input >> line) {
 		lines.push_back(line);
 	}
@@ -33,9 +35,8 @@ math::WideRoads fetchLinesFromMaze(std::ifstream& input)
 	return lines;
 }
 
-math::WideRoads inline fetchLinesFromMaze(unsigned maze_id)
+WideRoads fetchLinesFromMaze(unsigned maze_id)
 {
 	std::ifstream input = openMazeFile(maze_id);
 	return fetchLinesFromMaze(input);
 }
-
