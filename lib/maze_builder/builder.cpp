@@ -205,7 +205,7 @@ void normalizeWays(WideRoads& ways, CrossRoads& crossRoads)
 
 std::pair<Segment2, Segment2> createWallsPair(const WideRoad2& way)
 {
-	float slope = way.segment().slope;
+	float slope = way.segment().slope();
 
 	float angle_sin = sinf(slope), angle_cos = cosf(slope),
 	      deltaXA = way.a.width * angle_sin, deltaXB = way.b.width * angle_sin,
@@ -229,16 +229,30 @@ void dump(const ColorSegmentList& maze)
 #include <map>
 
 // For each cross road holds pairs of the walls ending on it
-using CrossRoadWallPairs = std::map<CrossRoad*, std::vector<std::pair<Segment2*, Segment2>>>;
+typedef std::map<CrossRoad*,
+                 std::vector<std::tuple<const WideRoad2*, bool,
+                                        std::pair<Segment2*, Segment2*>, bool>>>
+    CrossRoadWallPairs;
 
-ColorSegmentList createWalls(CrossRoadWallPairs &crossRoadWallPairs, WideRoads& ways)
+auto createWalls(CrossRoadWallPairs& crossRoadWallPairs, WideRoads& ways)
 {
-	ColorSegmentList generated_maze;
+	std::list<Segment2> generated_maze;
 	for (const WideRoad2& way : ways) {
 		const auto& walls = createWallsPair(way);
-		generated_maze.push_back(walls.first.colorSegment());
-		// add the generated walls to crossRoadWallPairs
-		generated_maze.push_back(walls.second.colorSegment());
+		generated_maze.push_back(walls.first);
+		auto& just_pushed_a = generated_maze.back();
+		generated_maze.push_back(walls.second);
+		auto& just_pushed_b = generated_maze.back();
+
+		typedef CrossRoadWallPairs::value_type::second_type::value_type
+		    This_pair;
+		std::tuple_element<2, This_pair>::type this_pair_tw =
+		    std::make_pair(&just_pushed_a, &just_pushed_b);
+		This_pair this_pair_a = std::make_tuple(&way, 0, this_pair_tw, false);
+		This_pair this_pair_b = std::make_tuple(&way, 1, this_pair_tw, false);
+
+		crossRoadWallPairs[&**way.a.crossRoad].emplace_back(this_pair_a);
+		crossRoadWallPairs[&**way.b.crossRoad].emplace_back(this_pair_b);
 	}
 
 	return generated_maze;
@@ -268,35 +282,56 @@ void dumpCroads(CrossRoads const& crossRoads, ColorSegmentList& generated_maze)
 	}
 }
 
-void stripWallEdges(CrossRoad& crossRoad)
+void sortCroadPoints(CrossRoadWallPairs::value_type& walls)
 {
-	CrossRoad::Points& points = crossRoad.points;
-	// @TODO Make this a test
-	for (auto const& i : points) {
-		if (i.first != &i.second->a && i.first != &i.second->b)
-			throw "Very very bad code logic!";
-	}
+	CrossRoadWallPairs::value_type::second_type& points = walls.second;
+	using points_elem_t =
+	    std::remove_reference<decltype(points)>::type::value_type;
 
 	// sort the walls at this joint by slope
 	std::sort(points.begin(), points.end(),
-	          [](const CrossRoad::Points::value_type& a,
-	             const CrossRoad::Points::value_type& b) {
-		          double slope_a = a.second->segment().slope,
-		                 slope_b = b.second->segment().slope;
-		          if (slope_a > slope_b) return true;
-		          if (slope_a < slope_b) return false;
-		          if (a.first->point.x > b.first->point.x) return true;
-		          if (a.first->point.x < b.first->point.x) return false;
-		          return a.first->point.y > b.first->point.y;
+	          [](points_elem_t& a, points_elem_t& b) {
+		          const Segment2 &segment_a = std::get<0>(a)->segment(),
+		                         &segment_b = std::get<0>(b)->segment();
+		          double slope_a, slope_b;
+		          if (std::get<1>(a) == 0)
+			          slope_a = segment_a.slope();
+		          else {
+			          slope_a = segment_a.slopeB();
+			          if (!std::get<3>(a)) {
+				          auto& x = std::get<2>(a);
+				          std::swap(x.first, x.second);
+				          LOG << "Swap A";
+						  std::get<3>(a) = true;
+			          }
+		          }
+
+		          if (std::get<1>(b) == 0)
+			          slope_b = segment_b.slope();
+		          else {
+			          slope_b = segment_b.slopeB();
+			          if (!std::get<3>(b)) {
+				          auto& x = std::get<2>(b);
+				          std::swap(x.first, x.second);
+				          LOG << "Swap B";
+						  std::get<3>(b) = true;
+			          }
+		          }
+
+		          if (slope_a < slope_b) return true;
+		          if (slope_a > slope_b) return false;
+		          return false;
+		          // if (a.first->point.x > b.first->point.x) return true;
+		          // if (a.first->point.x < b.first->point.x) return false;
+		          // return a.first->point.y > b.first->point.y;
 		      });
 
 	LOG << "points count:" << points.size() << "\n";
-	for (const auto& i : points) {
-		LOG << *i.first << ", second: " << *i.second;
-	}
 }
 
-math::ColorSegmentList Builder::build_from_paths(WideRoads& ways)
+#include "math/include/types_io.h"
+
+ColorSegmentList Builder::build_from_paths(WideRoads& ways)
 {
 	++Logger::get();
 	CrossRoads crossRoads;
@@ -306,17 +341,50 @@ math::ColorSegmentList Builder::build_from_paths(WideRoads& ways)
 
 	CrossRoadWallPairs crossRoadWallPairs;
 
-	ColorSegmentList generated_maze = createWalls(crossRoadWallPairs, ways);
+	auto generated_maze = createWalls(crossRoadWallPairs, ways);
 
-	for (CrossRoad& crossRoad : crossRoads) {
-		stripWallEdges(crossRoad);
+	LOG << "Croad wall pairs count: " << crossRoadWallPairs.size();
+	for (auto& i : crossRoadWallPairs) {
+		LOG << "New croad, sorting it.";
+		sortCroadPoints(i);
+		auto lines = i.second;
+		for (auto i = 0ul, count = lines.size(); i < count - 1; ++i) {
+			auto current = std::get<2>(lines[i]),
+			     next = std::get<2>(lines[i + 1]);
+			//
+			LOG << "Current: " << *current.first << " | " << *current.second
+			    << " is " << (std::get<1>(lines[i]) == 0 ? "a" : "b");
+			LOG << "   Next: " << *next.first << " | " << *next.second << " is "
+			    << (std::get<1>(lines[i + 1]) == 0 ? "a" : "b");
+
+			Point2 *p1, *p2;
+			if (std::get<1>(lines[i]) == 0)
+				p1 = &current.second->a;
+			else
+				p1 = &current.second->b;
+			if (std::get<1>(lines[i + 1]) == 0)
+				p2 = &next.first->a;
+			else
+				p2 = &next.first->b;
+
+			*p1 = *p2 = intersect(*current.second, *next.first).point;
+			// break;
+		}
 	}
+
+	// for (auto& i : crossRoadWallPairs) {
+	//}
 
 	LOG("%lu walls generated from %lu lines\n", generated_maze.size(),
 	    ways.size());
 
+	ColorSegmentList gen_maze;
+	for (auto i : generated_maze) {
+		gen_maze.emplace_back(i.colorSegment());
+	}
+
 	// dump(generated_maze);
 
 	--Logger::get();
-	return generated_maze;
+	return gen_maze;
 }

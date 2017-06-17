@@ -29,6 +29,11 @@ inline ostream& operator<<(ostream& out, const ColorSegment2& line)
 	           << line.line.b;
 }
 
+inline ostream& operator<<(ostream& out, const Segment2& segment)
+{
+	return out << segment.a << ' ' << segment.b;
+}
+
 inline ostream& operator<<(ostream& out, const WidePoint2& point)
 {
 	return out << point.point << ' ' << point.width;
