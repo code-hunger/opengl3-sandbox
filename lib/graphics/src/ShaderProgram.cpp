@@ -1,6 +1,6 @@
 #include "Shader.h"
 #include "ShaderProgram.h"
-#include "logger/include/logger.h"
+#include "logger/logger.h"
 
 ShaderProgram::ShaderProgram(const char* shaderName): uniforms{}
 {

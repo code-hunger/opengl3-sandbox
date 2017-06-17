@@ -1,4 +1,4 @@
-include_directories(include)
+include_directories(.)
 
-add_library(logger logger.cpp)
+add_library(logger src/logger.cpp)
 

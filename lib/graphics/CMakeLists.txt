@@ -1,6 +1,6 @@
-file(GLOB SOURCES "*.cpp")
+file(GLOB SOURCES "src/*.cpp")
 
-include_directories(include)
+include_directories(.)
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)

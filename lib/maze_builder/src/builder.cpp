@@ -1,8 +1,8 @@
 #include "builder.h"
 
-#include "logger/include/logger.h"
-#include "math/include/geometry.h"
-#include "math/include/types_io.h"
+#include "logger/logger.h"
+#include "math/geometry.h"
+#include "math/types_io.h"
 
 #define INDENT(a)                                                              \
 	++Logger::get();                                                           \

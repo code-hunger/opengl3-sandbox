@@ -1,10 +1,10 @@
 #include "GameplayScreen.h"
 
-#include "graphics/include/config.h"
-#include "graphics/include/utils.h"
-#include "logger/include/logger.h"
-#include "math/include/types_io.h"
-#include "maze_builder/include/builder.h"
+#include "graphics/config.h"
+#include "graphics/utils.h"
+#include "logger/logger.h"
+#include "math/types_io.h"
+#include "maze_builder/builder.h"
 
 #include "Maze.h"
 #include <GLFW/glfw3.h>

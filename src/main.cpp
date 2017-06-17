@@ -1,8 +1,8 @@
 #include "ScreenManager.h"
 
-#include "graphics/include/GlfwWrapper.h"
+#include "graphics/GlfwWrapper.h"
 
-#include "logger/include/logger.h"
+#include "logger/logger.h"
 
 #include "tclap/CmdLine.h"
 

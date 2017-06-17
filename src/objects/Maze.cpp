@@ -1,14 +1,14 @@
 #include "Maze.h"
-#include "logger/include/logger.h"
+#include "logger/logger.h"
 
-#include "graphics/include/Shader.h"
+#include "graphics/Shader.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "graphics/include/config.h"
-#include "graphics/include/utils.h"
+#include "graphics/config.h"
+#include "graphics/utils.h"
 
 #define MAX_LINES 100
 

@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "graphics/include/State.h"
+#include "graphics/State.h"
 
 class Screen;
 

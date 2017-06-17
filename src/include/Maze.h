@@ -1,9 +1,9 @@
 #ifndef MAZE_H_UAWB7QD4
 #define MAZE_H_UAWB7QD4
 
-#include "graphics/include/ShaderProgram.h"
-#include "graphics/include/VertexArray.h"
-#include "math/include/types.h"
+#include "graphics/ShaderProgram.h"
+#include "graphics/VertexArray.h"
+#include "math/types.h"
 
 class Maze
 {

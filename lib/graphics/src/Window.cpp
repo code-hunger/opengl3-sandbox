@@ -1,7 +1,7 @@
 #include "Window.h"
 
 #include "State.h"
-#include "logger/include/logger.h"
+#include "logger/logger.h"
 
 #include <GLFW/glfw3.h>
 

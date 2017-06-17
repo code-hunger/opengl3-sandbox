@@ -1,6 +1,6 @@
 #include "GlfwWrapper.h"
 
-#include "logger/include/logger.h"
+#include "logger/logger.h"
 #include <GLFW/glfw3.h>
 
 static void setWindowHints()

@@ -3,7 +3,7 @@
 
 #include "Maze.h"
 #include "Screen.h"
-#include "graphics/include/ShaderProgram.h"
+#include "graphics/ShaderProgram.h"
 
 typedef unsigned short ushort;
 
