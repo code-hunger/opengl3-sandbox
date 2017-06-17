@@ -25,4 +25,6 @@ private:
 	double direction;
 };
 
+math::Point2 randomPoint();
+
 #endif /* end of include guard: SHIP_H_IKJGK1NW */

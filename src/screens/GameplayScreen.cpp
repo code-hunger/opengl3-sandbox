@@ -21,13 +21,15 @@ GameplayScreen::GameplayScreen(ushort maze_id, bool join_it, ushort max_lines)
     : maze(getMazeFromFile(maze_id, join_it, max_lines))
 {
 	ships.addShip(math::Point2{17, 37});
-	ships.addShip(math::Point2{40, 15});
 }
 
 void update(const double deltaTime, State& state, ShipsCollection& ships)
 {
 	if (state.keys[GLFW_KEY_ESCAPE]) {
 		state.shouldClose = true;
+	}
+	if (state.keys[GLFW_KEY_KP_ADD]) {
+		ships.addShip(randomPoint());
 	}
 	ships.update(state, deltaTime);
 }
