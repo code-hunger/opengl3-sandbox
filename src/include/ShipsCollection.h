@@ -15,7 +15,13 @@ public:
 
 	void update(const State&, double);
 
-	void draw();
+	void draw()
+	{
+		shaderProgram.use();
+
+		for (auto& ship : ships)
+			draw(ship);
+	}
 
 private:
 	ShaderProgram shaderProgram{"ship"};
@@ -28,6 +34,8 @@ private:
 	    2,  -2, 0, 1, 1, 1, // 4th point
 	    -2, -2, 0, 1, 1, 1, // 1st point again
 	}};
+
+	void draw(const Ship& ship);
 };
 
 #endif /* end of include guard: SHIPSCOLLECTION_H_YWCRVLBE */

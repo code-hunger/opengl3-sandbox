@@ -2,9 +2,9 @@
 #define SHIP_H_IKJGK1NW
 
 #include "graphics/include/ShaderProgram.h"
+#include "graphics/include/State.h"
 #include "graphics/include/VertexArray.h"
 #include "math/include/types.h"
-#include "graphics/include/State.h"
 
 class Ship
 {
@@ -18,7 +18,8 @@ public:
 	auto getX() const { return position.x; }
 	auto getY() const { return position.y; }
 
-	auto getDirection() { return direction; }
+	auto getDirection() const { return direction; }
+
 private:
 	math::Point2 position;
 	double direction;
