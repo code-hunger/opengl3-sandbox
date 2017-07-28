@@ -4,22 +4,22 @@
 
 #include <GLFW/glfw3.h>
 
-Ship::Ship(math::Point2 position, double direction)
+Ship::Ship(math::Point2 position, float direction)
     : position(position), direction(direction)
 {
 }
 
-void Ship::update(const State& state, double deltaTime)
+void Ship::update(const State& state, float deltaTime)
 {
 	if (state.keys[GLFW_KEY_LEFT]) {
-		direction += deltaTime * 3.6;
+		direction += deltaTime * 3.6f;
 	}
 	if (state.keys[GLFW_KEY_RIGHT]) {
-		direction -= deltaTime * 3.6;
+		direction -= deltaTime * 3.6f;
 	}
 	if (state.keys[GLFW_KEY_SPACE]) {
-		position.x += static_cast<float>(cos(direction) * 20.0 * deltaTime);
-		position.y += static_cast<float>(sin(direction) * 20.0 * deltaTime);
+		position.x += cosf(direction) * 20 * deltaTime;
+		position.y += sinf(direction) * 20 * deltaTime;
 	}
 }
 

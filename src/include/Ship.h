@@ -9,11 +9,11 @@
 class Ship
 {
 public:
-	Ship(math::Point2 position, double direction = 0);
+	Ship(math::Point2 position, float direction = 0);
 
 	Ship(Ship&&) = default;
 
-	void update(const State&, double time);
+	void update(const State&, float time);
 
 	auto getX() const { return position.x; }
 	auto getY() const { return position.y; }
@@ -22,7 +22,7 @@ public:
 
 private:
 	math::Point2 position;
-	double direction;
+	float direction;
 };
 
 math::Point2 randomPoint();
