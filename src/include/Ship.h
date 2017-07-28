@@ -8,21 +8,20 @@
 
 class Ship
 {
+	math::Point2 position;
+	float direction;
+
 public:
+	// instead of const getters, for ease of use
+	const float &x = position.x, &y = position.y;
+
 	Ship(math::Point2 position, float direction = 0);
 
-	Ship(Ship&&) = default;
+	Ship(Ship&& other) : position(other.position), direction(other.direction) {}
 
 	void update(const State&, float time);
 
-	auto getX() const { return position.x; }
-	auto getY() const { return position.y; }
-
 	auto getDirection() const { return direction; }
-
-private:
-	math::Point2 position;
-	float direction;
 };
 
 math::Point2 randomPoint();

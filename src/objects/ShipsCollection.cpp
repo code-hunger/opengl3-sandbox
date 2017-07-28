@@ -24,9 +24,8 @@ void ShipsCollection::update(const State& state, double time)
 
 void ShipsCollection::draw(const Ship& ship)
 {
-	auto model = glm::rotate(
-	    glm::translate(glm::vec3(ship.getX(), ship.getY(), 0)),
-	    ship.getDirection(), glm::vec3(0.f, 0.f, 1.f));
+	auto model = glm::rotate(glm::translate(glm::vec3(ship.x, ship.y, 0)),
+	                         ship.getDirection(), glm::vec3(0.f, 0.f, 1.f));
 
 	shaderProgram.setUniformMatrix("model", glm::value_ptr(model));
 	vertexArray.draw(GL_TRIANGLE_STRIP);
