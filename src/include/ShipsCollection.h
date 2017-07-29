@@ -11,7 +11,7 @@ class ShipsCollection
 public:
 	ShipsCollection();
 
-	void addShip(Ship&& ship) { ships.emplace_back(std::forward<Ship>(ship)); }
+	void addShip(math::Point2 location) { ships.emplace_back(Ship{location}); }
 
 	void update(const State&, double);
 
