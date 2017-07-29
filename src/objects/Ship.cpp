@@ -2,24 +2,20 @@
 #include "logger/logger.h"
 #include <stdlib.h>
 
-#include <GLFW/glfw3.h>
-
 Ship::Ship(math::Point2 position, float direction)
     : position(position), direction(direction)
 {
 }
 
-void Ship::update(const State& state, float deltaTime)
+void Ship::update(const State&, float deltaTime)
 {
-	if (state.keys[GLFW_KEY_LEFT]) {
-		direction += deltaTime * 3.6f;
+	if (rotation) {
+		direction += deltaTime * 4.6f * (rotation == LEFT ? 1 : -1);
 	}
-	if (state.keys[GLFW_KEY_RIGHT]) {
-		direction -= deltaTime * 3.6f;
-	}
-	if (state.keys[GLFW_KEY_SPACE]) {
-		position.x += cosf(direction) * 20 * deltaTime;
-		position.y += sinf(direction) * 20 * deltaTime;
+
+	if (speed) {
+		position.x += cosf(direction) * speed * deltaTime;
+		position.y += sinf(direction) * speed * deltaTime;
 	}
 }
 
