@@ -37,6 +37,11 @@ void Ship::update(const State&, float deltaTime)
 	position.y += sinf(direction) * speed * deltaTime;
 }
 
+void Ship::setPilot(std::unique_ptr<pilot_base> new_pilot)
+{
+	pilot = std::move(new_pilot);
+}
+
 math::Point2 randomPoint()
 {
 	math::Point2 p{static_cast<float>(rand() / RAND_MAX) * 100,

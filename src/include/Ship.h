@@ -39,6 +39,8 @@ public:
 	auto getDirection() const { return direction; }
 	auto getPosition() const { return position; }
 
+	void setPilot(std::unique_ptr<pilot_base>);
+
 	~Ship();
 };
 
