@@ -17,6 +17,8 @@ Ship::Ship(Ship&& other)
 
 void Ship::update(const State&, float deltaTime)
 {
+	if (pilot) pilot->operator()(*this); // Should pilot really be a unique_ptr?
+
 	if (rotation) {
 		direction += deltaTime * 4.6f * rotation;
 	}
