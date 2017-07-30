@@ -21,7 +21,11 @@ class Ship
 	Ship(math::Point2 position, float direction = 0);
 
 public:
-	Ship(Ship&& other) : position(other.position), direction(other.direction) {}
+	Ship(Ship&& other)
+	    : position(other.position), direction(other.direction),
+	      speed(other.speed), rotation(other.rotation)
+	{
+	}
 
 	// instead of const getters, for ease of use
 	const float &x = position.x, &y = position.y;
