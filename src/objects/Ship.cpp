@@ -19,6 +19,12 @@ void Ship::update(const State&, float deltaTime)
 {
 	if (pilot) pilot->operator()(*this); // Should pilot really be a unique_ptr?
 
+	// @TODO: Two loops just for this?? Do it better.
+	while (direction > 2 * PI)
+		direction -= 2 * PI;
+	while (direction < 0)
+		direction += 2 * PI;
+
 	if (rotation) {
 		direction += deltaTime * 4.6f * rotation;
 	}
