@@ -20,19 +20,6 @@ ShipsCollection::ShipsCollection()
 void ShipsCollection::update(const State& state, double time)
 {
 	for (Ship& ship : ships) {
-		if (state.keys[GLFW_KEY_SPACE]) {
-			ship.startMoving();
-		} else {
-			ship.stopMoving();
-		}
-		if (state.keys[GLFW_KEY_LEFT]) {
-			ship.rotate(Rotation::LEFT);
-		} else if (state.keys[GLFW_KEY_RIGHT]) {
-			ship.rotate(Rotation::RIGHT);
-		} else {
-			ship.rotate(Rotation::NONE);
-		}
-
 		ship.update(state, static_cast<float>(time));
 	}
 }

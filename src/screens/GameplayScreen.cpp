@@ -18,19 +18,35 @@ Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
 }
 
 GameplayScreen::GameplayScreen(ushort maze_id, bool join_it, ushort max_lines)
-    : maze(getMazeFromFile(maze_id, join_it, max_lines))
+    : maze(getMazeFromFile(maze_id, join_it, max_lines)),
+      mainPlayer(ships.addShip(math::Point2{17, 37}))
 {
-	ships.addShip(math::Point2{17, 37});
 }
 
-void update(const double deltaTime, State& state, ShipsCollection& ships)
+void update(const double deltaTime, State& state, ShipsCollection& ships,
+            Ship& mainPlayer)
 {
 	if (state.keys[GLFW_KEY_ESCAPE]) {
 		state.shouldClose = true;
 	}
+
+	if (state.keys[GLFW_KEY_SPACE]) {
+		mainPlayer.startMoving();
+	} else {
+		mainPlayer.stopMoving();
+	}
+	if (state.keys[GLFW_KEY_LEFT]) {
+		mainPlayer.rotate(Rotation::LEFT);
+	} else if (state.keys[GLFW_KEY_RIGHT]) {
+		mainPlayer.rotate(Rotation::RIGHT);
+	} else {
+		mainPlayer.rotate(Rotation::NONE);
+	}
+
 	if (state.keys[GLFW_KEY_KP_ADD]) {
 		ships.addShip(randomPoint());
 	}
+
 	ships.update(state, deltaTime);
 }
 
@@ -43,7 +59,7 @@ void render(double, Maze& maze, ShipsCollection& ships)
 
 void GameplayScreen::work(const double deltaTime, State& state)
 {
-	update(deltaTime, state, ships);
+	update(deltaTime, state, ships, ships[mainPlayer]);
 	render(deltaTime, maze, ships);
 }
 

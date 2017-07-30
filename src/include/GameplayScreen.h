@@ -2,8 +2,8 @@
 #define HOMESCREEN_H_A3CBSROG
 
 #include "Maze.h"
-#include "ShipsCollection.h"
 #include "Screen.h"
+#include "ShipsCollection.h"
 #include "graphics/ShaderProgram.h"
 
 typedef unsigned short ushort;
@@ -19,6 +19,8 @@ public:
 private:
 	Maze maze;
 	ShipsCollection ships{};
+
+	ushort mainPlayer;
 };
 
 #endif /* end of include guard: HOMESCREEN_H_A3CBSROG */
