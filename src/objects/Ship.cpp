@@ -18,7 +18,7 @@ Ship::Ship(Ship&& other)
 void Ship::update(const State&, float deltaTime)
 {
 	if (rotation) {
-		direction += deltaTime * 4.6f * (rotation == LEFT ? 1 : -1);
+		direction += deltaTime * 4.6f * rotation;
 	}
 
 	ushort targetSpeed = static_cast<ushort>(gear * 10);

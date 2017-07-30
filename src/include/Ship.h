@@ -5,7 +5,7 @@
 #include "math/types.h"
 #include <memory>
 
-enum Rotation { NONE, LEFT, RIGHT };
+enum Rotation { NONE = 0, LEFT = 1, RIGHT = -1 };
 
 struct pilot_base;
 
