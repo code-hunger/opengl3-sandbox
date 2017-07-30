@@ -11,7 +11,16 @@ class ShipsCollection
 public:
 	ShipsCollection();
 
-	void addShip(math::Point2 location) { ships.emplace_back(Ship{location}); }
+	/**
+	 * Warning! Invalidates ship pointers.
+	 */
+	ushort addShip(math::Point2 location)
+	{
+		ships.emplace_back(Ship{location});
+		return static_cast<ushort>(ships.size() - 1);
+	}
+
+	Ship& operator[](ushort index) { return ships[index]; }
 
 	void update(const State&, double);
 
