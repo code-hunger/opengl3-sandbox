@@ -13,10 +13,18 @@ void Ship::update(const State&, float deltaTime)
 		direction += deltaTime * 4.6f * (rotation == LEFT ? 1 : -1);
 	}
 
-	if (speed) {
-		position.x += cosf(direction) * speed * deltaTime;
-		position.y += sinf(direction) * speed * deltaTime;
+	ushort targetSpeed = static_cast<ushort>(gear * 10);
+	if (speed > targetSpeed) {
+		speed -= 50 * deltaTime;
+		if (speed < targetSpeed) speed = targetSpeed;
 	}
+	if (speed < targetSpeed) {
+		speed += 20 * deltaTime;
+		if (speed > targetSpeed) speed = targetSpeed;
+	}
+
+	position.x += cosf(direction) * speed * deltaTime;
+	position.y += sinf(direction) * speed * deltaTime;
 }
 
 math::Point2 randomPoint()

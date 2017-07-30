@@ -11,7 +11,8 @@ class Ship
 	math::Point2 position;
 	float direction;
 
-	ushort speed = 0;
+	float speed = 0;
+	ushort gear = 0;
 	Rotation rotation = NONE;
 
 	friend class ShipsCollection;
@@ -28,8 +29,8 @@ public:
 	// instead of const getters, for ease of use
 	const float &x = position.x, &y = position.y;
 
-	void startMoving() { speed = 20; }
-	void stopMoving() { speed = 0; }
+	void startMoving(ushort gear = 3) { this->gear = gear <= 3 ? gear : 3u; }
+	void stopMoving() { gear = 0; }
 	void rotate(Rotation rotation) { this->rotation = rotation; }
 
 	void update(const State&, float time);

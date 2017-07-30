@@ -24,6 +24,8 @@ public:
 	}
 
 	Ship& operator[](ushort index) { return ships[index]; }
+	const auto& operator*() { return ships; }
+	const auto* operator-> () { return &ships; }
 
 	void update(const State&, double);
 
