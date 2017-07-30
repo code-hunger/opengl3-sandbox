@@ -9,8 +9,6 @@
 	a;                                                                         \
 	--Logger::get();
 
-constexpr long double PI = 3.141592653589793238462643383279502884L;
-
 constexpr bool FORCE_VALIDATE = false;
 
 constexpr unsigned WIDEPOINT_WIDTH = 3;

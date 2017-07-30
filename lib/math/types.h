@@ -24,6 +24,8 @@ template <typename T> using optional = std::experimental::optional<T>;
 #include <list>
 #include <vector>
 
+constexpr long double PI = 3.141592653589793238462643383279502884L;
+
 namespace math {
 
 struct Color
