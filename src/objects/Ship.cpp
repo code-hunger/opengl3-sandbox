@@ -1,9 +1,17 @@
 #include "Ship.h"
 #include "logger/logger.h"
+#include "pilots/line_formation.cpp"
+
 #include <stdlib.h>
 
 Ship::Ship(math::Point2 position, float direction)
-    : position(position), direction(direction)
+    : position(position), direction(direction), pilot{}
+{
+}
+
+Ship::Ship(Ship&& other)
+    : position(other.position), direction(other.direction), speed(other.speed),
+      rotation(other.rotation), pilot(std::move(other.pilot))
 {
 }
 
@@ -34,3 +42,5 @@ math::Point2 randomPoint()
 	LOG << p.x << ' ' << p.y << ' ' << rand() / RAND_MAX;
 	return p;
 }
+
+Ship::~Ship() = default;
