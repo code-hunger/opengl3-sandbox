@@ -1,6 +1,9 @@
 #ifndef SHIPSCOLLECTION_H_YWCRVLBE
 #define SHIPSCOLLECTION_H_YWCRVLBE
 
+#include "graphics/ShaderProgram.h"
+#include "graphics/VertexArray.h"
+
 #include "Ship.h"
 #include "graphics/State.h"
 
