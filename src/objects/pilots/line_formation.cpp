@@ -7,10 +7,10 @@
 namespace pilots {
 void follower::operator()(Ship& ship)
 {
-	float currentDistance = static_cast<float>(
-	    sqrt(ship.getPosition().distance2(leader->getPosition())));
+	double currentDistance2 =
+	    ship.getPosition().distance2(leader->getPosition());
 
-	if (currentDistance < distance) {
+	if (currentDistance2 < distance * distance) {
 		ship.stopMoving();
 		ship.rotate(NONE);
 		return;
@@ -18,14 +18,16 @@ void follower::operator()(Ship& ship)
 
 	ship.startMoving(1);
 
-	const float cosTarget = (leader->x - ship.x) / currentDistance,
-	            sinTarget = (leader->y - ship.y) / currentDistance,
+	const double currentDistance = sqrt(currentDistance2),
+	             currentDirection = ship.getDirection(),
 
-	            currentDirection = ship.getDirection(),
-	            cosCurrent = cosf(currentDirection),
-	            sinCurrent = sinf(currentDirection);
+	             cosTarget = (leader->x - ship.x) / currentDistance,
+	             sinTarget = (leader->y - ship.y) / currentDistance,
 
-	float diff = 0;
+	             cosCurrent = cos(currentDirection),
+	             sinCurrent = sin(currentDirection);
+
+	double diff = 0;
 	if (sinCurrent > 0) {
 		if (sinTarget > 0) {
 			diff = -cosTarget + cosCurrent;
