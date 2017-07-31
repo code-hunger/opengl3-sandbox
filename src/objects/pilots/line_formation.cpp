@@ -36,15 +36,13 @@ void follower::operator()(Ship& ship)
 	double currentDistance2 =
 	    ship.getPosition().distance2(leader->getPosition());
 
-	if (currentDistance2 < distance * distance) {
-		ship.stopMoving();
-		ship.rotate(NONE);
-		return;
-	}
-
-	ship.startMoving(1);
-
 	Rotation rotation = determine_rotation(ship, *leader, currentDistance2);
 	ship.rotate(rotation);
+
+	if (currentDistance2 < distance * distance) {
+		ship.stopMoving();
+	} else {
+		ship.startMoving(1);
+	}
 }
 }
