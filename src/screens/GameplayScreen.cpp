@@ -22,7 +22,7 @@ Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
 GameplayScreen::GameplayScreen(ushort maze_id, bool join_it, ushort max_lines)
     : maze(getMazeFromFile(maze_id, join_it, max_lines)),
       mainPlayer(ships.addShip(math::Point2{17, 37})),
-      pilot(std::make_shared<pilots::follower>(ships[mainPlayer]))
+      pilot(std::make_shared<pilots::line_follower>(ships[mainPlayer]))
 {
 }
 
@@ -49,8 +49,8 @@ void update(const double deltaTime, State& state, ShipsCollection& ships,
 	if (state.keys[GLFW_KEY_KP_ADD]) {
 		ships.addShip({45, 50});
 		ships->back().setPilot(pilot);
-		    // std::make_unique<pilots::follower>(ships[ships->size() - 2]));
-		LOG << "New ship added. " << ships->size() << " ships now.";
+		static_cast<pilots::line_follower*>(&*pilot)->attach_ship(
+		    ships->back());
 	}
 
 	ships.update(state, deltaTime);

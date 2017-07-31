@@ -1,6 +1,9 @@
 #ifndef PILOT_BASE_H_SYAGZKV9
 #define PILOT_BASE_H_SYAGZKV9
 
+#include "logger/logger.h"
+#include <map>
+
 class Ship;
 typedef unsigned short ushort;
 
@@ -32,6 +35,24 @@ struct follower : pilot_base
 private:
 	const Ship* leader;
 	ushort distance;
+};
+
+struct line_follower : pilot_base
+{
+	line_follower(const Ship& leader) : leader(&leader) {}
+
+	void attach_ship(Ship& ship)
+	{
+		ships[&ship] = static_cast<ushort>(ships.size());
+	}
+
+	void operator()(Ship&) override;
+
+private:
+	const Ship* leader;
+	float distance_to_leader = 20, distance_between = 15;
+
+	std::map<Ship*, ushort> ships;
 };
 }
 
