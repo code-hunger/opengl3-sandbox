@@ -35,6 +35,12 @@ auto determine_rotation(const Ship& source, const math::Point2& destination,
 	return determine_rotation(sinCurrent, sinTarget, cosCurrent, cosTarget);
 }
 
+auto determine_rotation(double currentDirection, double targetDirection)
+{
+	return determine_rotation(sin(currentDirection), sin(targetDirection),
+	                          cos(currentDirection), cos(targetDirection));
+}
+
 namespace pilots {
 
 void follower::operator()(Ship& ship)
@@ -80,9 +86,8 @@ void line_follower::operator()(Ship& ship)
 	Rotation rotation;
 	if (currentDistance2 < 1) {
 		ship.stopMoving();
-		rotation = determine_rotation(
-		    sin(ship.getDirection()), sin(leader->getDirection()),
-		    cos(ship.getDirection()), cos(leader->getDirection()));
+		rotation =
+			determine_rotation(ship.getDirection(), leader->getDirection());
 		LOG << index << " Only rotate!";
 	} else {
 		ushort gear = currentDistance2 > ship.MAX_SPEED * ship.MAX_SPEED
