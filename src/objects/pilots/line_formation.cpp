@@ -6,12 +6,11 @@
 #include <cassert>
 #include <cmath>
 
-auto determine_rotation(const Ship& source, const Ship& destination,
+auto determine_rotation(const Ship& source, const math::Point2& destination,
                         double currentDistance2 = 0)
 {
 	if (currentDistance2 == 0) {
-		currentDistance2 =
-		    source.getPosition().distance2(destination.getPosition());
+		currentDistance2 = source.getPosition().distance2(destination);
 	}
 	const double currentDistance = sqrt(currentDistance2),
 	             currentDirection = source.getDirection(),
@@ -36,7 +35,8 @@ void follower::operator()(Ship& ship)
 	double currentDistance2 =
 	    ship.getPosition().distance2(leader->getPosition());
 
-	Rotation rotation = determine_rotation(ship, *leader, currentDistance2);
+	Rotation rotation =
+	    determine_rotation(ship, leader->getPosition(), currentDistance2);
 	ship.rotate(rotation);
 
 	if (currentDistance2 < distance * distance) {
