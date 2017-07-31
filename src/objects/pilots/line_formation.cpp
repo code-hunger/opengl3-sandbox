@@ -3,6 +3,7 @@
 #include "Ship.h"
 
 #include "logger/logger.h"
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 
@@ -54,8 +55,18 @@ void follower::operator()(Ship& ship)
 
 void line_follower::operator()(Ship& ship)
 {
-	float index = ships[&ship], a = distance_to_leader,
-	      b = distance_between * (index + .5f - ships.size() / 2.0f),
+	ushort index = ships[&ship];
+	float a = distance_to_leader;
+
+	const ushort MAX_ON_LINE = 7;
+
+	if (index >= MAX_ON_LINE) {
+		a *= index / MAX_ON_LINE + 1;
+		index %= MAX_ON_LINE;
+	}
+
+	float b = distance_between *
+	          (index + .5f - std::min<float>(MAX_ON_LINE, ships.size()) / 2.0f),
 	      hypo = static_cast<float>(sqrt(a * a + b * b)),
 	      g = leader->getDirection() - atanf(b / a);
 
