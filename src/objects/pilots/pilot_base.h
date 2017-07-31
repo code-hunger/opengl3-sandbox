@@ -1,9 +1,9 @@
 #ifndef PILOT_BASE_H_SYAGZKV9
 #define PILOT_BASE_H_SYAGZKV9
 
-#include "logger/logger.h"
 #include <map>
 
+struct State;
 class Ship;
 typedef unsigned short ushort;
 
@@ -56,6 +56,21 @@ private:
 	float distance_to_leader = 20, distance_between = 15;
 
 	std::map<Ship*, ushort> ships{};
+};
+
+struct keyboard_controlled : pilot_base
+{
+
+	keyboard_controlled(int left, int right, int forward)
+	    : LEFT_KEY(left), RIGHT_KEY(right), FORWARD_KEY(forward){};
+
+	void operator()(Ship&) override;
+
+	void setState(const State& state) { this->state = &state; }
+
+private:
+	const State* state = nullptr;
+	const int LEFT_KEY, RIGHT_KEY, FORWARD_KEY;
 };
 }
 

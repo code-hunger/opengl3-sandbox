@@ -55,7 +55,7 @@ void follower::operator()(Ship& ship)
 void line_follower::operator()(Ship& ship)
 {
 	float index = ships[&ship], a = distance_to_leader,
-	      b = distance_between * (index -(1.0f + ships.size()) / 2.0f),
+	      b = distance_between * (index - (1.0f + ships.size()) / 2.0f),
 	      hypo = static_cast<float>(sqrt(a * a + b * b)),
 	      g = leader->getDirection() - atanf(b / a);
 
@@ -75,5 +75,21 @@ void line_follower::operator()(Ship& ship)
 		rotation = determine_rotation(ship, targetPoint, currentDistance2);
 	}
 	ship.rotate(rotation);
+}
+
+void keyboard_controlled::operator()(Ship& ship) {
+	if (state->keys[FORWARD_KEY]) {
+		ship.startMoving();
+	} else {
+		ship.stopMoving();
+	}
+
+	if (state->keys[LEFT_KEY]) {
+		ship.rotate(Rotation::LEFT);
+	} else if (state->keys[RIGHT_KEY]) {
+		ship.rotate(Rotation::RIGHT);
+	} else {
+		ship.rotate(Rotation::NONE);
+	}
 }
 }
