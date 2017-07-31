@@ -41,6 +41,9 @@ struct line_follower : pilot_base
 {
 	line_follower(const Ship& leader) : leader(&leader) {}
 
+	line_follower(const line_follower&) = delete;
+	void operator=(const line_follower&) = delete;
+
 	void attach_ship(Ship& ship)
 	{
 		ships[&ship] = static_cast<ushort>(ships.size());
@@ -52,7 +55,7 @@ private:
 	const Ship* leader;
 	float distance_to_leader = 20, distance_between = 15;
 
-	std::map<Ship*, ushort> ships;
+	std::map<Ship*, ushort> ships{};
 };
 }
 
