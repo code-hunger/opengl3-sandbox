@@ -25,12 +25,17 @@ class Ship
 	Ship(math::Point2 position, float direction = 0);
 
 public:
+	static constexpr ushort MAX_GEAR = 3, GEAR_TO_SPEED = 10,
+	                        MAX_SPEED = MAX_GEAR * GEAR_TO_SPEED;
 	Ship(Ship&&);
 
 	// instead of const getters, for ease of use
 	const float &x = position.x, &y = position.y;
 
-	void startMoving(ushort gear = 3) { this->gear = gear <= 3 ? gear : 3u; }
+	void startMoving(ushort gear = MAX_GEAR)
+	{
+		this->gear = gear <= MAX_GEAR ? gear : MAX_GEAR;
+	}
 	void stopMoving() { gear = 0; }
 	void rotate(Rotation rotation) { this->rotation = rotation; }
 

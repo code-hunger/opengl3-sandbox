@@ -29,7 +29,7 @@ void Ship::update(const State&, float deltaTime)
 		direction += deltaTime * 4.6f * rotation;
 	}
 
-	ushort targetSpeed = static_cast<ushort>(gear * 10);
+	ushort targetSpeed = static_cast<ushort>(gear * GEAR_TO_SPEED);
 	if (speed > targetSpeed) {
 		speed -= 50 * deltaTime;
 		if (speed < targetSpeed) speed = targetSpeed;
