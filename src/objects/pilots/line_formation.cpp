@@ -59,7 +59,7 @@ void follower::operator()(Ship& ship)
 	}
 }
 
-void line_follower::operator()(Ship& ship)
+math::Point2&& line_follower::calc_target_position(Ship& ship)
 {
 	ushort index = ships[&ship];
 	float a = distance_to_leader;
@@ -78,23 +78,25 @@ void line_follower::operator()(Ship& ship)
 
 	if (distance_to_leader < 0) g += static_cast<float>(PI);
 
-	math::Point2 targetPoint{leader->x - hypo * cosf(g),
-	                         leader->y - hypo * sinf(g)};
+	return std::move(
+	    math::Point2{leader->x - hypo * cosf(g), leader->y - hypo * sinf(g)});
+}
 
+void line_follower::operator()(Ship& ship)
+{
+	math::Point2 targetPoint = calc_target_position(ship);
 	double currentDistance2 = ship.getPosition().distance2(targetPoint);
 
 	Rotation rotation;
 	if (currentDistance2 < 1) {
 		ship.stopMoving();
 		rotation =
-			determine_rotation(ship.getDirection(), leader->getDirection());
-		LOG << index << " Only rotate!";
+		    determine_rotation(ship.getDirection(), leader->getDirection());
 	} else {
 		ushort gear = currentDistance2 > ship.MAX_SPEED * ship.MAX_SPEED
 		                  ? ship.MAX_GEAR
 		                  : 1;
 		ship.startMoving(gear);
-		LOG << index << "Gear: " << gear;
 		rotation = determine_rotation(ship, targetPoint, currentDistance2);
 	}
 	ship.rotate(rotation);

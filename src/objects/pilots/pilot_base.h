@@ -13,6 +13,10 @@ struct pilot_base
 	virtual ~pilot_base() = default;
 };
 
+namespace math {
+struct Point2;
+}
+
 namespace pilots {
 
 /**
@@ -56,6 +60,13 @@ private:
 	float distance_to_leader = 20, distance_between = 15;
 
 	std::map<Ship*, ushort> ships{};
+
+	/**
+	 * Returning rvalue reference to avoid inclusion of math/types.h. Probably
+	 * that's not a real reason but I'd want to play a little bit with those
+	 * &&s.
+	 */
+	math::Point2&& calc_target_position(Ship&);
 };
 
 struct keyboard_controlled : pilot_base
