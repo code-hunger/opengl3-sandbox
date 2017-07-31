@@ -6,7 +6,31 @@
 #include <cassert>
 #include <cmath>
 
+auto determine_rotation(const Ship& source, const Ship& destination,
+                        double currentDistance2 = 0)
+{
+	if (currentDistance2 == 0) {
+		currentDistance2 =
+		    source.getPosition().distance2(destination.getPosition());
+	}
+	const double currentDistance = sqrt(currentDistance2),
+	             currentDirection = source.getDirection(),
+
+	             cosTarget = (destination.x - source.x) / currentDistance,
+	             sinTarget = (destination.y - source.y) / currentDistance,
+
+	             cosCurrent = cos(currentDirection),
+	             sinCurrent = sin(currentDirection);
+
+	double diff = (sinCurrent > 0 ? -cosTarget : cosTarget) +
+	              (sinTarget > 0 ? cosCurrent : -cosCurrent);
+
+	// Negative diff means turn left, positive means turn right
+	return diff > 1e-5 ? LEFT : diff < -1e-5 ? RIGHT : NONE;
+}
+
 namespace pilots {
+
 void follower::operator()(Ship& ship)
 {
 	double currentDistance2 =
@@ -20,19 +44,7 @@ void follower::operator()(Ship& ship)
 
 	ship.startMoving(1);
 
-	const double currentDistance = sqrt(currentDistance2),
-	             currentDirection = ship.getDirection(),
-
-	             cosTarget = (leader->x - ship.x) / currentDistance,
-	             sinTarget = (leader->y - ship.y) / currentDistance,
-
-	             cosCurrent = cos(currentDirection),
-	             sinCurrent = sin(currentDirection);
-
-	double diff = (sinCurrent > 0 ? -cosTarget : cosTarget) +
-	              (sinTarget > 0 ? cosCurrent : -cosCurrent);
-
-	// Negative diff means turn left, positive means turn right
-	ship.rotate(diff > 1e-5 ? LEFT : diff < -1e-5 ? RIGHT : NONE);
+	Rotation rotation = determine_rotation(ship, *leader, currentDistance2);
+	ship.rotate(rotation);
 }
 }
