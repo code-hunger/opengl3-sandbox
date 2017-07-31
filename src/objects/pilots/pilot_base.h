@@ -1,7 +1,8 @@
 #ifndef PILOT_BASE_H_SYAGZKV9
 #define PILOT_BASE_H_SYAGZKV9
 
-#include "Ship.h"
+class Ship;
+typedef unsigned short ushort;
 
 struct pilot_base
 {
