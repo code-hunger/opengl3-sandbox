@@ -25,6 +25,7 @@ template <typename T> using optional = std::experimental::optional<T>;
 #include <vector>
 
 constexpr long double PI = 3.141592653589793238462643383279502884L;
+constexpr float PIf = static_cast<float>(PI);
 
 namespace math {
 

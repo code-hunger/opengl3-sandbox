@@ -50,7 +50,7 @@ struct line_follower : pilot_base
 
 	void attach_ship(Ship& ship)
 	{
-		ships[&ship] = static_cast<ushort>(ships.size()) - 1;
+		ships[&ship] = static_cast<ushort>(ships.size() - 1);
 	}
 
 	void operator()(Ship&) override;

@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.0)
 project (game)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-	add_compile_options(-Wall -Wextra -Wpedantic -Wdouble-promotion -Wconversion -Wsign-conversion -Wlogical-op -Wabi  -Wctor-dtor-privacy -Wmaybe-uninitialized -Wuninitialized -Wnon-virtual-dtor -Wreorder -Weffc++ -Wstrict-null-sentinel -Wno-non-template-friend -Wold-style-cast -Woverloaded-virtual -Wno-pmf-conversions -Wsign-promo -Wno-error=unused-variable)
+	# Excluded: -Wdouble-promotion
+	add_compile_options(-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wlogical-op -Wabi  -Wctor-dtor-privacy -Wmaybe-uninitialized -Wuninitialized -Wnon-virtual-dtor -Wreorder -Weffc++ -Wstrict-null-sentinel -Wno-non-template-friend -Wold-style-cast -Woverloaded-virtual -Wno-pmf-conversions -Wsign-promo -Wno-error=unused-variable)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 if(MSVC)

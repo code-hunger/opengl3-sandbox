@@ -64,19 +64,21 @@ math::Point2&& line_follower::calc_target_position(Ship& ship)
 	ushort index = ships[&ship];
 	float a = distance_to_leader;
 
-	const ushort MAX_ON_LINE = 7;
+	constexpr ushort MAX_ON_LINE = 7;
 
 	if (index >= MAX_ON_LINE) {
-		a *= index / MAX_ON_LINE + 1;
+		a *= static_cast<float>(index / MAX_ON_LINE + 1);
 		index %= MAX_ON_LINE;
 	}
 
+	float ships_size = static_cast<float>(ships.size());
+
 	float b = distance_between *
-	          (index + .5f - std::min<float>(MAX_ON_LINE, ships.size()) / 2.0f),
+	          (index + .5f - std::min<float>(MAX_ON_LINE, ships_size) / 2.0f),
 	      hypo = static_cast<float>(sqrt(a * a + b * b)),
 	      g = leader->getDirection() - atanf(b / a);
 
-	if (distance_to_leader < 0) g += static_cast<float>(PI);
+	if (distance_to_leader < 0) g += PIf;
 
 	return std::move(
 	    math::Point2{leader->x - hypo * cosf(g), leader->y - hypo * sinf(g)});

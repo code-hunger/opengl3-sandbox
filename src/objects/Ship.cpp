@@ -21,12 +21,12 @@ void Ship::update(const State&, float deltaTime)
 
 	// @TODO: Two loops just for this?? Do it better.
 	while (direction > 2 * PI)
-		direction -= 2 * PI;
+		direction -= 2 * PIf;
 	while (direction < 0)
-		direction += 2 * PI;
+		direction += 2 * PIf;
 
 	if (rotation) {
-		direction += deltaTime * 4.6f * rotation;
+		direction += deltaTime * 4.6f * static_cast<float>(rotation);
 	}
 
 	ushort targetSpeed = static_cast<ushort>(gear * GEAR_TO_SPEED);
