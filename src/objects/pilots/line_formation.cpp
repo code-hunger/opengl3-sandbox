@@ -55,7 +55,7 @@ void follower::operator()(Ship& ship)
 void line_follower::operator()(Ship& ship)
 {
 	float index = ships[&ship], a = distance_to_leader,
-	      b = distance_between * (index - (1.0f + ships.size()) / 2.0f),
+	      b = distance_between * (index + .5f - ships.size() / 2.0f),
 	      hypo = static_cast<float>(sqrt(a * a + b * b)),
 	      g = leader->getDirection() - atanf(b / a);
 
