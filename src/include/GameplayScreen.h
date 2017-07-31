@@ -21,6 +21,8 @@ private:
 	ShipsCollection ships{};
 
 	ushort mainPlayer;
+
+	std::shared_ptr<pilot_base> pilot;
 };
 
 #endif /* end of include guard: HOMESCREEN_H_A3CBSROG */

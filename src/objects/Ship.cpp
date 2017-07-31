@@ -43,9 +43,9 @@ void Ship::update(const State&, float deltaTime)
 	position.y += sinf(direction) * speed * deltaTime;
 }
 
-void Ship::setPilot(std::unique_ptr<pilot_base> new_pilot)
+void Ship::setPilot(std::shared_ptr<pilot_base> new_pilot)
 {
-	pilot = std::move(new_pilot);
+	pilot = new_pilot;
 }
 
 math::Point2 randomPoint()

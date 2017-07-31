@@ -18,7 +18,7 @@ class Ship
 	ushort gear = 0;
 	Rotation rotation = NONE;
 
-	std::unique_ptr<pilot_base> pilot;
+	std::shared_ptr<pilot_base> pilot;
 
 	friend class ShipsCollection;
 
@@ -39,7 +39,7 @@ public:
 	auto getDirection() const { return direction; }
 	auto getPosition() const { return position; }
 
-	void setPilot(std::unique_ptr<pilot_base>);
+	void setPilot(decltype(pilot));
 
 	~Ship();
 };

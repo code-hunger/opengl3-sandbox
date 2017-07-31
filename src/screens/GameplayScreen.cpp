@@ -21,12 +21,13 @@ Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
 
 GameplayScreen::GameplayScreen(ushort maze_id, bool join_it, ushort max_lines)
     : maze(getMazeFromFile(maze_id, join_it, max_lines)),
-      mainPlayer(ships.addShip(math::Point2{17, 37}))
+      mainPlayer(ships.addShip(math::Point2{17, 37})),
+      pilot(std::make_shared<pilots::follower>(ships[mainPlayer]))
 {
 }
 
 void update(const double deltaTime, State& state, ShipsCollection& ships,
-            Ship& mainPlayer)
+            Ship& mainPlayer, std::shared_ptr<pilot_base> pilot)
 {
 	if (state.keys[GLFW_KEY_ESCAPE]) {
 		state.shouldClose = true;
@@ -47,8 +48,7 @@ void update(const double deltaTime, State& state, ShipsCollection& ships,
 
 	if (state.keys[GLFW_KEY_KP_ADD]) {
 		ships.addShip({45, 50});
-		ships->back().setPilot(
-		    std::make_unique<pilots::follower>(mainPlayer));
+		ships->back().setPilot(pilot);
 		    // std::make_unique<pilots::follower>(ships[ships->size() - 2]));
 		LOG << "New ship added. " << ships->size() << " ships now.";
 	}
@@ -65,7 +65,7 @@ void render(double, Maze& maze, ShipsCollection& ships)
 
 void GameplayScreen::work(const double deltaTime, State& state)
 {
-	update(deltaTime, state, ships, ships[mainPlayer]);
+	update(deltaTime, state, ships, ships[mainPlayer], pilot);
 	render(deltaTime, maze, ships);
 }
 
