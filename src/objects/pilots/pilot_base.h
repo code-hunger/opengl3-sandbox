@@ -64,6 +64,9 @@ struct keyboard_controlled : pilot_base
 	keyboard_controlled(int left, int right, int forward)
 	    : LEFT_KEY(left), RIGHT_KEY(right), FORWARD_KEY(forward){};
 
+	keyboard_controlled(const keyboard_controlled&) = delete;
+	void operator=(const keyboard_controlled&) = delete;
+
 	void operator()(Ship&) override;
 
 	void setState(const State& state) { this->state = &state; }
