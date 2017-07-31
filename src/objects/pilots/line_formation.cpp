@@ -70,14 +70,20 @@ void line_follower::operator()(Ship& ship)
 		rotation = determine_rotation(
 		    sin(ship.getDirection()), sin(leader->getDirection()),
 		    cos(ship.getDirection()), cos(leader->getDirection()));
+		LOG << index << " Only rotate!";
 	} else {
-		ship.startMoving(1);
+		ushort gear = currentDistance2 > ship.MAX_SPEED * ship.MAX_SPEED
+		                  ? ship.MAX_GEAR
+		                  : 1;
+		ship.startMoving(gear);
+		LOG << index << "Gear: " << gear;
 		rotation = determine_rotation(ship, targetPoint, currentDistance2);
 	}
 	ship.rotate(rotation);
 }
 
-void keyboard_controlled::operator()(Ship& ship) {
+void keyboard_controlled::operator()(Ship& ship)
+{
 	if (state->keys[FORWARD_KEY]) {
 		ship.startMoving();
 	} else {
