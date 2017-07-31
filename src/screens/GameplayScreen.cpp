@@ -23,7 +23,6 @@ GameplayScreen::GameplayScreen(ushort maze_id, bool join_it, ushort max_lines)
     : maze(getMazeFromFile(maze_id, join_it, max_lines)),
       mainPlayer(ships.addShip(math::Point2{17, 37}))
 {
-	ships->reserve(50);
 }
 
 void update(const double deltaTime, State& state, ShipsCollection& ships,

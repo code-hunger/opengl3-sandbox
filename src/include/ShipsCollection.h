@@ -7,7 +7,7 @@
 #include "Ship.h"
 #include "graphics/State.h"
 
-#include <vector>
+#include <deque>
 
 class ShipsCollection
 {
@@ -39,7 +39,10 @@ public:
 
 private:
 	ShaderProgram shaderProgram{"ship"};
-	std::vector<Ship> ships{};
+	std::deque<Ship> ships{}; // Deque, in order to keep pointers to Ships valid
+	                          // after push_back-ing. Consider storing indices
+	                          // instead of pointers to resolve this problem and
+	                          // get back to using vector.
 
 	VertexArray vertexArray{{
 	    -2, -2, 0, 1, 1, 1, // first point
