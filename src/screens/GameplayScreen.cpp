@@ -24,6 +24,8 @@ GameplayScreen::GameplayScreen(ushort maze_id, bool join_it, ushort max_lines)
       mainPlayer(ships.addShip(math::Point2{17, 37})),
       pilot(std::make_shared<pilots::line_follower>(ships[mainPlayer]))
 {
+	ships[mainPlayer].setPilot(std::make_shared<pilots::keyboard_controlled>(
+	    GLFW_KEY_LEFT, GLFW_KEY_RIGHT, GLFW_KEY_SPACE));
 }
 
 void update(const double deltaTime, State& state, ShipsCollection& ships,
@@ -33,19 +35,6 @@ void update(const double deltaTime, State& state, ShipsCollection& ships,
 		state.shouldClose = true;
 	}
 
-	if (state.keys[GLFW_KEY_SPACE]) {
-		mainPlayer.startMoving();
-	} else {
-		mainPlayer.stopMoving();
-	}
-	if (state.keys[GLFW_KEY_LEFT]) {
-		mainPlayer.rotate(Rotation::LEFT);
-	} else if (state.keys[GLFW_KEY_RIGHT]) {
-		mainPlayer.rotate(Rotation::RIGHT);
-	} else {
-		mainPlayer.rotate(Rotation::NONE);
-	}
-
 	if (state.keys[GLFW_KEY_KP_ADD]) {
 		ships.addShip({45, 50});
 		ships->back().setPilot(pilot);
@@ -53,6 +42,8 @@ void update(const double deltaTime, State& state, ShipsCollection& ships,
 		    ships->back());
 	}
 
+	static_cast<pilots::keyboard_controlled*>(&*mainPlayer.getPilot())
+	    ->setState(state);
 	ships.update(state, deltaTime);
 }
 
