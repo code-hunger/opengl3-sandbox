@@ -40,6 +40,7 @@ public:
 	auto getPosition() const { return position; }
 
 	void setPilot(decltype(pilot));
+	auto& getPilot() { return pilot; }
 
 	~Ship();
 };
