@@ -6,6 +6,16 @@
 #include <cassert>
 #include <cmath>
 
+auto determine_rotation(double sinCurrent, double sinTarget, double cosCurrent,
+                        double cosTarget)
+{
+	double diff = (sinCurrent > 0 ? -cosTarget : cosTarget) +
+	              (sinTarget > 0 ? cosCurrent : -cosCurrent);
+
+	// Negative diff means turn left, positive means turn right
+	return diff > 1e-5 ? LEFT : diff < -1e-5 ? RIGHT : NONE;
+}
+
 auto determine_rotation(const Ship& source, const math::Point2& destination,
                         double currentDistance2 = 0)
 {
@@ -21,11 +31,7 @@ auto determine_rotation(const Ship& source, const math::Point2& destination,
 	             cosCurrent = cos(currentDirection),
 	             sinCurrent = sin(currentDirection);
 
-	double diff = (sinCurrent > 0 ? -cosTarget : cosTarget) +
-	              (sinTarget > 0 ? cosCurrent : -cosCurrent);
-
-	// Negative diff means turn left, positive means turn right
-	return diff > 1e-5 ? LEFT : diff < -1e-5 ? RIGHT : NONE;
+	return determine_rotation(sinCurrent, sinTarget, cosCurrent, cosTarget);
 }
 
 namespace pilots {
