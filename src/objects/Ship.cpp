@@ -1,8 +1,8 @@
 #include "Ship.h"
 #include "logger/logger.h"
-#include "pilots/line_formation.cpp"
+#include "pilots/pilot_base.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 Ship::Ship(math::Point2 position, float direction)
     : position(position), direction(direction), pilot{}

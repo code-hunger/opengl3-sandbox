@@ -1,5 +1,7 @@
 #include "pilot_base.h"
 
+#include "Ship.h"
+
 #include "logger/logger.h"
 #include <cassert>
 #include <cmath>
