@@ -59,6 +59,8 @@ void line_follower::operator()(Ship& ship)
 	      hypo = static_cast<float>(sqrt(a * a + b * b)),
 	      g = leader->getDirection() - atanf(b / a);
 
+	if (distance_to_leader < 0) g += static_cast<float>(PI);
+
 	math::Point2 targetPoint{leader->x - hypo * cosf(g),
 	                         leader->y - hypo * sinf(g)};
 
