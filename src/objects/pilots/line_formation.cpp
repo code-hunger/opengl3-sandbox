@@ -27,20 +27,8 @@ void follower::operator()(Ship& ship)
 	             cosCurrent = cos(currentDirection),
 	             sinCurrent = sin(currentDirection);
 
-	double diff = 0;
-	if (sinCurrent > 0) {
-		if (sinTarget > 0) {
-			diff = -cosTarget + cosCurrent;
-		} else {
-			diff = -cosTarget - cosCurrent;
-		}
-	} else {
-		if (sinTarget > 0) {
-			diff = cosTarget + cosCurrent;
-		} else {
-			diff = cosTarget - cosCurrent;
-		}
-	}
+	double diff = (sinCurrent > 0 ? -cosTarget : cosTarget) +
+	              (sinTarget > 0 ? cosCurrent : -cosCurrent);
 
 	// Negative diff means turn left, positive means turn right
 	ship.rotate(diff > 1e-5 ? LEFT : diff < -1e-5 ? RIGHT : NONE);
