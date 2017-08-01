@@ -41,6 +41,30 @@ auto determine_rotation(double currentDirection, double targetDirection)
 	                          cos(currentDirection), cos(targetDirection));
 }
 
+/**
+ * The distance to the target is taken into account when deciding the speed at
+ * which to move the ship.
+ * @return whether the ship was moved or not
+ */
+bool move_toward_point(Ship& ship, math::Point2 targetPoint)
+{
+	double currentDistance2 = ship.getPosition().distance2(targetPoint);
+
+	if (currentDistance2 < 1) {
+		ship.stopMoving();
+		return false;
+	}
+
+	ushort gear =
+	    currentDistance2 > ship.MAX_SPEED * ship.MAX_SPEED ? ship.MAX_GEAR : 1;
+	ship.startMoving(gear);
+
+	Rotation rotation = determine_rotation(ship, targetPoint, currentDistance2);
+	ship.rotate(rotation);
+
+	return true;
+}
+
 namespace pilots {
 
 void follower::operator()(Ship& ship)
@@ -87,21 +111,11 @@ math::Point2&& line_follower::calc_target_position(Ship& ship)
 void line_follower::operator()(Ship& ship)
 {
 	math::Point2 targetPoint = calc_target_position(ship);
-	double currentDistance2 = ship.getPosition().distance2(targetPoint);
+	bool has_moved = move_toward_point(ship, targetPoint);
 
-	Rotation rotation;
-	if (currentDistance2 < 1) {
-		ship.stopMoving();
-		rotation =
-		    determine_rotation(ship.getDirection(), leader->getDirection());
-	} else {
-		ushort gear = currentDistance2 > ship.MAX_SPEED * ship.MAX_SPEED
-		                  ? ship.MAX_GEAR
-		                  : 1;
-		ship.startMoving(gear);
-		rotation = determine_rotation(ship, targetPoint, currentDistance2);
-	}
-	ship.rotate(rotation);
+	if (!has_moved)
+		ship.rotate(
+		    determine_rotation(ship.getDirection(), leader->getDirection()));
 }
 
 void keyboard_controlled::operator()(Ship& ship)
