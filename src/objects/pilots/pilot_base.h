@@ -57,7 +57,9 @@ struct line_follower : pilot_base
 
 private:
 	const Ship* leader;
-	float distance_to_leader = 20, distance_between = 15;
+	float distance_between = 4;
+
+	float distance_to_leader(short index) { return abs(index) * 6 - 14; }
 
 	std::map<Ship*, ushort> ships{};
 
