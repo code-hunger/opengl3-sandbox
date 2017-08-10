@@ -7,7 +7,7 @@
 
 #define WIDTH 700
 #define HEIGHT 700
-//#define PRINT_FPS
+#define PRINT_FPS
 
 GLFWwindow* createWindow(const char* title)
 {
@@ -60,7 +60,7 @@ void Window::run(void* renderObject, Renderer& renderFunction)
 	double prevTime = glfwGetTime();
 
 #ifdef PRINT_FPS
-	int frames = 0;
+	//int frames = 0;
 	double last_time_check = prevTime;
 #endif
 
@@ -81,14 +81,12 @@ void Window::run(void* renderObject, Renderer& renderFunction)
 		double time = glfwGetTime(), deltaTime = time - prevTime;
 		prevTime = time;
 
+		//++frames;
+
 #ifdef PRINT_FPS
-		++frames;
-		if (time - last_time_check >= 1) {
-			LOG("%f since last check", frames / (time - last_time_check));
-			last_time_check = glfwGetTime();
-			frames = 0;
-		}
+		LOG("%f FPS  ", 1.0/deltaTime);
 #endif
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
