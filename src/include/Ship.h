@@ -5,6 +5,8 @@
 #include "math/types.h"
 #include <memory>
 
+typedef unsigned short ushort;
+
 enum Rotation { NONE = 0, LEFT = 1, RIGHT = -1 };
 
 struct pilot_base;
