@@ -114,12 +114,12 @@ inline float WideRoad2::widthAt(const Point2& ip) const
 	       narrow.width;
 }
 
-inline constexpr Point2 middleOf(Point2 a, Point2 b)
+inline constexpr Point2 middleOf(const Point2& a, const Point2& b)
 {
 	return {a.x + (b.x - a.x) / 2, a.y + (b.y - a.y) / 2};
 }
 
-inline constexpr Point2 middleOf(Segment2 line)
+inline constexpr Point2 middleOf(const Segment2& line)
 {
 	return middleOf(line.a, line.b);
 }
