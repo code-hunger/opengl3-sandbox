@@ -55,32 +55,31 @@ public:
 		// TODO: Check if file exists
 
 		// TODO: Turn this into a switch(){} when a hashing function is present!
-
-		if (extension == std::string("png")) {
+		if (extension == "png") {
 			loadPNG();
 			return;
 		}
-		if (extension == std::string("bmp")) {
+		if (extension == "bmp") {
 			loadTGA();
 			return;
 		}
-		if (extension == std::string("tga")) {
+		if (extension == "tga") {
 			loadBMP();
 			return;
 		}
-		if ((extension == std::string("jpeg")) ||
-		    extension == std::string("jpg"))
+		if ((extension == "jpeg") || extension == "jpg") {
 			loadJPEG();
-
-		if (extension == std::string("exr")) {
+			return;
+		}
+		if (extension == "exr") {
 			loadEXR();
 			return;
 		}
-		if (extension == std::string("hdr")) {
+		if (extension == "hdr") {
 			loadHDR();
 			return;
 		}
-		if (extension == std::string("tiff")) {
+		if (extension == "tiff") {
 			loadTIFF();
 			return;
 		}
