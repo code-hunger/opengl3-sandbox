@@ -1,7 +1,7 @@
 #include "textureInterface.h"
-#include "logger\logger.h";
+#include "logger/logger.h"
 
-#include<string>
+#include <string>
 
 typedef unsigned int uint;
 

@@ -1,19 +1,14 @@
 #pragma once
 
 #ifndef TEXTUREINTERFACE_H
-
 #define TEXTUREINTERFACE_H
 
-#include<string>
+#include <string>
 
 typedef unsigned int uint;
 
-class textureInterface
-{
+class textureInterface{
 public:
-	float *data;
-	uint size;
-	std::string fmt,fileName;
 
 	textureInterface();
 	textureInterface(std::string &_fileName);
