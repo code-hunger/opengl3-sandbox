@@ -2,11 +2,7 @@
 
 void TextureInterface::loadFile(const std::string& fileName)
 {
-	uint lastDot = static_cast<uint>(fileName.size());
-
-	while (--lastDot > 0) {
-		if (fileName[lastDot] == '.') break;
-	}
+	uint lastDot = static_cast<uint>(fileName.find_last_of('.'));
 
 	if (!lastDot) {
 		LOG("File <%s> has no extension!", fileName.data());
