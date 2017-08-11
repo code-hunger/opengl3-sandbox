@@ -33,12 +33,10 @@ public:
 	// @TODO fix return type
 	void loadFile(const std::string& fileName)
 	{
-		uint i = 0, lastDot = 0;
+		uint lastDot = static_cast<uint>(fileName.size());
 
-		for (i = 0; i < fileName.size(); i++) {
-			if (fileName[i] == '.') {
-				lastDot = i;
-			}
+		while (--lastDot > 0) {
+			if (fileName[lastDot] == '.') break;
 		}
 
 		if (!lastDot) {
