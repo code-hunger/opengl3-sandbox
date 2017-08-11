@@ -4,88 +4,34 @@
 #define TEXTUREINTERFACE_H
 
 #include "logger/logger.h"
-#include "textureInterface.h"
 
 #include <string>
 
 typedef unsigned int uint;
 
-class textureInterface
+class TextureInterface
 {
-
 public:
 	float* data = nullptr;
 	uint size = 0;
 	std::string format = "rgb";
 
-	textureInterface() = default;
+	TextureInterface() = default;
 
-	textureInterface(const std::string& fileName) { loadFile(fileName); }
+	TextureInterface(const std::string& fileName) { loadFile(fileName); }
 
-	textureInterface(float data[], uint size, std::string& format)
+	TextureInterface(float data[], uint size, std::string& format)
 	    : data(data), size(size), format(format)
 	{
 	}
 
-	textureInterface(const textureInterface&) = default;
+	TextureInterface(const TextureInterface&) = default;
 
 	// Load and copy methods return whether they were successful or not.
 	// @TODO fix return type
-	void loadFile(const std::string& fileName)
-	{
-		uint lastDot = static_cast<uint>(fileName.size());
+	void loadFile(const std::string& fileName);
 
-		while (--lastDot > 0) {
-			if (fileName[lastDot] == '.') break;
-		}
-
-		if (!lastDot) {
-			LOG("File <%s> has no extension!", fileName.data());
-			return;
-		}
-
-		if (lastDot == (fileName.size() - 1)) {
-			LOG("File <%s> has an empty extension!", fileName.data());
-			return;
-		}
-
-		std::string extension;
-		extension.assign(fileName.begin() + lastDot + 1, fileName.end());
-
-		// TODO: Check if file exists
-
-		// TODO: Turn this into a switch(){} when a hashing function is present!
-		if (extension == "png") {
-			loadPNG();
-			return;
-		}
-		if (extension == "bmp") {
-			loadTGA();
-			return;
-		}
-		if (extension == "tga") {
-			loadBMP();
-			return;
-		}
-		if ((extension == "jpeg") || extension == "jpg") {
-			loadJPEG();
-			return;
-		}
-		if (extension == "exr") {
-			loadEXR();
-			return;
-		}
-		if (extension == "hdr") {
-			loadHDR();
-			return;
-		}
-		if (extension == "tiff") {
-			loadTIFF();
-			return;
-		}
-	}
-
-	~textureInterface() { delete[] data; }
+	~TextureInterface() { delete[] data; }
 
 private:
 	// All load methods return whether they were successful or not.
