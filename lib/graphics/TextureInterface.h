@@ -25,7 +25,12 @@ public:
 	{
 	}
 
-	TextureInterface(const TextureInterface&) = default;
+	TextureInterface(TextureInterface&& other)
+	    : data(other.data), size(other.size), format(other.format)
+	{
+		other.data = nullptr;
+		other.size = 0;
+	}
 
 	// Load and copy methods return whether they were successful or not.
 	// @TODO fix return type
