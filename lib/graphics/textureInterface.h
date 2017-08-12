@@ -5,169 +5,82 @@
 
 #include "logger/logger.h"
 
+typedef unsigned int uint;
+typedef unsigned short ushort;
+
 #include <string>
+
+enum imageType{UNKNOWN, PNG, TGA, BMP, JPEG, DDS, EXR, HDR, TIFF};
+const ushort IMAGETYPE_COUNT = 9;
+const std::string imageType_str[IMAGETYPE_COUNT] = {"UNKNOWN", "PNG", "TGA", "BMP", "JPEG", "DDS", "EXR", "HDR", "TIFF"}
 
 typedef unsigned int uint;
 
-class textureInterface
-{
+bool caseInsensitive_compare(const string& a, const string& b) {
+	if (a.size() != b.size()) return false;
+	for (int i = 0; i < a.size(); i++) {
+		if (tolower(a[i]) != tolower(b[i])) return false;
+	}
+	return true;
+}
+
+imageType detectExtension(std::string fileName) {
+	//uint lastDot=0, lastSlash=0;//  This slash -> /
+	
+	fileName = fileName.substr(fileName.find_last_of("/\\") + 1);
+
+	std::size_t lastDot;
+	lastDot = fileName.find_last_of(".");
+	if (lastDot == std::string::npos) {//If dot is not found
+		return UNKNOWN;
+	}
+
+	fileName = fileName.substr(lastDot+1);
+	//TODO: Make mime type table + checker somewhere else
+	for (ushort i = 1; i < IMAGETYPE_COUNT; i++) {
+		if (caseInsensitive_compare(fileName, imageType_str[i])) return i;
+	}
+	return 0;
+}
+
+class textureInterface{
 
 public:
-	float* data = nullptr;
-	uint width, height;
-	std::string format = "rgb";
+	vector<float> image;
+	uint width=0, height=0;
+	std::string colorFormat = "rgb";
 
 	textureInterface() = default;
 
 	textureInterface(const std::string& fileName) { loadFile(fileName); }
 
-	textureInterface(float data[], uint size, std::string& format)
-	    : data(data), size(size), format(format)
-	{
-	}
+	textureInterface(vector<float> image, uint width, uint height, std::string& colorFormat):
+		image(image), width(width), height(height), colorFormat(colorFormat) {}
 
 	textureInterface(const textureInterface&) = default;
 
-	// Load and copy methods return whether they were successful or not.
-	// @TODO fix return type
-	void loadFile(const std::string& fileName)
-	{
-		uint lastDot = static_cast<uint>(fileName.size());
-
-		while (--lastDot > 0) {
-			if (fileName[lastDot] == '.') break;
-		}
-
-		if (!lastDot) {
-			LOG("File <%s> has no extension!", fileName.data());
-			return;
-		}
-
-		if (lastDot == (fileName.size() - 1)) {
-			LOG("File <%s> has an empty extension!", fileName.data());
-			return;
-		}
-
-		std::string extension;
-		extension.assign(fileName.begin() + lastDot + 1, fileName.end());
-
-		// TODO: Check if file exists
-
-		// TODO: Turn this into a switch(){} when a hashing function is present!
-
-		if (extension == std::string("png")) {
-			loadPNG();
-			return;
-		}
-		if (extension == std::string("bmp")) {
-			loadTGA();
-			return;
-		}
-		if (extension == std::string("tga")) {
-			loadBMP();
-			return;
-		}
-		if ((extension == std::string("jpeg")) ||
-		    extension == std::string("jpg"))
-			loadJPEG();
-
-		if (extension == std::string("exr")) {
-			loadEXR();
-			return;
-		}
-		if (extension == std::string("hdr")) {
-			loadHDR();
-			return;
-		}
-		if (extension == std::string("tiff")) {
-			loadTIFF();
-			return;
-		}
-	}
-
-	~textureInterface() { delete[] data; }
-
-private:
-	// All load methods return whether they were successful or not.
-	bool loadPNG()
-	{
-		LOG("PNG loading not implemented yet!");
-		return false;
-	}
-	bool savePNG()
-	{
-		LOG("PNG saving not implemented yet!");
+	template<imageType iType> bool loadFile(const std::string& fileName){//TODO: Think of better name for iType
+		LOG("Loading for image type %i(%s) not implemented!", iType, imageType_str[iType].data());
 		return false;
 	}
 
-	bool loadTGA()
-	{
-		LOG("Targa loading not implemented yet!");
-		return false;
-	}
-	bool saveTGA()
-	{
-		LOG("Targa saving not implemented yet!");
+	template<imageType iType> bool saveFile(const std::string& fileName) {//TODO: Think of better name for iType
+		LOG("Saving for image type %i(%s) not implemented!", iType, imageType_str[iType].data());
 		return false;
 	}
 
-	bool loadBMP()
-	{
-		LOG("Bitmap loading not implemented yet!");
-		return false;
-	}
-	bool saveBMP()
-	{
-		LOG("Bitmap saving not implemented yet!");
-		return false;
-	}
+	~textureInterface() {}
 
-	bool loadJPEG()
-	{
-		LOG("JPEG loading not implemented yet!");
-		// Do I look like I know what a jpeg is?
-		// I just want a picture of a got dang hot dawg!
-		// https://www.youtube.com/watch?v=ZXVhOPiM4mk
-		return false;
-	}
-	bool saveJPEG()
-	{
-		LOG("JPEG saving not implemented yet!");
-		return false;
-	}
-
-	bool loadEXR()
-	{
-		LOG("EXR loading not implemented yet!");
-		return false;
-	}
-	bool saveEXR()
-	{
-		LOG("EXR loading not implemented yet!");
-		return false;
-	}
-
-	bool loadHDR()
-	{
-		LOG("High dynamic range format loading not implemented yet!");
-		return false;
-	}
-	bool saveHDR()
-	{
-		LOG("High dynamic range format loading not implemented yet!");
-		return false;
-	}
-
-	bool loadTIFF()
-	{
-		LOG("TIFF loading not implemented yet!");
-		return false;
-	}
-	bool saveTIFF()
-	{
-		LOG("TIFF loading not implemented yet!");
-		return false;
-	}
 };
+
+template<> bool textureInterface::loadFile<UNKNOWN>(const std::string& fileName) {
+	LOG("Attempting to load image of unknown file type! File name: %s", fileName.data());
+	return false;
+}
+
+template<> bool textureInterface::saveFile<UNKNOWN>(const std::string& fileName) {
+	LOG("Attempting to save image of unknown file type! File name: %s", fileName.data());
+	return false;
+}
 
 #endif
