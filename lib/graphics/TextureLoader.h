@@ -13,6 +13,16 @@ enum imageType{UNKNOWN, PNG, TGA, BMP, JPEG, DDS, EXR, HDR, TIFF};
 const ushort IMAGETYPE_COUNT = 9;
 const std::string imageType_str[IMAGETYPE_COUNT] = {"UNKNOWN", "PNG", "TGA", "BMP", "JPEG", "DDS", "EXR", "HDR", "TIFF"}//When we have a mime type table handy, delete these
 
+
+bool caseInsensitive_compare(const string& a, const string& b) {
+	if (a.size() != b.size()) return false;
+	for (int i = 0; i < a.size(); i++) {
+		if (tolower(a[i]) != tolower(b[i])) return false;
+	}
+	return true;
+}
+
+
 class TextureLoader{
 
 	//Both of these should return whether they were successful or not
