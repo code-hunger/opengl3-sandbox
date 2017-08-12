@@ -63,7 +63,13 @@ struct ColorSegment2;
 struct Segment2
 {
 	const Point2 a, b;
-	const float slope = atanf((b.y - a.y) / (b.x - a.x));
+	const float slope;
+
+	Segment2(const Point2& a, const Point2& b)
+	    : a(a), b(b), slope(atanf((b.y - a.y) / (b.x - a.x)))
+	{
+	}
+
 	bool operator==(const Segment2& other) const
 	{
 		return (a == other.a && b == other.b) || (a == other.b && b == other.a);
