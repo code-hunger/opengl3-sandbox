@@ -4,7 +4,6 @@
 #define TEXTUREINTERFACE_H
 
 #include "logger/logger.h"
-#include "textureInterface.h"
 
 #include <string>
 
@@ -15,7 +14,7 @@ class textureInterface
 
 public:
 	float* data = nullptr;
-	uint size = 0;
+	uint width, height;
 	std::string format = "rgb";
 
 	textureInterface() = default;
