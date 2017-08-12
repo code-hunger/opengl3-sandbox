@@ -32,5 +32,5 @@ add_subdirectory(lib/graphics)
 add_subdirectory(lib/maze_builder)
 add_subdirectory(lib/logger)
 
-set_property(TARGET game PROPERTY CXX_STANDARD 14)
+set_property(TARGET game PROPERTY CXX_STANDARD 17)
 set_property(TARGET game PROPERTY CXX_STANDARD_REQUIRED ON)
