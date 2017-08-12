@@ -22,6 +22,24 @@ bool caseInsensitive_compare(const string& a, const string& b) {
 	return true;
 }
 
+imageType findExtension(std::string fileName) {
+	//uint lastDot=0, lastSlash=0;//  This slash -> /
+	
+	fileName = fileName.substr(fileName.find_last_of("/\\") + 1);//<- this works for both slashes, apparently
+
+	std::size_t lastDot;
+	lastDot = fileName.find_last_of(".");
+	if (lastDot == std::string::npos) {//If dot is not found
+		return UNKNOWN;
+	}
+
+	fileName = fileName.substr(lastDot+1);
+	//TODO: Mime type reminder
+	for (ushort i = 1; i < IMAGETYPE_COUNT; i++) {
+		if (caseInsensitive_compare(fileName, imageType_str[i])) return i;
+	}
+	return UNKNOWN;
+}
 
 class TextureLoader{
 
