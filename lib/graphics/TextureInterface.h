@@ -14,20 +14,21 @@ class TextureInterface
 {
 public:
 	vector<float> image;
-	uint size = 0;
+	uint width = 0, height = 0; //Width = x, height = y
 	std::string format = "rgb";
 
 	TextureInterface() = default;
 
-	TextureInterface(vector<float> image, uint size, std::string& format)
-	    : image(image), size(size), format(format)
+	TextureInterface(vector<float> image, uint width, uint height, std::string& format)
+	    : image(image), width(width), height(height), format(format)
 	{}
 
 	TextureInterface(TextureInterface&& other)
-	    : image(other.image), size(other.size), format(other.format)
+	    : image(other.image), height(other.height), width(other.width) format(other.format)
 	{
 		other.image.clear();
-		other.size = 0;
+		other.height = 0;
+		other.width = 0;
 	}
 
 	~TextureInterface() {}
