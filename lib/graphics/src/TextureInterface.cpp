@@ -14,8 +14,7 @@ void TextureInterface::loadFile(const std::string& fileName)
 		return;
 	}
 
-	std::string extension;
-	extension.assign(fileName.begin() + lastDot + 1, fileName.end());
+	std::string extension = fileName.substr(lastDot + 1);
 
 	// TODO: Check if file exists
 
