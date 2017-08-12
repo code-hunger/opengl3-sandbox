@@ -56,4 +56,14 @@ class TextureLoader{
 
 };
 
+template<> bool textureInterface::loadFile<UNKNOWN>(const std::string& fileName) {
+	LOG("Attempting to load image of unknown file type! File name: %s", fileName.data());
+	return false;
+}
+
+template<> bool textureInterface::saveFile<UNKNOWN>(const std::string& fileName) {
+	LOG("Attempting to save image of unknown file type! File name: %s", fileName.data());
+	return false;
+}
+
 #endif
