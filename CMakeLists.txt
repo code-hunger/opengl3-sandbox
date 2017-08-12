@@ -15,7 +15,7 @@ set(MAZE_DIRECTORY ${PROJECT_SOURCE_DIR}/data/mazes)
 
 configure_file (
     "${PROJECT_SOURCE_DIR}/src/config.h.in"
-    "${PROJECT_SOURCE_DIR}/lib/graphics/include/config.h"
+    "${PROJECT_SOURCE_DIR}/lib/graphics/config.h"
   )
 
 include_directories(${PROJECT_SOURCE_DIR}/lib/)
