@@ -6,30 +6,31 @@
 #include "logger/logger.h"
 
 #include <string>
+#include <vector>
 
 typedef unsigned int uint;
 
 class TextureInterface
 {
 public:
-	float* data = nullptr;
+	vector<float> image;
 	uint size = 0;
 	std::string format = "rgb";
 
 	TextureInterface() = default;
 
-	TextureInterface(float data[], uint size, std::string& format)
-	    : data(data), size(size), format(format)
+	TextureInterface(vector<float> image, uint size, std::string& format)
+	    : image(image), size(size), format(format)
 	{}
 
 	TextureInterface(TextureInterface&& other)
-	    : data(other.data), size(other.size), format(other.format)
+	    : image(other.image), size(other.size), format(other.format)
 	{
-		other.data = nullptr;
+		other.image.clear();
 		other.size = 0;
 	}
 
-	~TextureInterface() { delete[] data; }
+	~TextureInterface() {}
 
 };
 
