@@ -14,6 +14,8 @@ public:
 	GameplayScreen(Maze&& maze);
 	virtual ~GameplayScreen();
 
+	GameplayScreen(GameplayScreen&&) = default;
+
 	void work(double deltaTime, State& state);
 
 private:
