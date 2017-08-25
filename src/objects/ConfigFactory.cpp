@@ -31,9 +31,27 @@ ConfigFactory::ConfigFactory(int argc, const char** argv)
 {
 }
 
+#include "GameplayScreen.h"
+#include "Maze.h"
+#include "math/types.h"
+#include "maze_builder/builder.h"
+
+math::WideRoads fetchLinesFromMaze(unsigned maze_id);
+
+Maze createMaze(ushort maze_id, bool join_it, ushort max_lines)
+{
+	auto lines = fetchLinesFromMaze(maze_id);
+
+	const auto& walls = Builder{join_it, max_lines}.build_from_paths(lines);
+	return Maze::build(std::move(lines), walls);
+}
+
 template <> ScreenManager ConfigFactory::produce()
 {
-	return {data->maze_id, data->no_join_lines, data->max_lines};
+	Maze maze = createMaze(data->maze_id, data->no_join_lines, data->max_lines);
+
+	// @TODO - Does it really need to be that ugly?
+	return {std::move(std::move(maze))};
 }
 
 template <> void ConfigFactory::process(Window& window)
