@@ -1,6 +1,7 @@
 #include "ScreenManager.h"
 
 #include "graphics/GlfwWrapper.h"
+#include "graphics/Window.h"
 
 #include "logger/logger.h"
 
@@ -33,7 +34,7 @@ int main(int argc, char** argv)
 {
 	try {
 		GlfwWrapper wrapper;
-		auto window = wrapper.acquireWindow();
+		auto window = wrapper.acquireWindow<Window>();
 
 		// a Window is needed to construct a ScreenManager
 		ScreenManager screenManager = screenManagerFromCmd(argc, argv);

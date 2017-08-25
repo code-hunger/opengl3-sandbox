@@ -1,8 +1,6 @@
 #ifndef GLFWWRAPPER_H_2OBZJPPD
 #define GLFWWRAPPER_H_2OBZJPPD
 
-#include "Window.h"
-
 class GlfwWrapper
 {
 	static bool exists;
@@ -15,7 +13,7 @@ public:
 	GlfwWrapper(const GlfwWrapper&) = delete;
 	GlfwWrapper& operator=(GlfwWrapper) = delete;
 
-	Window acquireWindow() & { return {}; }
+	template <class window_t> window_t acquireWindow() & { return {}; }
 
 	~GlfwWrapper();
 };
