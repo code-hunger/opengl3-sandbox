@@ -37,12 +37,14 @@ public:
 
 	Window(Window&&) = default;
 
+	void setPrintFps(bool print_fps) { this->print_fps = print_fps; }
+
 protected:
 	GLFWwindow* window;
 
 	Dimentions size;
 
-	bool keys[1024]{false};
+	bool keys[1024]{false}, print_fps = false;
 
 	void updateSize();
 
