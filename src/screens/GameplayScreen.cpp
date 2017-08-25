@@ -2,26 +2,14 @@
 
 #include "graphics/utils.h"
 #include "logger/logger.h"
-#include "maze_builder/builder.h"
 
 #include "../src/objects/pilots/pilot_base.h"
 #include "Maze.h"
 
 #include <GLFW/glfw3.h>
 
-math::WideRoads fetchLinesFromMaze(unsigned maze_id);
-
-Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
-{
-	auto lines = fetchLinesFromMaze(maze_id);
-
-	const auto& walls = Builder{join_it, max_lines}.build_from_paths(lines);
-	return Maze::build(std::move(lines), walls);
-}
-
-GameplayScreen::GameplayScreen(ushort maze_id, bool join_it, ushort max_lines)
-    : maze(getMazeFromFile(maze_id, join_it, max_lines)),
-      mainPlayer(ships.addShip(math::Point2{17, 37})),
+GameplayScreen::GameplayScreen(Maze&& maze)
+    : maze(std::move(maze)), mainPlayer(ships.addShip(math::Point2{17, 37})),
       pilot(std::make_shared<pilots::line_follower>(ships[mainPlayer]))
 {
 	ships[mainPlayer].setPilot(std::make_shared<pilots::keyboard_controlled>(

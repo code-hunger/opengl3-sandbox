@@ -11,7 +11,7 @@ typedef unsigned short ushort;
 class GameplayScreen : public Screen
 {
 public:
-	GameplayScreen(ushort maze_id, bool join_it, ushort max_lines);
+	GameplayScreen(Maze&& maze);
 	virtual ~GameplayScreen();
 
 	void work(double deltaTime, State& state);

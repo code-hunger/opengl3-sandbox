@@ -2,8 +2,26 @@
 
 #include "GameplayScreen.h"
 
+#include "maze_builder/builder.h"
+
+math::WideRoads fetchLinesFromMaze(unsigned maze_id);
+
+Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
+{
+	auto lines = fetchLinesFromMaze(maze_id);
+
+	const auto& walls = Builder{join_it, max_lines}.build_from_paths(lines);
+	return Maze::build(std::move(lines), walls);
+}
+
+ScreenManager::ScreenManager(std::unique_ptr<GameplayScreen> screen)
+    : screen(std::move(screen))
+{
+}
+
 ScreenManager::ScreenManager(ushort mazeId, bool noJoinLines, ushort maxLines)
-    : screen(std::make_unique<GameplayScreen>(mazeId, !noJoinLines, maxLines))
+    : ScreenManager(std::make_unique<GameplayScreen>(
+          getMazeFromFile(mazeId, noJoinLines, maxLines)))
 {
 }
 

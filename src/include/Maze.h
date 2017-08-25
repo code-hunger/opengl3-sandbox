@@ -10,6 +10,8 @@ class Maze
 public:
 	static Maze build(math::WideRoads&&, const math::ColorSegmentList&);
 
+	Maze(Maze&&) = default;
+
 	void draw(uint mode);
 
 private:
