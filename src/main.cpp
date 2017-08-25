@@ -22,8 +22,11 @@ int main(int argc, char** argv)
 		GlfwWrapper wrapper;
 		auto window = wrapper.acquireWindow<Window>();
 
+		ConfigFactory factory{argc, argv};
+		factory.process(window);
+
 		// a Window is needed to construct a ScreenManager
-		ScreenManager screenManager = ConfigFactory(argc, argv).produce<ScreenManager>();
+		auto screenManager = factory.produce<ScreenManager>();
 
 		window.run(screenManager, renderFunction);
 	} catch (int e) {
