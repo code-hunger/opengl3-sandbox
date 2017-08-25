@@ -5,25 +5,11 @@
 
 #include "logger/logger.h"
 
+#include "ConfigFactory.h"
+
 #include "tclap/CmdLine.h"
 
 bool GlfwWrapper::exists = false;
-
-ScreenManager screenManagerFromCmd(int argc, char** argv)
-{
-	using namespace TCLAP;
-
-	CmdLine cmd("ScreenManager title", ' ', "0.1");
-	UnlabeledValueArg<ushort> maze_id("maze_id", "Maze id to load", false, 1,
-	                                  "number", cmd);
-	ValueArg<ushort> max_lines("m", "max_lines", "Max ways to be added", false,
-	                           0, "count", cmd);
-	SwitchArg no_join_lines("n", "nojoin", "Don't join intersecting lines", cmd,
-	                        true);
-	cmd.parse(argc, argv);
-
-	return {maze_id.getValue(), no_join_lines.getValue(), max_lines.getValue()};
-}
 
 void renderFunction(void* renderObject, double deltaTime, State& state)
 {
@@ -37,7 +23,7 @@ int main(int argc, char** argv)
 		auto window = wrapper.acquireWindow<Window>();
 
 		// a Window is needed to construct a ScreenManager
-		ScreenManager screenManager = screenManagerFromCmd(argc, argv);
+		ScreenManager screenManager = ConfigFactory(argc, argv).produce<ScreenManager>();
 
 		window.run(screenManager, renderFunction);
 	} catch (int e) {
