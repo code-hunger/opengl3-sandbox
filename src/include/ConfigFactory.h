@@ -17,14 +17,8 @@ public:
 	template <typename T> void process(T&) {}
 };
 
-template <> inline ScreenManager ConfigFactory::produce()
-{
-	return {maze_id, no_join_lines, max_lines};
-}
+template <> ScreenManager ConfigFactory::produce();
 
-template <> inline void ConfigFactory::process(Window& window)
-{
-	window.setPrintFps(print_fps);
-}
+template <> void ConfigFactory::process(Window& window);
 
 #endif /* end of include guard: CONFIG_FACTORY_H_EQA17KCO */

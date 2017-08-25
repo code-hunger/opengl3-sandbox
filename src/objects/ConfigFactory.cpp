@@ -21,3 +21,14 @@ ConfigFactory::ConfigFactory(int argc, char** argv)
 	this->max_lines = max_lines.getValue();
 	this->print_fps = print_fps.getValue();
 }
+
+template <> ScreenManager ConfigFactory::produce()
+{
+	return {maze_id, no_join_lines, max_lines};
+}
+
+template <> void ConfigFactory::process(Window& window)
+{
+	window.setPrintFps(print_fps);
+}
+
