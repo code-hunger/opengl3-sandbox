@@ -4,17 +4,24 @@
 #include "ScreenManager.h"
 #include "graphics/Window.h"
 
-struct ConfigFactory
+class ConfigFactory
 {
-	ushort maze_id, max_lines;
-	bool no_join_lines, print_fps;
+	struct Data;
+	Data* data;
 
 public:
 	ConfigFactory(int argc, char** argv);
 
-	template <typename T> T produce() { return {}; };
+	ConfigFactory(ConfigFactory&&) = default;
+
+	ConfigFactory(const ConfigFactory&) = delete;
+	void operator=(const ConfigFactory&) = delete;
+
+	template <typename T> T produce() { return {}; }
 
 	template <typename T> void process(T&) {}
+
+	~ConfigFactory();
 };
 
 template <> ScreenManager ConfigFactory::produce();

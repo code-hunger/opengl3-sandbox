@@ -1,7 +1,13 @@
 #include "ConfigFactory.h"
 #include "tclap/CmdLine.h"
 
-ConfigFactory::ConfigFactory(int argc, char** argv)
+struct ConfigFactory::Data
+{
+	ushort maze_id, max_lines;
+	bool no_join_lines, print_fps;
+};
+
+ConfigFactory::ConfigFactory(int argc, char** argv) : data(new Data)
 {
 	using namespace TCLAP;
 
@@ -16,19 +22,20 @@ ConfigFactory::ConfigFactory(int argc, char** argv)
 
 	cmd.parse(argc, argv);
 
-	this->maze_id = maze_id.getValue();
-	this->no_join_lines = no_join_lines.getValue();
-	this->max_lines = max_lines.getValue();
-	this->print_fps = print_fps.getValue();
+	data->maze_id = maze_id.getValue();
+	data->no_join_lines = no_join_lines.getValue();
+	data->max_lines = max_lines.getValue();
+	data->print_fps = print_fps.getValue();
 }
 
 template <> ScreenManager ConfigFactory::produce()
 {
-	return {maze_id, no_join_lines, max_lines};
+	return {data->maze_id, data->no_join_lines, data->max_lines};
 }
 
 template <> void ConfigFactory::process(Window& window)
 {
-	window.setPrintFps(print_fps);
+	window.setPrintFps(data->print_fps);
 }
 
+ConfigFactory::~ConfigFactory() { delete data; }
