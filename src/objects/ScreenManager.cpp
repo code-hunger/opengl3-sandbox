@@ -14,14 +14,13 @@ Maze getMazeFromFile(ushort maze_id, bool join_it, ushort max_lines)
 	return Maze::build(std::move(lines), walls);
 }
 
-ScreenManager::ScreenManager(std::unique_ptr<GameplayScreen> screen)
-    : screen(std::move(screen))
+ScreenManager::ScreenManager(GameplayScreen&& screen)
+    : screen(std::make_unique<GameplayScreen>(std::move(screen)))
 {
 }
 
 ScreenManager::ScreenManager(ushort mazeId, bool noJoinLines, ushort maxLines)
-    : ScreenManager(std::make_unique<GameplayScreen>(
-          getMazeFromFile(mazeId, noJoinLines, maxLines)))
+    : ScreenManager(getMazeFromFile(mazeId, noJoinLines, maxLines))
 {
 }
 

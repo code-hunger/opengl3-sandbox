@@ -12,7 +12,7 @@ typedef unsigned short ushort;
 class ScreenManager
 {
 public:
-	ScreenManager(std::unique_ptr<GameplayScreen>);
+	ScreenManager(GameplayScreen&&);
 	ScreenManager(ushort maze_id, bool dont_join_lines, ushort max_lines);
 
 	void render(double deltaTime, State& state) const;
