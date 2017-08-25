@@ -7,10 +7,10 @@
 class ConfigFactory
 {
 	struct Data;
-	Data* data;
+	const Data* data;
 
 public:
-	ConfigFactory(int argc, char** argv);
+	ConfigFactory(int argc, const char** argv);
 
 	ConfigFactory(ConfigFactory&&) = default;
 

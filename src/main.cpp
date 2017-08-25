@@ -16,7 +16,7 @@ void renderFunction(void* renderObject, double deltaTime, State& state)
 	static_cast<ScreenManager*>(renderObject)->render(deltaTime, state);
 }
 
-int main(int argc, char** argv)
+int main(int argc, const char** argv)
 {
 	try {
 		GlfwWrapper wrapper;
