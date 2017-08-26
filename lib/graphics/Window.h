@@ -9,6 +9,11 @@ struct State;
 // using Renderer = std::function<void(double deltaTime, State&)>;
 using Renderer = void (&)(void*, double deltaTime, State&);
 
+struct Dimentions
+{
+	unsigned short width, height;
+};
+
 class Window
 {
 	Window();
@@ -35,7 +40,7 @@ public:
 protected:
 	GLFWwindow* window;
 
-	GLushort width, height;
+	Dimentions size;
 
 	bool keys[1024]{false};
 

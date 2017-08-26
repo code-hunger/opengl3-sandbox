@@ -21,22 +21,15 @@ void keyCallback(GLFWwindow* glfwWindow, int key, int scancode, int action,
 	window->keyCallback(static_cast<ushort>(key), scancode, action, mods);
 }
 
-std::pair<ushort, ushort> fetchWindowSize(GLFWwindow* window)
+Dimentions getWindowSize(GLFWwindow* window)
 {
 	int w, h;
 	glfwGetFramebufferSize(window, &w, &h);
 	return {static_cast<ushort>(w), static_cast<ushort>(h)};
 }
 
-std::pair<ushort, ushort> getStaticSize(GLFWwindow* window)
-{
-	static auto size = fetchWindowSize(window);
-	return size;
-}
-
 Window::Window()
-    : window(createWindow("First Window Title")),
-      width(getStaticSize(window).first), height(getStaticSize(window).second)
+    : window(createWindow("First Window Title")), size{getWindowSize(window)}
 {
 	if (!window) throw "A window could not be created!";
 
@@ -68,7 +61,7 @@ void Window::run(void* renderObject, Renderer& renderFunction)
 
 	// updateSize();
 
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, size.width, size.height);
 	glClearColor(0, 0, 0, 0);
 
 	State state{0, 0, 0, keys};
@@ -104,8 +97,8 @@ void Window::updateSize()
 {
 	int w, h;
 	glfwGetFramebufferSize(window, &w, &h);
-	width = static_cast<GLushort>(w);
-	height = static_cast<GLushort>(h);
+	size.width = static_cast<ushort>(w);
+	size.height = static_cast<ushort>(h);
 }
 
 void Window::keyCallback(ushort key, int scancode, int action, int mods) &
