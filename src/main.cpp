@@ -7,14 +7,7 @@
 
 #include "ConfigFactory.h"
 
-#include "tclap/CmdLine.h"
-
 bool GlfwWrapper::exists = false;
-
-void renderFunction(void* renderObject, double deltaTime, State& state)
-{
-	static_cast<ScreenManager*>(renderObject)->render(deltaTime, state);
-}
 
 int main(int argc, const char** argv)
 {
@@ -24,11 +17,6 @@ int main(int argc, const char** argv)
 
 		ConfigFactory factory{argc, argv};
 		factory.process(window);
-
-		// a Window is needed to construct a ScreenManager
-		auto screenManager = factory.produce<ScreenManager>();
-
-		window.run(screenManager, renderFunction);
 	} catch (int e) {
 		ERR << "Something bad happened. Code " << e;
 		return e;

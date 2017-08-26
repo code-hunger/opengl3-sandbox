@@ -1,4 +1,11 @@
 #include "ConfigFactory.h"
+
+#include "Maze.h"
+#include "maze_builder/builder.h"
+#include "GameplayScreen.h"
+
+#include "math/types.h"
+
 #include "tclap/CmdLine.h"
 
 struct ConfigFactory::Data
@@ -31,11 +38,6 @@ ConfigFactory::ConfigFactory(int argc, const char** argv)
 {
 }
 
-#include "GameplayScreen.h"
-#include "Maze.h"
-#include "math/types.h"
-#include "maze_builder/builder.h"
-
 math::WideRoads fetchLinesFromMaze(unsigned maze_id);
 
 Maze createMaze(ushort maze_id, bool join_it, ushort max_lines)
@@ -54,9 +56,17 @@ template <> ScreenManager ConfigFactory::produce()
 	return {std::move(std::move(maze))};
 }
 
+void renderFunction(void* renderObject, double deltaTime, State& state)
+{
+	static_cast<ScreenManager*>(renderObject)->render(deltaTime, state);
+}
+
 template <> void ConfigFactory::process(Window& window)
 {
 	window.setPrintFps(data->print_fps);
+
+	auto screenManager = produce<ScreenManager>();
+	window.run(screenManager, renderFunction);
 }
 
 ConfigFactory::~ConfigFactory() { delete data; }
