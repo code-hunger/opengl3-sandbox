@@ -52,7 +52,7 @@ template <> Maze ConfigFactory::produce()
 	auto lines = fetchLinesFromMaze(data->maze_id);
 
 	const auto& walls = produce<Builder>().build_from_paths(lines);
-	return Maze::build(std::move(lines), walls);
+	return {std::move(lines), walls};
 }
 
 template <> ScreenManager ConfigFactory::produce() { return {produce<Maze>()}; }

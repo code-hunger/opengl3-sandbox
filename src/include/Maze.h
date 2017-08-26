@@ -5,10 +5,15 @@
 #include "graphics/VertexArray.h"
 #include "math/types.h"
 
+VertexArray wallsToVertArr(const math::ColorSegmentList& walls);
+
 class Maze
 {
 public:
-	static Maze build(math::WideRoads&&, const math::ColorSegmentList&);
+	Maze(math::WideRoads&& ways, const math::ColorSegmentList& walls)
+	    : Maze{ways, walls, wallsToVertArr(walls)}
+	{
+	}
 
 	Maze(Maze&&) = default;
 

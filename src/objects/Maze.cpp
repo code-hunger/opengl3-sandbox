@@ -14,17 +14,6 @@
 
 using namespace math;
 
-VertexArray wallsToVertArr(const ColorSegmentList& walls);
-
-Maze Maze::build(WideRoads&& ways, const ColorSegmentList& walls)
-{
-	if (walls.size() > MAX_LINES) {
-		throw "Maximum allowed line number exceeded";
-	}
-
-	return {ways, walls, wallsToVertArr(walls)};
-}
-
 VertexArray wallsToVertArr(const ColorSegmentList& walls)
 {
 	// 12 floats per line: per point 3x position and 3x color
