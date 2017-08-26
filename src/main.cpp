@@ -1,5 +1,3 @@
-#include "ScreenManager.h"
-
 #include "graphics/GlfwWrapper.h"
 #include "graphics/Window.h"
 
@@ -8,6 +6,8 @@
 #include "ConfigFactory.h"
 
 bool GlfwWrapper::exists = false;
+
+template <> void ConfigFactory::process(Window& window);
 
 int main(int argc, const char** argv)
 {

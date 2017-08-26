@@ -1,11 +1,6 @@
 #ifndef CONFIG_FACTORY_H_EQA17KCO
 #define CONFIG_FACTORY_H_EQA17KCO
 
-#include "maze_builder/builder.h"
-#include "Maze.h"
-#include "ScreenManager.h"
-#include "graphics/Window.h"
-
 class ConfigFactory
 {
 	struct Data;
@@ -25,11 +20,5 @@ public:
 
 	~ConfigFactory();
 };
-
-template <> ScreenManager ConfigFactory::produce();
-template <> Maze ConfigFactory::produce();
-template <> Builder ConfigFactory::produce();
-
-template <> void ConfigFactory::process(Window& window);
 
 #endif /* end of include guard: CONFIG_FACTORY_H_EQA17KCO */
