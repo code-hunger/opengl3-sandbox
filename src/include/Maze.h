@@ -10,10 +10,7 @@ VertexArray wallsToVertArr(const math::ColorSegmentList& walls);
 class Maze
 {
 public:
-	Maze(math::WideRoads&& ways, const math::ColorSegmentList& walls)
-	    : Maze{ways, walls, wallsToVertArr(walls)}
-	{
-	}
+	Maze(const math::WideRoads&, const math::ColorSegmentList&);
 
 	Maze(Maze&&) = default;
 
@@ -23,10 +20,8 @@ private:
 	math::WideRoads paths;
 	math::ColorSegmentList walls;
 
-	VertexArray vertArray;
+	VertexArray vertArray = wallsToVertArr(walls);
 	ShaderProgram shaderProgram{"maze"};
-
-	Maze(const math::WideRoads&, const math::ColorSegmentList&, VertexArray&&);
 };
 
 #endif /* end of include guard: MAZE_H_UAWB7QD4 */

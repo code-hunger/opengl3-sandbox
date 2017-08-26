@@ -39,9 +39,8 @@ VertexArray wallsToVertArr(const ColorSegmentList& walls)
 	return {vector<float>{points, points + i}};
 }
 
-Maze::Maze(const WideRoads& paths, const ColorSegmentList& walls,
-           VertexArray&& vertArray)
-    : paths(paths), walls(walls), vertArray(std::move(vertArray))
+Maze::Maze(const WideRoads& paths, const ColorSegmentList& walls)
+    : paths(paths), walls(walls)
 {
 	shaderProgram.link();
 
