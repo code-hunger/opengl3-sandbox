@@ -7,7 +7,7 @@
 
 bool GlfwWrapper::exists = false;
 
-template <> void ConfigFactory::process(Window& window);
+template <> void ConfigFactory::process(Window& window) const;
 
 int main(int argc, const char** argv)
 {

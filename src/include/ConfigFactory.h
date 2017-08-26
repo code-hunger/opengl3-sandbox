@@ -1,12 +1,11 @@
 #ifndef CONFIG_FACTORY_H_EQA17KCO
 #define CONFIG_FACTORY_H_EQA17KCO
 
-class ConfigFactory
+struct ConfigFactory
 {
 	struct Data;
-	const Data* data;
+	const Data* const data;
 
-public:
 	ConfigFactory(int argc, const char** argv);
 
 	ConfigFactory(ConfigFactory&&) = default;
@@ -14,9 +13,9 @@ public:
 	ConfigFactory(const ConfigFactory&) = delete;
 	void operator=(const ConfigFactory&) = delete;
 
-	template <typename T> T produce() { return {}; }
+	template <typename T> T produce() const { return {}; }
 
-	template <typename T> void process(T&) {}
+	template <typename T> void process(T&) const {}
 
 	~ConfigFactory();
 };
