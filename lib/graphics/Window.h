@@ -27,7 +27,7 @@ public:
 	// is const& needed?
 	void run(void*, Renderer);
 
-	template <typename T> inline void run(T& obj, Renderer render)
+	template <typename T> inline void run(T&& obj, Renderer render)
 	{
 		run(static_cast<void*>(&obj), render);
 	}

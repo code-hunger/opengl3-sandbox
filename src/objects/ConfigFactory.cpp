@@ -64,8 +64,7 @@ template <> void ConfigFactory::process(Window& window)
 {
 	window.setPrintFps(data->print_fps);
 
-	auto screenManager = produce<ScreenManager>();
-	window.run(screenManager, renderFunction);
+	window.run(produce<ScreenManager>(), renderFunction);
 }
 
 ConfigFactory::~ConfigFactory() { delete data; }
