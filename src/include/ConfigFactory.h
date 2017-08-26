@@ -1,6 +1,8 @@
 #ifndef CONFIG_FACTORY_H_EQA17KCO
 #define CONFIG_FACTORY_H_EQA17KCO
 
+#include "maze_builder/builder.h"
+#include "Maze.h"
 #include "ScreenManager.h"
 #include "graphics/Window.h"
 
@@ -25,6 +27,8 @@ public:
 };
 
 template <> ScreenManager ConfigFactory::produce();
+template <> Maze ConfigFactory::produce();
+template <> Builder ConfigFactory::produce();
 
 template <> void ConfigFactory::process(Window& window);
 

@@ -1,8 +1,8 @@
 #include "ConfigFactory.h"
 
+#include "GameplayScreen.h"
 #include "Maze.h"
 #include "maze_builder/builder.h"
-#include "GameplayScreen.h"
 
 #include "math/types.h"
 
@@ -40,21 +40,20 @@ ConfigFactory::ConfigFactory(int argc, const char** argv)
 
 math::WideRoads fetchLinesFromMaze(unsigned maze_id);
 
-Maze createMaze(ushort maze_id, bool join_it, ushort max_lines)
+template <> Builder ConfigFactory::produce()
 {
-	auto lines = fetchLinesFromMaze(maze_id);
+	return {!data->no_join_lines, data->max_lines};
+}
 
-	const auto& walls = Builder{join_it, max_lines}.build_from_paths(lines);
+template <> Maze ConfigFactory::produce()
+{
+	auto lines = fetchLinesFromMaze(data->maze_id);
+
+	const auto& walls = produce<Builder>().build_from_paths(lines);
 	return Maze::build(std::move(lines), walls);
 }
 
-template <> ScreenManager ConfigFactory::produce()
-{
-	Maze maze = createMaze(data->maze_id, data->no_join_lines, data->max_lines);
-
-	// @TODO - Does it really need to be that ugly?
-	return {std::move(std::move(maze))};
-}
+template <> ScreenManager ConfigFactory::produce() { return {produce<Maze>()}; }
 
 void renderFunction(void* renderObject, double deltaTime, State& state)
 {
