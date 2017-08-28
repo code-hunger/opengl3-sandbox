@@ -1,7 +1,7 @@
 #ifndef SHIP_H_IKJGK1NW
 #define SHIP_H_IKJGK1NW
 
-#include "math/types.h"
+#include "math/Point.h"
 #include <memory>
 
 typedef unsigned short ushort;

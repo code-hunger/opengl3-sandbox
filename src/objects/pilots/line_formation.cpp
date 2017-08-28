@@ -1,5 +1,6 @@
 #include "pilot_base.h"
 
+#include "math/geometry.h"
 #include "Ship.h"
 
 #include "logger/logger.h"

@@ -21,6 +21,7 @@ template <typename T> using optional = std::experimental::optional<T>;
 #error "Neither header <optional> nor <experimental/optional> available!"
 #endif
 
+#include "Point.h"
 #include "Color.h"
 
 #include <list>
@@ -30,21 +31,6 @@ constexpr long double PI = 3.141592653589793238462643383279502884L;
 constexpr float PIf = static_cast<float>(PI);
 
 namespace math {
-
-struct Segment2;
-
-struct Point2
-{
-	float x, y;
-
-	bool operator==(const Point2& other) const
-	{
-		return this->x == other.x && this->y == other.y;
-	}
-
-	constexpr inline float distance2(const Point2&) const;
-	constexpr inline float distance2(const Segment2&) const;
-};
 
 struct LineEquation
 {

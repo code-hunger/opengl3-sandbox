@@ -1,6 +1,8 @@
 #include "Ship.h"
-#include "logger/logger.h"
+
 #include "pilots/pilot_base.h"
+#include "math/types.h"
+#include "logger/logger.h"
 
 #include <cstdlib>
 
