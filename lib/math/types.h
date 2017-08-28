@@ -21,6 +21,8 @@ template <typename T> using optional = std::experimental::optional<T>;
 #error "Neither header <optional> nor <experimental/optional> available!"
 #endif
 
+#include "Color.h"
+
 #include <list>
 #include <vector>
 
@@ -28,15 +30,6 @@ constexpr long double PI = 3.141592653589793238462643383279502884L;
 constexpr float PIf = static_cast<float>(PI);
 
 namespace math {
-
-struct Color
-{
-	const float r, g, b;
-	char const* const name;
-	operator const char*() const { return name; }
-
-	static const Color& next();
-};
 
 struct Segment2;
 
@@ -79,7 +72,7 @@ struct Segment2
 	inline constexpr LineEquation equation() const;
 	inline constexpr bool isInside(const Point2&) const;
 	inline const Point2& getEndCloserTo(const Point2&) const;
-	inline ColorSegment2 colorSegment(Color color = Color::next()) const;
+	inline ColorSegment2 colorSegment(Color color = getColor()) const;
 	inline ColorSegment2 whiteSegment() const;
 };
 
@@ -128,7 +121,7 @@ struct WideRoad2
 	inline float widthAt(const Point2&) const;
 	inline WidePoint2& getEndCloserTo(const Point2&);
 
-	inline ColorSegment2 colorSegment(Color color = Color::next()) const;
+	inline ColorSegment2 colorSegment(Color color = getColor()) const;
 	inline ColorSegment2 whiteSegment() const;
 };
 
