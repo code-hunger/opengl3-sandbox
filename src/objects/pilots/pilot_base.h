@@ -41,6 +41,8 @@ private:
 	ushort distance;
 };
 
+static float my_fabs(ushort x) { return static_cast<float>(x > 0 ? x : -x); }
+
 struct line_follower : pilot_base
 {
 	line_follower(const Ship& leader) : leader(&leader) {}
@@ -59,7 +61,7 @@ private:
 	const Ship* leader;
 	float distance_between = 4;
 
-	float distance_to_leader(short index) { return abs(index) * 6 - 14; }
+	float distance_to_leader(ushort index) { return my_fabs(index) * 6 - 14; }
 
 	std::map<Ship*, ushort> ships{};
 
