@@ -14,3 +14,4 @@ BraceWrapping:
     AfterStruct: true
     AfterFunction: true
     AfterClass: true
+SortIncludes: false
