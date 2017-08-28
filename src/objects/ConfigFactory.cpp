@@ -1,12 +1,12 @@
 #include "ConfigFactory.h"
 
-#include "GameplayScreen.h"
-#include "ScreenManager.h"
 #include "graphics/Window.h"
+#include "ScreenManager.h"
+#include "GameplayScreen.h"
 
 #include "Maze.h"
-#include "math/types.h"
 #include "maze_builder/builder.h"
+#include "math/types.h"
 
 #include "tclap/CmdLine.h"
 
