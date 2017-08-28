@@ -13,3 +13,6 @@ endif()
 
 add_library(graphics ${SOURCES})
 target_link_libraries(graphics ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES}) 
+
+set_property(TARGET graphics PROPERTY CXX_STANDARD 11)
+set_property(TARGET graphics PROPERTY CXX_STANDARD_REQUIRED ON)
