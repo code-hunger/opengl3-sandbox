@@ -3,10 +3,9 @@
 
 #include <memory>
 
-#include "graphics/State.h"
-
 class Screen;
 class GameplayScreen;
+struct State;
 
 typedef unsigned short ushort;
 

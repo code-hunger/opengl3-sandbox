@@ -1,7 +1,7 @@
 #ifndef APP_H_TMV30BLE
 #define APP_H_TMV30BLE
 
-#include "State.h"
+struct State;
 
 struct Renderer
 {

@@ -1,7 +1,6 @@
 #ifndef SHIP_H_IKJGK1NW
 #define SHIP_H_IKJGK1NW
 
-#include "graphics/State.h"
 #include "math/types.h"
 #include <memory>
 
@@ -10,6 +9,7 @@ typedef unsigned short ushort;
 enum Rotation { NONE = 0, LEFT = 1, RIGHT = -1 };
 
 struct pilot_base;
+struct State;
 
 class Ship
 {

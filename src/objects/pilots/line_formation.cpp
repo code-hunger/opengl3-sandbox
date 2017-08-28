@@ -3,6 +3,8 @@
 #include "Ship.h"
 
 #include "logger/logger.h"
+#include "graphics/State.h"
+
 #include <algorithm>
 #include <cassert>
 #include <cmath>

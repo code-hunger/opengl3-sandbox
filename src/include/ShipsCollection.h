@@ -1,13 +1,14 @@
 #ifndef SHIPSCOLLECTION_H_YWCRVLBE
 #define SHIPSCOLLECTION_H_YWCRVLBE
 
+#include "Ship.h"
+
 #include "graphics/ShaderProgram.h"
 #include "graphics/VertexArray.h"
 
-#include "Ship.h"
-#include "graphics/State.h"
-
 #include <deque>
+
+struct State;
 
 class ShipsCollection
 {

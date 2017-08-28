@@ -1,10 +1,11 @@
 #include "GameplayScreen.h"
 
-#include "graphics/utils.h"
-#include "logger/logger.h"
-
 #include "../src/objects/pilots/pilot_base.h"
 #include "Maze.h"
+
+#include "graphics/State.h"
+#include "graphics/utils.h"
+#include "logger/logger.h"
 
 #include <GLFW/glfw3.h>
 

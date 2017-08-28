@@ -1,7 +1,7 @@
 #ifndef SCREEN_H_4ZGYXQ9E
 #define SCREEN_H_4ZGYXQ9E
 
-#include "graphics/State.h"
+struct State;
 
 struct Screen
 {
