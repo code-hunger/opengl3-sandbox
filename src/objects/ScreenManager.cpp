@@ -1,5 +1,6 @@
 #include "ScreenManager.h"
 
+#include "ConfigFactory/ConfigFactory.h"
 #include "GameplayScreen.h"
 
 ScreenManager::ScreenManager(GameplayScreen&& screen)
@@ -12,6 +13,12 @@ ScreenManager::ScreenManager(ScreenManager&&) = default;
 void ScreenManager::render(const double deltaTime, State& state) const
 {
 	screen->work(deltaTime, state);
+}
+
+template <> GameplayScreen ConfigFactory::produce() const;
+template <> ScreenManager ConfigFactory::produce() const
+{
+	return produce<GameplayScreen>();
 }
 
 ScreenManager::~ScreenManager() = default;

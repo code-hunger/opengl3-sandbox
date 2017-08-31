@@ -1,5 +1,7 @@
 #include "GameplayScreen.h"
 
+#include "ConfigFactory/ConfigFactory.h"
+
 #include "../src/objects/pilots/pilot_base.h"
 #include "Maze.h"
 
@@ -47,6 +49,11 @@ void GameplayScreen::work(const double deltaTime, State& state)
 {
 	update(deltaTime, state, ships, ships[mainPlayer], pilot);
 	render(deltaTime, maze, ships);
+}
+
+template <> Maze ConfigFactory::produce() const;
+template <> GameplayScreen ConfigFactory::produce() const {
+	return produce<Maze>();
 }
 
 GameplayScreen::~GameplayScreen() {}

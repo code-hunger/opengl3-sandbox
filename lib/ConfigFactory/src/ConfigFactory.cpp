@@ -2,7 +2,6 @@
 
 #include "graphics/Window.h"
 #include "ScreenManager.h"
-#include "GameplayScreen.h"
 
 #include "Maze.h"
 #include "maze_builder/builder.h"
@@ -30,11 +29,6 @@ template <> Maze ConfigFactory::produce() const
 }
 
 template <> ScreenManager ConfigFactory::produce() const;
-
-template <> ScreenManager ConfigFactory::produce() const
-{
-	return {produce<Maze>()};
-}
 
 void renderFunction(void* renderObject, double deltaTime, State& state)
 {
