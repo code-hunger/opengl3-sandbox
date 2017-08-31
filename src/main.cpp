@@ -3,7 +3,7 @@
 
 #include "logger/logger.h"
 
-#include "ConfigFactory.h"
+#include "ConfigFactory/ConfigFactory.h"
 
 bool GlfwWrapper::exists = false;
 

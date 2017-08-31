@@ -19,19 +19,19 @@ configure_file (
   )
 
 include_directories(${PROJECT_SOURCE_DIR}/lib/)
-include_directories(${PROJECT_SOURCE_DIR}/lib/math/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/include)
 include_directories(${PROJECT_SOURCE_DIR}/third_party/tclap-1.2.1/include)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 add_executable(game ${SOURCES})
-target_link_libraries (game graphics maze_builder math)
+target_link_libraries (game graphics maze_builder math ConfigFactory)
 
 add_subdirectory(lib/graphics)
 add_subdirectory(lib/maze_builder)
 add_subdirectory(lib/logger)
 add_subdirectory(lib/math)
+add_subdirectory(lib/ConfigFactory)
 
 set_property(TARGET game PROPERTY CXX_STANDARD 17)
 set_property(TARGET game PROPERTY CXX_STANDARD_REQUIRED ON)
