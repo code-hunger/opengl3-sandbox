@@ -43,6 +43,7 @@ public:
 
 	void update(const State&, float time);
 
+	ushort getGear() const { return gear; }
 	auto getDirection() const { return direction; }
 	auto getPosition() const { return position; }
 
