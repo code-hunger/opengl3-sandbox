@@ -1,4 +1,4 @@
-#include "pilot_base.h"
+#include "pilots/pilot_base.h"
 
 #include "math/geometry.h"
 #include "math/types_io.h"

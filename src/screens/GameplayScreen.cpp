@@ -2,7 +2,7 @@
 
 #include "ConfigFactory/ConfigFactory.h"
 
-#include "../src/objects/pilots/pilot_base.h"
+#include "pilots/pilot_base.h"
 #include "Maze.h"
 
 #include "graphics/State.h"
