@@ -58,12 +58,18 @@ bool move_toward_point(Ship& ship, math::Point2 targetPoint)
 		return false;
 	}
 
+	Rotation rotation = determine_rotation(ship, targetPoint, currentDistance2);
+	ship.rotate(rotation);
+
+	if (rotation != NONE &&
+	    currentDistance2 < ship.getGear() * ship.GEAR_TO_SPEED) {
+		ship.stopMoving();
+		return false;
+	}
+
 	ushort gear =
 	    currentDistance2 > ship.MAX_SPEED * ship.MAX_SPEED ? ship.MAX_GEAR : 1;
 	ship.startMoving(gear);
-
-	Rotation rotation = determine_rotation(ship, targetPoint, currentDistance2);
-	ship.rotate(rotation);
 
 	return true;
 }
