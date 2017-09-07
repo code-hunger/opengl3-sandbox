@@ -27,10 +27,11 @@ void update(const double deltaTime, State& state, ShipsCollection& ships,
 	}
 
 	if (state.keys[GLFW_KEY_KP_ADD]) {
-		ships.addShip({45, 50});
-		ships->back().setPilot(pilot);
-		static_cast<pilots::line_follower*>(&*pilot)->attach_ship(
-		    ships->back());
+		auto added = ships.addShip({45, 50});
+		ships[added].setPilot(pilot);
+		static_cast<pilots::line_follower*>(&*pilot)->attach_ship(ships[added]);
+
+		LOG << "Added: " << added;
 	}
 
 	static_cast<pilots::keyboard_controlled*>(&*mainPlayer.getPilot())
@@ -52,7 +53,9 @@ void GameplayScreen::work(const double deltaTime, State& state)
 }
 
 template <> Maze ConfigFactory::produce() const;
-template <> GameplayScreen ConfigFactory::produce() const {
+
+template <> GameplayScreen ConfigFactory::produce() const
+{
 	return produce<Maze>();
 }
 
