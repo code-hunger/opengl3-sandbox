@@ -46,11 +46,11 @@ private:
 	                          // get back to using vector.
 
 	VertexArray vertexArray{{
-	    -2, -2, 0, 1, 1, 1, // first point
-	    -2, 2,  0, 1, 1, 1, // second point
-	    2,  2,  0, 1, 1, 1, // third point
-	    2,  -2, 0, 1, 1, 1, // 4th point
-	    -2, -2, 0, 1, 1, 1, // 1st point again
+	    -2, -1, 0, 1, 1, 1, // first point
+	    -2,  1, 0, 1, 1, 1, // second point
+	     2,  1, 0, 1, 1, 1, // third point
+	     2, -1, 0, 1, 1, 1, // 4th point
+	    -2, -1, 0, 1, 1, 1, // 1st point again
 	}};
 
 	void draw(const Ship& ship);
