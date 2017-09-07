@@ -17,7 +17,7 @@ auto determine_rotation(double sinCurrent, double sinTarget, double cosCurrent,
 	              (sinTarget > 0 ? cosCurrent : -cosCurrent);
 
 	// Negative diff means turn left, positive means turn right
-	return diff > 1e-5 ? LEFT : diff < -1e-5 ? RIGHT : NONE;
+	return diff > 1e-3 ? LEFT : diff < -1e-3 ? RIGHT : NONE;
 }
 
 auto determine_rotation(const Ship& source, const math::Point2& destination,
