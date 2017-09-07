@@ -1,57 +1,41 @@
 #ifndef SHIPSCOLLECTION_H_YWCRVLBE
 #define SHIPSCOLLECTION_H_YWCRVLBE
 
-#include "Ship.h"
-
 #include "graphics/ShaderProgram.h"
 #include "graphics/VertexArray.h"
 
 #include <deque>
 
 struct State;
+class Ship;
+namespace math { struct Point2; }
 
 class ShipsCollection
 {
 public:
 	ShipsCollection();
+	ShipsCollection(ShipsCollection&&)=default;
 
-	/**
-	 * Warning! Invalidates ship pointers.
-	 */
-	ushort addShip(math::Point2 location)
-	{
-		ships.emplace_back(Ship{location});
-		return static_cast<ushort>(ships.size() - 1);
-	}
+	ushort addShip(const math::Point2& location);
 
-	Ship& operator[](ushort index) { return ships[index]; }
+	Ship& operator[](ushort index);
 	const auto& operator*() { return ships; }
 	auto* operator-> () { return &ships; }
 
 	void update(const State&, double);
 
-	void draw()
-	{
-		shaderProgram.use();
+	void draw();
 
-		for (auto& ship : ships)
-			draw(ship);
-	}
+	~ShipsCollection();
 
 private:
-	ShaderProgram shaderProgram{"ship"};
-	std::deque<Ship> ships{}; // Deque, in order to keep pointers to Ships valid
-	                          // after push_back-ing. Consider storing indices
-	                          // instead of pointers to resolve this problem and
-	                          // get back to using vector.
+	ShaderProgram shaderProgram;
+	std::deque<Ship> ships; // Deque, in order to keep pointers to Ships valid
+	                        // after push_back-ing. Consider storing indices
+	                        // instead of pointers to resolve this problem and
+	                        // get back to using vector.
 
-	VertexArray vertexArray{{
-	    -2, -1, 0, 1, 1, 1, // first point
-	    -2,  1, 0, 1, 1, 1, // second point
-	     2,  1, 0, 1, 1, 1, // third point
-	     2, -1, 0, 1, 1, 1, // 4th point
-	    -2, -1, 0, 1, 1, 1, // 1st point again
-	}};
+	VertexArray vertexArray;
 
 	void draw(const Ship& ship);
 };

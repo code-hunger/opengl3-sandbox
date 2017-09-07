@@ -3,6 +3,10 @@
 #include "ConfigFactory/ConfigFactory.h"
 #include "GameplayScreen.h"
 
+#include "Ship.h"
+
+#include "math/types.h"
+
 ScreenManager::ScreenManager(GameplayScreen&& screen)
     : screen(std::make_unique<GameplayScreen>(std::move(screen)))
 {

@@ -1,5 +1,9 @@
 #include "ShipsCollection.h"
 
+#include "Ship.h"
+
+#include "math/Point.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -8,6 +12,13 @@
 #include <GLFW/glfw3.h>
 
 ShipsCollection::ShipsCollection()
+    : shaderProgram{"ship"}, ships{}, vertexArray{{
+                                          -2, -1, 0, 1, 1, 1, // first point
+                                          -2, 1,  0, 1, 1, 1, // second point
+                                          2,  1,  0, 1, 1, 1, // third point
+                                          2,  -1, 0, 1, 1, 1, // 4th point
+                                          -2, -1, 0, 1, 1, 1, // 1st point again
+                                      }}
 {
 	shaderProgram.link();
 
@@ -32,3 +43,24 @@ void ShipsCollection::draw(const Ship& ship)
 	shaderProgram.setUniformMatrix("model", glm::value_ptr(model));
 	vertexArray.draw(GL_TRIANGLE_STRIP);
 }
+
+ushort ShipsCollection::addShip(const math::Point2& location)
+{
+	ships.emplace_back(Ship{location});
+	return static_cast<ushort>(ships.size() - 1);
+}
+
+Ship& ShipsCollection::operator[](ushort index)
+{
+	return ships[index];
+}
+
+void ShipsCollection::draw()
+{
+	shaderProgram.use();
+
+	for (auto& ship : ships)
+		draw(ship);
+}
+
+ShipsCollection::~ShipsCollection() = default;

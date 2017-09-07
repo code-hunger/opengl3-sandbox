@@ -6,7 +6,10 @@
 #include "ShipsCollection.h"
 #include "graphics/ShaderProgram.h"
 
+#include <memory>
+
 typedef unsigned short ushort;
+struct pilot_base;
 
 class GameplayScreen : public Screen
 {

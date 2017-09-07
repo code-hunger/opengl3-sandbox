@@ -2,12 +2,15 @@
 
 #include "ConfigFactory/ConfigFactory.h"
 
+#include "Ship.h"
+
 #include "pilots/pilot_base.h"
 #include "Maze.h"
 
 #include "graphics/State.h"
 #include "graphics/utils.h"
 #include "logger/logger.h"
+#include "math/types.h"
 
 #include <GLFW/glfw3.h>
 
