@@ -1,8 +1,13 @@
-#include "Shader.h"
 #include "ShaderProgram.h"
+
+#include "Shader.h"
 #include "logger/logger.h"
 
-ShaderProgram::ShaderProgram(const char* shaderName): uniforms{}
+#include <GL/glew.h>
+
+uint ShaderProgram::createShaderProgram() { return glCreateProgram(); }
+
+ShaderProgram::ShaderProgram(const char* shaderName)
 {
 	createShader(std::string(shaderName).append(".frag").c_str(),
 	             GL_FRAGMENT_SHADER);

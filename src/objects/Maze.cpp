@@ -45,7 +45,7 @@ Maze::Maze(const WideRoads& paths, const ColorSegmentList& walls)
 	shaderProgram.link();
 
 	glm::mat4 proj = glm::ortho(0.f, 100.f, 0.f, 100.f, 0.1f, -.1f);
-	const GLfloat* const matrix = glm::value_ptr(proj);
+	const float* const matrix = glm::value_ptr(proj);
 
 	shaderProgram.setUniformMatrix("model_view_projection", matrix);
 }
