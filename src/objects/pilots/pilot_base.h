@@ -9,7 +9,7 @@ typedef unsigned short ushort;
 
 struct pilot_base
 {
-	virtual void operator()(Ship&) = 0;
+	virtual void operator()(Ship&) const = 0;
 	virtual ~pilot_base() = default;
 };
 
@@ -32,7 +32,7 @@ struct follower : pilot_base
 	follower(const follower&) = delete;
 	void operator=(const follower&) = delete;
 
-	void operator()(Ship&) override;
+	void operator()(Ship&) const override;
 
 	void setLeader(const Ship& leader) { this->leader = &leader; }
 
@@ -41,7 +41,7 @@ private:
 	ushort distance;
 };
 
-static float my_fabs(ushort x) { return static_cast<float>(x > 0 ? x : -x); }
+static float my_fabs(short x) { return static_cast<float>(x >= 0 ? x : -x); }
 
 struct line_follower : pilot_base
 {
@@ -55,22 +55,25 @@ struct line_follower : pilot_base
 		ships[&ship] = static_cast<ushort>(ships.size() - 1);
 	}
 
-	void operator()(Ship&) override;
+	void operator()(Ship&) const override;
 
 private:
 	const Ship* leader;
 	float distance_between = 4;
 
-	float distance_to_leader(ushort index) { return my_fabs(index) * 6 - 14; }
+	float distance_to_leader(short index) const
+	{
+		return my_fabs(index) * 6 - 14;
+	}
 
-	std::map<Ship*, ushort> ships{};
+	std::map<const Ship*, ushort> ships{};
 
 	/**
 	 * Returning rvalue reference to avoid inclusion of math/types.h. Probably
 	 * that's not a real reason but I'd want to play a little bit with those
 	 * &&s.
 	 */
-	math::Point2&& calc_target_position(Ship&);
+	math::Point2&& calc_target_position(const Ship&) const;
 };
 
 struct keyboard_controlled : pilot_base
@@ -82,7 +85,7 @@ struct keyboard_controlled : pilot_base
 	keyboard_controlled(const keyboard_controlled&) = delete;
 	void operator=(const keyboard_controlled&) = delete;
 
-	void operator()(Ship&) override;
+	void operator()(Ship&) const override;
 
 	void setState(const State& state) { this->state = &state; }
 

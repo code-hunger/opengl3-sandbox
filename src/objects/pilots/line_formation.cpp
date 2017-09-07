@@ -1,6 +1,7 @@
 #include "pilot_base.h"
 
 #include "math/geometry.h"
+#include "math/types_io.h"
 #include "Ship.h"
 
 #include "logger/logger.h"
@@ -76,7 +77,7 @@ bool move_toward_point(Ship& ship, math::Point2 targetPoint)
 
 namespace pilots {
 
-void follower::operator()(Ship& ship)
+void follower::operator()(Ship& ship) const
 {
 	double currentDistance2 =
 	    ship.getPosition().distance2(leader->getPosition());
@@ -92,10 +93,12 @@ void follower::operator()(Ship& ship)
 	}
 }
 
-math::Point2&& line_follower::calc_target_position(Ship& ship)
+math::Point2&& line_follower::calc_target_position(const Ship& ship) const
 {
-	ushort index = ships[&ship];
-	float a = distance_to_leader(static_cast<ushort>(index - ships.size() / 2));
+	ushort index = ships.at(&ship),
+	       ships_size = static_cast<ushort>(ships.size());
+
+	float a = distance_to_leader(static_cast<short>(index - ships_size / 2));
 
 	constexpr ushort MAX_ON_LINE = 77;
 
@@ -104,10 +107,8 @@ math::Point2&& line_follower::calc_target_position(Ship& ship)
 		index %= MAX_ON_LINE;
 	}
 
-	ushort ships_size = static_cast<ushort>(ships.size());
-
-	float b = distance_between *
-	          static_cast<float>(index - std::min(MAX_ON_LINE, ships_size) / 2),
+	float b = distance_between * (static_cast<float>(index) -
+	                              std::min(MAX_ON_LINE, ships_size) / 2.0f),
 	      hypo = static_cast<float>(sqrt(a * a + b * b)),
 	      g = leader->getDirection() - atanf(b / a);
 
@@ -117,7 +118,7 @@ math::Point2&& line_follower::calc_target_position(Ship& ship)
 	    math::Point2{leader->x - hypo * cosf(g), leader->y - hypo * sinf(g)});
 }
 
-void line_follower::operator()(Ship& ship)
+void line_follower::operator()(Ship& ship) const
 {
 	math::Point2 targetPoint = calc_target_position(ship);
 	bool has_moved = move_toward_point(ship, targetPoint);
@@ -127,7 +128,7 @@ void line_follower::operator()(Ship& ship)
 		    determine_rotation(ship.getDirection(), leader->getDirection()));
 }
 
-void keyboard_controlled::operator()(Ship& ship)
+void keyboard_controlled::operator()(Ship& ship) const
 {
 	if (state->keys[FORWARD_KEY]) {
 		ship.startMoving();
