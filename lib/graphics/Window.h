@@ -2,8 +2,10 @@
 #define WINDOW_H
 
 #include <GL/glew.h>
+#include <memory>
 
 class GLFWwindow;
+class GlfwWrapper;
 struct State;
 
 // using Renderer = std::function<void(double deltaTime, State&)>;
@@ -16,12 +18,12 @@ struct Dimentions
 
 class Window
 {
-	Window();
+	std::shared_ptr<GlfwWrapper> glfwWrapper;
 
-	friend class GlfwWrapper;
 	friend void keyCallback(GLFWwindow*, int, int, int, int);
 
 public:
+	Window(std::shared_ptr<GlfwWrapper>);
 	~Window();
 
 	// is const& needed?

@@ -1,5 +1,6 @@
 #include "Window.h"
 
+#include "GlfwWrapper.h"
 #include "State.h"
 #include "logger/logger.h"
 
@@ -27,8 +28,9 @@ Dimentions getWindowSize(GLFWwindow* window)
 	return {static_cast<ushort>(w), static_cast<ushort>(h)};
 }
 
-Window::Window()
-    : window(createWindow("First Window Title")), size{getWindowSize(window)}
+Window::Window(std::shared_ptr<GlfwWrapper> glfwWrapper)
+    : glfwWrapper{glfwWrapper},
+      window(createWindow("First Window Title")), size{getWindowSize(window)}
 {
 	if (!window) throw "A window could not be created!";
 

@@ -13,8 +13,6 @@ public:
 	GlfwWrapper(const GlfwWrapper&) = delete;
 	GlfwWrapper& operator=(GlfwWrapper) = delete;
 
-	template <class window_t> window_t acquireWindow() & { return {}; }
-
 	~GlfwWrapper();
 };
 

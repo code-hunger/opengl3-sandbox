@@ -7,15 +7,15 @@
 
 bool GlfwWrapper::exists = false;
 
-template <> void ConfigFactory::process(Window& window) const;
+template <> void ConfigFactory::process(Window&) const;
 
 int main(int argc, const char** argv)
 {
 	try {
 		ConfigFactory factory{argc, argv};
 
-		auto wrapper = factory.produce<GlfwWrapper>();
-		auto window = wrapper.acquireWindow<Window>();
+		auto glfw = std::make_shared<GlfwWrapper>();
+		Window window{glfw};
 		factory.process(window);
 	} catch (int e) {
 		ERR << "Something bad happened. Code " << e;
