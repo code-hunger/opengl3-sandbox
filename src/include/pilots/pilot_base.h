@@ -68,12 +68,7 @@ private:
 
 	std::map<const Ship*, ushort> ships{};
 
-	/**
-	 * Returning rvalue reference to avoid inclusion of math/types.h. Probably
-	 * that's not a real reason but I'd want to play a little bit with those
-	 * &&s.
-	 */
-	math::Point2&& calc_target_position(const Ship&) const;
+	math::Point2 calc_target_position(const Ship&) const;
 };
 
 struct keyboard_controlled : pilot_base

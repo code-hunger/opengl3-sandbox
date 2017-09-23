@@ -93,7 +93,7 @@ void follower::operator()(Ship& ship) const
 	}
 }
 
-math::Point2&& line_follower::calc_target_position(const Ship& ship) const
+math::Point2 line_follower::calc_target_position(const Ship& ship) const
 {
 	ushort index = ships.at(&ship),
 	       ships_size = static_cast<ushort>(ships.size());
@@ -114,8 +114,7 @@ math::Point2&& line_follower::calc_target_position(const Ship& ship) const
 
 	if (a < 0) g += PIf;
 
-	return std::move(
-	    math::Point2{leader->x - hypo * cosf(g), leader->y - hypo * sinf(g)});
+	return {leader->x - hypo * cosf(g), leader->y - hypo * sinf(g)};
 }
 
 void line_follower::operator()(Ship& ship) const
