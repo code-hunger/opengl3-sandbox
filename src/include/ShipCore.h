@@ -13,32 +13,18 @@ class ShipCore
 {
 	friend class ShipsCollection;
 
-	math::Point2 position;
-	float rotation = 0, speed = 0;
+	typedef math::Point2 Position;
+	typedef decltype(Position::x) coord_t;
 
-	typedef decltype(math::Point2::x) coord_t;
+	Position position;
+	float rotation = 0, speed = 0;
 
 	ShipCore(const ShipCore&) = delete;
 
-	void update(double deltaTime)
-	{
-		constexpr long double PI = 3.141592653589793238462643383279502884L;
-		constexpr float PIf = static_cast<float>(PI);
-		// @TODO: Two loops just for this?? Do it better.
-		while (rotation > 2 * PI)
-			rotation -= 2 * PIf;
-		while (rotation < 0)
-			rotation += 2 * PIf;
-
-		rotation += static_cast<float>(request.direction) * 4.6f * deltaTime;
-		speed = adjustSpeed(speed, request.speed, static_cast<float>(deltaTime));
-
-		position.x += cosf(rotation) * speed * deltaTime;
-		position.y += sinf(rotation) * speed * deltaTime;
-	}
+	void update(double deltaTime);
 
 public:
-	ShipCore(math::Point2 position) : position(position) {}
+	ShipCore(Position position) : position(position) {}
 
 	struct
 	{
@@ -55,6 +41,23 @@ public:
 
 	ShipCore(ShipCore&&) = default;
 };
+
+inline void ShipCore::update(double deltaTime)
+{
+	constexpr long double PI = 3.141592653589793238462643383279502884L;
+	constexpr float PIf = static_cast<float>(PI);
+	// @TODO: Two loops just for this?? Do it better.
+	while (rotation > 2 * PI)
+		rotation -= 2 * PIf;
+	while (rotation < 0)
+		rotation += 2 * PIf;
+
+	rotation += static_cast<float>(request.direction) * 4.6f * deltaTime;
+	speed = adjustSpeed(speed, request.speed, static_cast<float>(deltaTime));
+
+	position.x += cosf(rotation) * speed * deltaTime;
+	position.y += sinf(rotation) * speed * deltaTime;
+}
 
 static float adjustSpeed(float speed, float targetSpeed, float deltaTime)
 {
