@@ -32,7 +32,7 @@ void ShipsCollection::update(const State& state, double time)
 {
 	for (Ship& ship : ships) {
 		ship.update(state, static_cast<float>(time));
-		ship.core.update(time);
+		ship.core.update(static_cast<float>(time));
 	}
 }
 

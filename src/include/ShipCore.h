@@ -21,7 +21,7 @@ class ShipCore
 
 	ShipCore(const ShipCore&) = delete;
 
-	void update(double deltaTime);
+	void update(float deltaTime);
 
 public:
 	ShipCore(Position position) : position(position) {}
@@ -42,7 +42,7 @@ public:
 	ShipCore(ShipCore&&) = default;
 };
 
-inline void ShipCore::update(double deltaTime)
+inline void ShipCore::update(float deltaTime)
 {
 	constexpr long double PI = 3.141592653589793238462643383279502884L;
 	constexpr float PIf = static_cast<float>(PI);
