@@ -108,7 +108,7 @@ math::Point2&& line_follower::calc_target_position(const Ship& ship) const
 	}
 
 	float b = distance_between * (static_cast<float>(index) -
-	                              std::min(MAX_ON_LINE, ships_size) / 2.0f),
+	                              std::min(MAX_ON_LINE, ships_size) / 2),
 	      hypo = static_cast<float>(sqrt(a * a + b * b)),
 	      g = leader->getDirection() - atanf(b / a);
 
