@@ -5,6 +5,8 @@
 
 #include <cmath>
 
+static float adjustSpeed(float speed, float targetSpeed, float deltaTime);
+
 enum Direction { NONE = 0, LEFT = 1, RIGHT = -1 };
 
 class ShipCore
@@ -29,7 +31,7 @@ class ShipCore
 			rotation += 2 * PIf;
 
 		rotation += static_cast<float>(request.direction) * 4.6f * deltaTime;
-		speed += request.speedChange * deltaTime;
+		speed = adjustSpeed(speed, request.speed, static_cast<float>(deltaTime));
 
 		position.x += cosf(rotation) * speed * deltaTime;
 		position.y += sinf(rotation) * speed * deltaTime;
@@ -41,8 +43,8 @@ public:
 	struct
 	{
 		Direction direction = NONE;
-		float speedChange = 0;
-	} request{};
+		float speed = 0;
+	} request;
 
 	coord_t getX() const { return position.x; }
 	coord_t getY() const { return position.y; }
@@ -53,5 +55,20 @@ public:
 
 	ShipCore(ShipCore&&) = default;
 };
+
+static float adjustSpeed(float speed, float targetSpeed, float deltaTime)
+{
+	if (speed > targetSpeed) {
+		float newSpeed = speed - 50 * deltaTime;
+		if (newSpeed < targetSpeed) newSpeed = targetSpeed;
+		return newSpeed;
+	}
+	if (speed < targetSpeed) {
+		float newSpeed = speed + 20 * deltaTime;
+		if (newSpeed > targetSpeed) newSpeed = targetSpeed;
+		return newSpeed;
+	}
+	return speed;
+}
 
 #endif /* end of include guard: SHIPCORE_H_XIP1FQRY */

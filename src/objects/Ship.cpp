@@ -13,25 +13,11 @@ Ship::Ship(Ship&& other)
 {
 }
 
-void Ship::update(const State&, float deltaTime)
+void Ship::update(const State&, float)
 {
 	if (pilot) pilot->operator()(*this); // Should pilot really be a unique_ptr?
 
-	ushort targetSpeed = static_cast<ushort>(gear * GEAR_TO_SPEED);
-	const float speed = core.getSpeed();
-
-	if (speed > targetSpeed) {
-		if (speed - 50 * deltaTime < targetSpeed)
-			core.request.speedChange = core.getSpeed() - targetSpeed;
-		else
-			core.request.speedChange = -50;
-	}
-	if (speed < targetSpeed) {
-		if (speed + 20 * deltaTime > targetSpeed)
-			core.request.speedChange = targetSpeed - core.getSpeed();
-		else
-			core.request.speedChange = +20;
-	}
+	core.request.speed = static_cast<ushort>(gear * GEAR_TO_SPEED);
 }
 
 void Ship::setPilot(std::shared_ptr<pilot_base> new_pilot)
