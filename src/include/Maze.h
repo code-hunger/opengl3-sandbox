@@ -3,7 +3,15 @@
 
 #include "graphics/ShaderProgram.h"
 #include "graphics/VertexArray.h"
-#include "math/types.h"
+
+#include <list>
+
+namespace math{
+	struct WideRoad2;
+	struct ColorSegment2;
+	typedef std::list<WideRoad2> WideRoads;
+	typedef std::list<ColorSegment2> ColorSegmentList;
+}
 
 VertexArray wallsToVertArr(const math::ColorSegmentList& walls);
 

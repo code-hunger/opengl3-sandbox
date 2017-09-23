@@ -9,6 +9,7 @@
 
 #include "graphics/config.h"
 #include "graphics/utils.h"
+#include "math/types.h"
 
 #define MAX_LINES 100
 
