@@ -6,14 +6,10 @@
 
 #include <cstdlib>
 
-Ship::Ship(math::Point2 position, float direction)
-    : position(position), direction(direction), pilot{}
-{
-}
+Ship::Ship(ShipCore core) : core(std::move(core)), pilot{} {}
 
 Ship::Ship(Ship&& other)
-    : position(other.position), direction(other.direction), speed(other.speed),
-      rotation(other.rotation), pilot(std::move(other.pilot))
+    : core(std::move(other.core)), pilot(std::move(other.pilot))
 {
 }
 
@@ -21,28 +17,21 @@ void Ship::update(const State&, float deltaTime)
 {
 	if (pilot) pilot->operator()(*this); // Should pilot really be a unique_ptr?
 
-	// @TODO: Two loops just for this?? Do it better.
-	while (direction > 2 * PI)
-		direction -= 2 * PIf;
-	while (direction < 0)
-		direction += 2 * PIf;
-
-	if (rotation) {
-		direction += deltaTime * 4.6f * static_cast<float>(rotation);
-	}
-
 	ushort targetSpeed = static_cast<ushort>(gear * GEAR_TO_SPEED);
+	const float speed = core.getSpeed();
+
 	if (speed > targetSpeed) {
-		speed -= 50 * deltaTime;
-		if (speed < targetSpeed) speed = targetSpeed;
+		if (speed - 50 * deltaTime < targetSpeed)
+			core.request.speedChange = core.getSpeed() - targetSpeed;
+		else
+			core.request.speedChange = -50;
 	}
 	if (speed < targetSpeed) {
-		speed += 20 * deltaTime;
-		if (speed > targetSpeed) speed = targetSpeed;
+		if (speed + 20 * deltaTime > targetSpeed)
+			core.request.speedChange = targetSpeed - core.getSpeed();
+		else
+			core.request.speedChange = +20;
 	}
-
-	position.x += cosf(direction) * speed * deltaTime;
-	position.y += sinf(direction) * speed * deltaTime;
 }
 
 void Ship::setPilot(std::shared_ptr<pilot_base> new_pilot)

@@ -30,8 +30,8 @@ auto determine_rotation(const Ship& source, const math::Point2& destination,
 	const double currentDistance = sqrt(currentDistance2),
 	             currentDirection = source.getDirection(),
 
-	             cosTarget = (destination.x - source.x) / currentDistance,
-	             sinTarget = (destination.y - source.y) / currentDistance,
+	             cosTarget = (destination.x - source.getX()) / currentDistance,
+	             sinTarget = (destination.y - source.getY()) / currentDistance,
 
 	             cosCurrent = cos(currentDirection),
 	             sinCurrent = sin(currentDirection);
@@ -59,10 +59,10 @@ bool move_toward_point(Ship& ship, math::Point2 targetPoint)
 		return false;
 	}
 
-	Rotation rotation = determine_rotation(ship, targetPoint, currentDistance2);
-	ship.rotate(rotation);
+	Direction direction = determine_rotation(ship, targetPoint, currentDistance2);
+	ship.rotate(direction);
 
-	if (rotation != NONE &&
+	if (direction != NONE &&
 	    currentDistance2 < ship.getGear() * ship.GEAR_TO_SPEED) {
 		ship.stopMoving();
 		return false;
@@ -82,9 +82,9 @@ void follower::operator()(Ship& ship) const
 	double currentDistance2 =
 	    ship.getPosition().distance2(leader->getPosition());
 
-	Rotation rotation =
+	Direction direction =
 	    determine_rotation(ship, leader->getPosition(), currentDistance2);
-	ship.rotate(rotation);
+	ship.rotate(direction);
 
 	if (currentDistance2 < distance * distance) {
 		ship.stopMoving();
@@ -114,7 +114,7 @@ math::Point2 line_follower::calc_target_position(const Ship& ship) const
 
 	if (a < 0) g += PIf;
 
-	return {leader->x - hypo * cosf(g), leader->y - hypo * sinf(g)};
+	return {leader->getX() - hypo * cosf(g), leader->getY() - hypo * sinf(g)};
 }
 
 void line_follower::operator()(Ship& ship) const
@@ -136,11 +136,11 @@ void keyboard_controlled::operator()(Ship& ship) const
 	}
 
 	if (state->keys[LEFT_KEY]) {
-		ship.rotate(Rotation::LEFT);
+		ship.rotate(Direction::LEFT);
 	} else if (state->keys[RIGHT_KEY]) {
-		ship.rotate(Rotation::RIGHT);
+		ship.rotate(Direction::RIGHT);
 	} else {
-		ship.rotate(Rotation::NONE);
+		ship.rotate(Direction::NONE);
 	}
 }
 }
