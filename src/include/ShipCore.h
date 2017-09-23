@@ -25,6 +25,13 @@ class ShipCore
 
 public:
 	ShipCore(Position position) : position(position) {}
+	ShipCore(ShipCore&& old)
+	    : position(old.position), rotation(old.rotation), speed(old.speed)
+	{
+		old.position = {};
+		old.rotation = 0;
+		old.speed = 0;
+	};
 
 	struct
 	{
@@ -38,8 +45,6 @@ public:
 
 	float getRotation() const { return rotation; }
 	float getSpeed() const { return speed; }
-
-	ShipCore(ShipCore&&) = default;
 };
 
 inline void ShipCore::update(float deltaTime)
