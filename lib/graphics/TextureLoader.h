@@ -27,8 +27,7 @@ imageType findExtension(std::string fileName) {
 	
 	fileName = fileName.substr(fileName.find_last_of("/\\") + 1);//<- this works for both slashes, apparently
 
-	std::size_t lastDot;
-	lastDot = fileName.find_last_of(".");
+	std::size_t lastDot = fileName.find_last_of(".");;
 	if (lastDot == std::string::npos) {//If dot is not found
 		return UNKNOWN;
 	}
